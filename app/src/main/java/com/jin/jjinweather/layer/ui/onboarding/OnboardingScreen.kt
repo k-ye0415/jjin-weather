@@ -15,7 +15,7 @@ import androidx.navigation.NavController
 import com.jin.jjinweather.layer.ui.Screens
 
 @Composable
-fun OnboardingScreen(navController: NavController) {
+fun OnboardingScreen(navController: NavController, viewModel: OnboardingViewModel) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
         Box(

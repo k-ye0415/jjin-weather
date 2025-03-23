@@ -13,7 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.ui.Screens
 import com.jin.jjinweather.layer.ui.temperature.TemperatureScreen
 import com.jin.jjinweather.layer.ui.loading.LoadingScreen
+import com.jin.jjinweather.layer.ui.loading.LoadingViewModel
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
+import com.jin.jjinweather.layer.ui.onboarding.OnboardingViewModel
+import com.jin.jjinweather.layer.ui.temperature.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -41,9 +44,14 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator() {
     val navController = rememberNavController()
 
+    // todo 일시적 선언
+    val loadingViewModel = LoadingViewModel()
+    val onboardingViewModel = OnboardingViewModel()
+    val temperatureViewModel = TemperatureViewModel()
+
     NavHost(navController, Screens.LOADING.route) {
-        composable(Screens.LOADING.route) { LoadingScreen(navController) }
-        composable(Screens.ONBOARDING.route) { OnboardingScreen(navController) }
-        composable(Screens.TEMPERATURE.route) { TemperatureScreen() }
+        composable(Screens.LOADING.route) { LoadingScreen(navController, loadingViewModel) }
+        composable(Screens.ONBOARDING.route) { OnboardingScreen(navController, onboardingViewModel) }
+        composable(Screens.TEMPERATURE.route) { TemperatureScreen(navController, temperatureViewModel) }
     }
 }
