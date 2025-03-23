@@ -42,5 +42,5 @@ fun LoadingScreen(navController: NavController, viewModel: LoadingViewModel) {
 @Preview(showBackground = true)
 @Composable
 fun LoadingScreenPreview() {
-    LoadingScreen(rememberNavController())
+    LoadingScreen(rememberNavController(), LoadingViewModel())
 }
