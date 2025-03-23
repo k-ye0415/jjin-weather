@@ -14,7 +14,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun TemperatureScreen(navController: NavController, viewModel: TemperatureViewModel) {
-
+    // todo : viewModel 의 state ui에 적용
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
         Box(modifier = Modifier

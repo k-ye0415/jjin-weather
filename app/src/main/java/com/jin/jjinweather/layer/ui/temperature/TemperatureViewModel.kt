@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 class TemperatureViewModel : ViewModel() {
     /*
     * todo
-    *  1. all ui
-    *  2. location, weather 정보 뿌리기
+    *  1. location, weather 정보 뿌리기
     * */
 }
