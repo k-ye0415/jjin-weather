@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.jin.jjinweather"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.jin.jjinweather"
