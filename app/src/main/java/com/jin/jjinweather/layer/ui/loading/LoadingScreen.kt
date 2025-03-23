@@ -17,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.ui.Screens
 
 @Composable
-fun LoadingScreen(navController: NavController) {
+fun LoadingScreen(navController: NavController, viewModel: LoadingViewModel) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
         Box(

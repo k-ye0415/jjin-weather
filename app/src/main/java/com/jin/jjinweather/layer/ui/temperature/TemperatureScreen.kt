@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun TemperatureScreen() {
+fun TemperatureScreen(navController: NavController, viewModel: TemperatureViewModel) {
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
