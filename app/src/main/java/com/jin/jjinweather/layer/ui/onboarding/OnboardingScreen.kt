@@ -11,11 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import com.jin.jjinweather.layer.ui.Screens
 
 @Composable
-fun OnboardingScreen(navController: NavController, viewModel: OnboardingViewModel) {
+fun OnboardingScreen(viewModel: OnboardingViewModel, onNavigateToTemperature: () -> Unit) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
         Box(
@@ -27,12 +25,7 @@ fun OnboardingScreen(navController: NavController, viewModel: OnboardingViewMode
                 // todo : tutorial pager
                 //        permission
                 Text("Tutorial Screen", fontSize = 24.sp)
-                Button({
-                    // todo : event hoisting
-                    navController.navigate(Screens.TEMPERATURE.route) {
-                        popUpTo(Screens.ONBOARDING.route) { inclusive = true }
-                    }
-                }) { Text("GO TO MAIN") }
+                Button(onClick = onNavigateToTemperature) { Text("GO TO MAIN") }
             }
         }
     }
