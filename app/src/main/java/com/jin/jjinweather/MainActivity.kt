@@ -24,10 +24,13 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         val splashScreen = installSplashScreen()
+
+        super.onCreate(savedInstanceState)
+
         var keepSplashScreen = true
         splashScreen.setKeepOnScreenCondition { keepSplashScreen }
+
         lifecycleScope.launch {
             delay(1000L)
             keepSplashScreen = false
