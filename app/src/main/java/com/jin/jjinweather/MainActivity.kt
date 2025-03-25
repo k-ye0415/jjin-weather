@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -50,8 +51,39 @@ fun AppNavigator() {
     val temperatureViewModel = TemperatureViewModel()
 
     NavHost(navController, Screens.LOADING.route) {
-        composable(Screens.LOADING.route) { LoadingScreen(navController, loadingViewModel) }
-        composable(Screens.ONBOARDING.route) { OnboardingScreen(navController, onboardingViewModel) }
-        composable(Screens.TEMPERATURE.route) { TemperatureScreen(navController, temperatureViewModel) }
+        composable(Screens.LOADING.route) {
+            LoadingScreen(
+                viewModel = loadingViewModel,
+                onNavigateToOnboarding = {
+                    navController.navigateClearingBackStack(destination = Screens.ONBOARDING, clearUpTo = Screens.LOADING, inclusive = true)
+                }
+            )
+        }
+        composable(Screens.ONBOARDING.route) {
+            OnboardingScreen(
+                viewModel = onboardingViewModel,
+                onNavigateToTemperature = {
+                    navController.navigateClearingBackStack(destination = Screens.TEMPERATURE, clearUpTo = Screens.ONBOARDING, inclusive = true)
+                }
+            )
+        }
+        composable(Screens.TEMPERATURE.route) {
+            TemperatureScreen(
+                viewModel = temperatureViewModel,
+                onNavigate = {}
+            )
+        }
+    }
+}
+
+fun NavController.navigateClearingBackStack(
+    destination: Screens,
+    clearUpTo: Screens,
+    inclusive: Boolean
+) {
+    this.navigate(destination.route) {
+        popUpTo(clearUpTo.route) {
+            this.inclusive = inclusive
+        }
     }
 }

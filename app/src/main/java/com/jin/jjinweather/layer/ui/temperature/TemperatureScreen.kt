@@ -13,13 +13,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun TemperatureScreen(navController: NavController, viewModel: TemperatureViewModel) {
+fun TemperatureScreen(viewModel: TemperatureViewModel, onNavigate: () -> Unit) {
     // todo : viewModel 의 state ui에 적용
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding), contentAlignment = Alignment.Center
+        ) {
             Column {
                 Text("Temperature Screen", fontSize = 24.sp)
             }
