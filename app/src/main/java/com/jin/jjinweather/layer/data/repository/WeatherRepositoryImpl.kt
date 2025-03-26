@@ -1,5 +1,6 @@
 package com.jin.jjinweather.layer.data.repository
 
+import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
 import com.jin.jjinweather.layer.domain.model.weather.HourlyWeather
@@ -7,7 +8,10 @@ import com.jin.jjinweather.layer.domain.model.weather.Weather
 import com.jin.jjinweather.layer.domain.repository.WeatherRepository
 import org.json.JSONObject
 
-class WeatherRepositoryImpl(private val weatherDataSource: WeatherDataSource) : WeatherRepository {
+class WeatherRepositoryImpl(
+    private val weatherDataSource: WeatherDataSource,
+    private val locationProvider: LocationProvider
+) : WeatherRepository {
     override suspend fun loadWeather(): Weather {
         val json = weatherDataSource.loadWeatherJson()
         val root = JSONObject(json)
@@ -16,7 +20,7 @@ class WeatherRepositoryImpl(private val weatherDataSource: WeatherDataSource) : 
         val dailyArray = root.getJSONArray("daily")
         val hourlyArray = root.getJSONArray("hourly")
 
-        val cityName = "서울시 방배동" // todo: 위치정보필요
+        val cityName = locationProvider.loadCurrentCityName()
         val iconResId = 1 // todo: icon 매핑 함수 만들기
         val currentTemp = current.getDouble("temp")
         val yesterdayTemp = currentTemp // todo: 실제 전날 데이터 추가 시 분리

@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.domain.usecase.GetWeatherUseCase
@@ -39,20 +40,21 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
         val weatherDataSource = WeatherDataSource(this)
+        val locationProvider = LocationProvider(this)
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
-                AppNavigator(weatherDataSource)
+                AppNavigator(weatherDataSource, locationProvider)
             }
         }
     }
 }
 
 @Composable
-fun AppNavigator(weatherDataSource: WeatherDataSource) {
+fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider) {
     val navController = rememberNavController()
 
-    val weatherRepository = WeatherRepositoryImpl(weatherDataSource)
+    val weatherRepository = WeatherRepositoryImpl(weatherDataSource, locationProvider)
 
     val loadingViewModel = LoadingViewModel(GetWeatherUseCase(weatherRepository))
     val onboardingViewModel = OnboardingViewModel()
