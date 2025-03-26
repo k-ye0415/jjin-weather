@@ -22,15 +22,15 @@ class WeatherRepositoryImpl(
 
         val cityName = locationProvider.loadCurrentCityName()
         val iconResId = 1 // todo: icon 매핑 함수 만들기
-        val currentTemp = current.getDouble("temp")
+        val currentTemp = current.getDouble("temp").toInt()
         val yesterdayTemp = currentTemp // todo: 실제 전날 데이터 추가 시 분리
         val sunrise = current.getLong("sunrise")
         val sunset = current.getLong("sunset")
         val moonPhase = dailyArray.getJSONObject(0).getDouble("moon_phase")
 
         val tempObj = dailyArray.getJSONObject(0).getJSONObject("temp")
-        val minTemp = tempObj.getDouble("min")
-        val maxTemp = tempObj.getDouble("max")
+        val minTemp = tempObj.getDouble("min").toInt()
+        val maxTemp = tempObj.getDouble("max").toInt()
 
         val hourlyList = (0 until hourlyArray.length()).map { i ->
             hourlyArray.getJSONObject(i).toHourlyWeather()
@@ -59,7 +59,7 @@ class WeatherRepositoryImpl(
 
     private fun JSONObject.toHourlyWeather(): HourlyWeather {
         val hour = getLong("dt")
-        val temp = getDouble("temp")
+        val temp = getDouble("temp").toInt()
         val icon = 1 // todo: icon 매핑 함수 만들기
         return HourlyWeather(hour, icon, temp)
     }
@@ -67,8 +67,8 @@ class WeatherRepositoryImpl(
     private fun JSONObject.toDailyWeather(): DailyWeather {
         val day = getLong("dt")
         val tempObj = getJSONObject("temp")
-        val min = tempObj.getDouble("min")
-        val max = tempObj.getDouble("max")
+        val min = tempObj.getDouble("min").toInt()
+        val max = tempObj.getDouble("max").toInt()
         val icon = 1 // todo: icon 매핑 함수 만들기
         return DailyWeather(day, icon, min, max)
     }
