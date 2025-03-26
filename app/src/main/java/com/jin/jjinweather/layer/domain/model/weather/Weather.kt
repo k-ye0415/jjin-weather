@@ -11,5 +11,5 @@ data class Weather(
     val dailyWeatherList: List<DailyWeather>,
     val sunrise: Long,
     val sunset: Long,
-    val moonPhase: Int
+    val moonPhase: Double
 )
