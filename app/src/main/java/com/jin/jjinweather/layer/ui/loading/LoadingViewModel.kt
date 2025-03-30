@@ -19,12 +19,7 @@ class LoadingViewModel(private val getWeatherUseCase: GetWeatherUseCase) : ViewM
 
     private fun loadWeather() {
         viewModelScope.launch {
-            try {
-                val weather = getWeatherUseCase()
-                _weatherState.value = UiState.Success(weather)
-            } catch (e: Exception) {
-                _weatherState.value = UiState.Error(e.message ?: "Unknown Error")
-            }
+            _weatherState.value = getWeatherUseCase()
         }
     }
 
