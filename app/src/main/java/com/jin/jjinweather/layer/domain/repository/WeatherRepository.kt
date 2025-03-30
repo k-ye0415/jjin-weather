@@ -3,6 +3,6 @@ package com.jin.jjinweather.layer.domain.repository
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 
 interface WeatherRepository {
-    // 위치 정보 가져오는 부분에 따라 수정될 수 있음.
-    suspend fun loadWeather(): Result<Weather>
+    // 위치 권한 확인 후 사용자의 실제 위도,경도 필요
+    suspend fun loadWeather(latitude: Double, longitude: Double): Result<Weather>
 }

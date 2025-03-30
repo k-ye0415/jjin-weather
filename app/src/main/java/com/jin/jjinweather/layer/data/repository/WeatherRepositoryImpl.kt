@@ -14,8 +14,9 @@ class WeatherRepositoryImpl(
     private val locationProvider: LocationProvider
 ) : WeatherRepository {
 
-    override suspend fun loadWeather(): Result<Weather> {
+    override suspend fun loadWeather(latitude: Double, longitude: Double): Result<Weather> {
         return try {
+            // API 요청 시 위도, 경도를 사용하여 날씨정보 가져와야 함.
             val json = weatherDataSource.loadWeatherJson()
             val root = JSONObject(json)
 
