@@ -14,8 +14,6 @@ class WeatherRepositoryImpl(
     private val locationProvider: LocationProvider
 ) : WeatherRepository {
 
-    val TAG = this::class.java.simpleName
-
     override suspend fun loadWeather(): Result<Weather> {
         return try {
             val json = weatherDataSource.loadWeatherJson()
@@ -79,5 +77,9 @@ class WeatherRepositoryImpl(
         val max = tempObj.getDouble("max").toInt()
         val icon = 1 // todo: icon 매핑 함수 만들기
         return DailyWeather(day, icon, min, max)
+    }
+
+    companion object {
+        private const val TAG = "WeatherRepository"
     }
 }
