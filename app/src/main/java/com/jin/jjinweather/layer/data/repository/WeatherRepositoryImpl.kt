@@ -1,5 +1,6 @@
 package com.jin.jjinweather.layer.data.repository
 
+import android.util.Log
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
@@ -12,6 +13,9 @@ class WeatherRepositoryImpl(
     private val weatherDataSource: WeatherDataSource,
     private val locationProvider: LocationProvider
 ) : WeatherRepository {
+
+    val TAG = this::class.java.simpleName
+
     override suspend fun loadWeather(): Result<Weather> {
         return try {
             val json = weatherDataSource.loadWeatherJson()
@@ -53,7 +57,7 @@ class WeatherRepositoryImpl(
                 sunset = sunset,
                 moonPhase = moonPhase
             ).also {
-                println("weather: $it")
+                Log.d(TAG, "Weather : $it")
             }
             Result.success(weather)
         } catch (e: Exception) {
