@@ -12,6 +12,7 @@ splashScreen = "1.0.1"
 navigationCompose = "2.8.7"
 lifecycleViewmodelCompose = "2.8.7"
 coilCompose = "2.7.0"
+accompanistPermissions = "0.37.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ androidx-splash-screen = { module = "androidx.core:core-splashscreen", version.r
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
