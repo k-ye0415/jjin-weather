@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.ui.loading
+package com.jin.jjinweather.layer.ui.onboarding
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,8 +8,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,15 +16,14 @@ import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 
 @Composable
-fun LoadingScreen(viewModel: LoadingViewModel, onNavigateToOnboarding: () -> Unit) {
-    val weatherState by viewModel.weatherState.collectAsState()
-
-    when (val state = weatherState) {
+fun WeatherContentUI(weather: UiState<Weather>, onNavigateToTemperature: () -> Unit) {
+    when (weather) {
         is UiState.Loading -> WeatherLoadingContent()
-        is UiState.Success -> WeatherLoadedContent(state.data, onNavigateToOnboarding)
-        is UiState.Error -> WeatherErrorContent(state.message)
+        is UiState.Success -> WeatherLoadedContent(weather.data, onNavigateToTemperature)
+        is UiState.Error -> WeatherErrorContent(weather.message)
     }
 }
+
 
 @Composable
 fun WeatherLoadingContent() {
@@ -46,7 +43,7 @@ fun WeatherLoadingContent() {
 
 @Composable
 fun WeatherLoadedContent(weather: Weather, onNavigateToOnboarding: () -> Unit) {
-    // success 한 후, isFirstUser(첫실행 user 는 tutorial(onboarding)로, 아니라면 바로 main)
+    // success 한 후, Main 화면으로 자동으로 이동할 수 있도록 처리필요.
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier = Modifier
