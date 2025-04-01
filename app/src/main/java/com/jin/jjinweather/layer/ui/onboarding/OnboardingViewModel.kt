@@ -2,14 +2,11 @@ package com.jin.jjinweather.layer.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
 import com.jin.jjinweather.layer.domain.model.PermissionState
 import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 import com.jin.jjinweather.layer.domain.usecase.GetGeoPointUseCase
 import com.jin.jjinweather.layer.domain.usecase.GetWeatherUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,21 +22,16 @@ class OnboardingViewModel(private val getWeatherUseCase: GetWeatherUseCase, priv
     private val _weatherState = MutableStateFlow<UiState<Weather>>(UiState.Loading)
     val weatherState: StateFlow<UiState<Weather>> = _weatherState
 
-    fun loadWeather() {
-        viewModelScope.launch {
-            val geoPoint = getGeoPointUseCase()
-            _weatherState.value = getWeatherUseCase(geoPoint.latitude, geoPoint.longitude)
-        }
+    fun onLocationPermissionGranted() {
+        _locationPermissionState.value = PermissionState.GRANTED
+        loadWeather()
     }
 
-    @OptIn(ExperimentalPermissionsApi::class)
-    fun updateLocationPermissionStatus(status: PermissionStatus) {
-        _locationPermissionState.value = when (status) {
-            is PermissionStatus.Granted -> PermissionState.GRANTED
-            is PermissionStatus.Denied -> {
-                if (status.shouldShowRationale) PermissionState.SHOW_RATIONALE
-                else PermissionState.DENIED
-            }
+    private fun loadWeather() {
+        viewModelScope.launch {
+            val geoPoint = getGeoPointUseCase()
+            println("getGeoPointUseCase : $geoPoint")
+            _weatherState.value = getWeatherUseCase(geoPoint.latitude, geoPoint.longitude)
         }
     }
 }
