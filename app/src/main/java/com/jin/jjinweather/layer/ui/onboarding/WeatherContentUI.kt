@@ -24,7 +24,6 @@ fun WeatherContentUI(weather: UiState<Weather>, onNavigateToTemperature: () -> U
     }
 }
 
-
 @Composable
 fun WeatherLoadingContent() {
     // indicator
