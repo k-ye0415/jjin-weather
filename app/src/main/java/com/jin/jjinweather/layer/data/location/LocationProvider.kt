@@ -4,38 +4,47 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Geocoder
 import android.location.LocationManager
+import com.jin.jjinweather.R
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.util.Locale
 
-class LocationProvider(private val context: Context) {
+class LocationProvider(context: Context) {
+
+    private val context = context.applicationContext
 
     suspend fun loadCurrentCityName(latitude: Double, longitude: Double): String {
         return withContext(Dispatchers.IO) {
-            try {
+            val address = try {
                 val geocoder = Geocoder(context, Locale.getDefault())
-                val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val address = addresses[0]
-                    "${address.adminArea ?: ""} ${address.subLocality ?: ""}".trim()
-                } else {
-                    "알 수 없는 위치"
-                }
+                geocoder.getFromLocation(latitude, longitude, 1)?.firstOrNull()
             } catch (e: IOException) {
-                "위치 변환 실패"
+                null
+            }
+
+            if (address == null) {
+                context.getString(R.string.error_unknown_address)
+            } else {
+                "${address.adminArea.orEmpty()} ${address.subLocality.orEmpty()}".trim()
             }
         }
     }
 
     @SuppressLint("MissingPermission")
     fun loadCurrentGeoPoint(): Result<GeoPoint> {
-        return runCatching {
+        return try {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                ?: throw IllegalStateException("위치를 가져올 수 없습니다.")
-            GeoPoint(location.latitude, location.longitude)
+
+            if (location != null) {
+                Result.success(GeoPoint(location.latitude, location.longitude))
+            } else {
+                Result.failure(Exception(context.getString(R.string.error_location_not_found)))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }
