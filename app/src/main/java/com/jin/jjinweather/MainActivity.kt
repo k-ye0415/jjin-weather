@@ -40,8 +40,8 @@ class MainActivity : ComponentActivity() {
             delay(1000L)
             keepSplashScreen = false
         }
-        val weatherDataSource = WeatherDataSource(WeatherService.openWeatherApi)
         val locationProvider = LocationProvider(this)
+        val weatherDataSource = WeatherDataSource(WeatherService.openWeatherApi, locationProvider)
 
         enableEdgeToEdge()
         setContent {
@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider) {
     val navController = rememberNavController()
 
-    val weatherRepository = WeatherRepositoryImpl(weatherDataSource, locationProvider)
+    val weatherRepository = WeatherRepositoryImpl(weatherDataSource)
     val locationRepository = LocationRepositoryImpl(locationProvider)
 
     val onboardingViewModel = OnboardingViewModel(

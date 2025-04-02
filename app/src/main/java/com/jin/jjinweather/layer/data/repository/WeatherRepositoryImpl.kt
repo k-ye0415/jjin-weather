@@ -6,8 +6,7 @@ import com.jin.jjinweather.layer.domain.model.weather.Weather
 import com.jin.jjinweather.layer.domain.repository.WeatherRepository
 
 class WeatherRepositoryImpl(
-    private val weatherDataSource: WeatherDataSource,
-    private val locationProvider: LocationProvider
+    private val weatherDataSource: WeatherDataSource
 ) : WeatherRepository {
 
     override suspend fun loadWeather(latitude: Double, longitude: Double): Result<Weather> {
@@ -15,8 +14,7 @@ class WeatherRepositoryImpl(
         return if (loadWeather == null) {
             Result.failure(Exception("Error!!!")) // 실패시 처리는 DB 생성 후 처리 예정.
         } else {
-            val weather = loadWeather.copy(cityName = locationProvider.loadCurrentCityName(latitude, longitude))
-            Result.success(weather)
+            Result.success(loadWeather)
         }
     }
 
