@@ -8,6 +8,16 @@ import retrofit2.http.Query
 
 interface WeatherService {
 
+    /**
+     * 현재 위치 기반의 날씨 정보를 가져오는 API 호출.
+     * @param latitude 위도
+     * @param longitude 경도
+     * @param exclude 제외할 데이터 (예: "minutely")
+     * @param units 온도 단위 (예: "metric" 섭씨 , "imperial" 화씨)
+     * @param lang 응답 언어 (예: "kr", "en")
+     * @param apiKey OpenWeatherMap API 키
+     * @return 날씨 정보가 담긴 [WeatherDTO]
+     */
     @GET("onecall")
     suspend fun fetchWeather(
         @Query("lat") latitude: Double,
@@ -18,6 +28,16 @@ interface WeatherService {
         @Query("appid") apiKey: String
     ): WeatherDTO
 
+    /**
+     * 특정 위치의 이전 날씨(히스토리컬 데이터)를 가져오는 API 호출.
+     * @param latitude 위도
+     * @param longitude 경도
+     * @param dateTime 조회할 날짜 및 시간 (Unix Time - 초 단위)
+     * @param units 온도 단위 (예: "metric" 섭씨 , "imperial" 화씨)
+     * @param lang 응답 언어 (예: "kr", "en")
+     * @param apiKey OpenWeatherMap API 키
+     * @return 어제 날씨 정보가 담긴 [YesterdayWeatherDTO]
+     */
     @GET("onecall/timemachine")
     suspend fun fetchYesterdayTemperature(
         @Query("lat") latitude: Double,
