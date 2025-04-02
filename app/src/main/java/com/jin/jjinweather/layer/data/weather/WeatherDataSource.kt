@@ -53,11 +53,11 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
         }
     }
 
-    private fun WeatherDTO.toWeather(cityName:String, yesterdayTemp: Double?): Weather {
+    private fun WeatherDTO.toWeather(cityName: String, yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
             HourlyWeather(
                 forecastTime = hourly.dt,
-                iconResId = mapWeatherIconToDrawable(hourly.weather.firstOrNull()?.icon ?: ""),
+                iconCode = hourly.weather.firstOrNull()?.icon.orEmpty(),
                 temperature = hourly.temperature
             )
         }
@@ -65,7 +65,7 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
         val dailyList = daily.map { daily ->
             DailyWeather(
                 forecastDay = daily.dt,
-                iconResId = mapWeatherIconToDrawable(daily.weather.firstOrNull()?.icon ?: ""),
+                iconCode = daily.weather.firstOrNull()?.icon.orEmpty(),
                 minTemperature = daily.temperature.min,
                 maxTemperature = daily.temperature.max
             )
@@ -73,7 +73,7 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
 
         return Weather(
             cityName = cityName,
-            iconResId = mapWeatherIconToDrawable(current.weather.firstOrNull()?.icon ?: ""),
+            iconCode = current.weather.firstOrNull()?.icon.orEmpty(),
             currentTemperature = current.temperature,
             yesterdayTemperature = yesterdayTemp ?: current.temperature,
             minTemperature = daily.first().temperature.min,
@@ -84,23 +84,6 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
             sunset = current.sunset,
             moonPhase = daily.first().moonPhase
         )
-    }
-
-    private fun mapWeatherIconToDrawable(icon: String): Int {
-        return when (icon) {
-            "01d" -> R.drawable.ic_main_clear_sky_day
-            "01n" -> R.drawable.ic_main_clear_sky_night
-            "02d" -> R.drawable.ic_main_few_clouds_day
-            "02n" -> R.drawable.ic_main_few_clouds_night
-            "03d", "03n", "04d", "04n" -> R.drawable.ic_main_scattered_clouds
-            "09d", "09n" -> R.drawable.ic_main_shower_rain
-            "10d" -> R.drawable.ic_main_rain_day
-            "10n" -> R.drawable.ic_main_rain_night
-            "11d", "11n" -> R.drawable.ic_main_thunderstorm
-            "13d", "13n" -> R.drawable.ic_main_snow
-            "50d", "50n" -> R.drawable.ic_main_mist
-            else -> R.drawable.ic_main_clear_sky_day
-        }
     }
 
     companion object {
