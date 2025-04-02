@@ -46,7 +46,7 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
                 "metric",
                 "kr",
                 BuildConfig.OPEN_WEATHER_API_KEY
-            ).data.firstOrNull()?.temp
+            ).data.firstOrNull()?.temperature
         } catch (e: Exception) {
             Log.e(TAG, "loadYesterdayTemperature error :${e.printStackTrace()}")
             null
@@ -58,7 +58,7 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
             HourlyWeather(
                 forecastTime = hourly.dt,
                 iconResId = mapWeatherIconToDrawable(hourly.weather.firstOrNull()?.icon ?: ""),
-                temperature = hourly.temp
+                temperature = hourly.temperature
             )
         }
 
@@ -66,18 +66,18 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
             DailyWeather(
                 forecastDay = daily.dt,
                 iconResId = mapWeatherIconToDrawable(daily.weather.firstOrNull()?.icon ?: ""),
-                minTemperature = daily.temp.min,
-                maxTemperature = daily.temp.max
+                minTemperature = daily.temperature.min,
+                maxTemperature = daily.temperature.max
             )
         }
 
         return Weather(
             cityName = cityName,
             iconResId = mapWeatherIconToDrawable(current.weather.firstOrNull()?.icon ?: ""),
-            currentTemperature = current.temp,
-            yesterdayTemperature = yesterdayTemp ?: current.temp,
-            minTemperature = daily.first().temp.min,
-            maxTemperature = daily.first().temp.max,
+            currentTemperature = current.temperature,
+            yesterdayTemperature = yesterdayTemp ?: current.temperature,
+            minTemperature = daily.first().temperature.min,
+            maxTemperature = daily.first().temperature.max,
             hourlyWeatherList = hourlyList,
             dailyWeatherList = dailyList,
             sunrise = current.sunrise,

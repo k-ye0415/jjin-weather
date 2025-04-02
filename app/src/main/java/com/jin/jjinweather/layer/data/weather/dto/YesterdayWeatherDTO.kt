@@ -7,5 +7,5 @@ data class YesterdayWeatherDTO(
 )
 
 data class YesterdayTempDTO(
-    @SerializedName("temp") val temp: Double
+    @SerializedName("temp") val temperature: Double
 )
