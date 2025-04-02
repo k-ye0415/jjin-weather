@@ -24,7 +24,7 @@ class WeatherRepositoryImpl(
             val dailyArray = root.getJSONArray("daily")
             val hourlyArray = root.getJSONArray("hourly")
 
-            val cityName = locationProvider.loadCurrentCityName()
+            val cityName = locationProvider.loadCurrentCityName(latitude, longitude)
             val iconResId = 1 // todo: icon 매핑 함수 만들기
             val currentTemp = current.getDouble("temp").toInt()
             val yesterdayTemp = currentTemp // todo: 실제 전날 데이터 추가 시 분리

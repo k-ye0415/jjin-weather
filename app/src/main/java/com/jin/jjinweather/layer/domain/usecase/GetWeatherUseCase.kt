@@ -5,8 +5,8 @@ import com.jin.jjinweather.layer.domain.model.weather.Weather
 import com.jin.jjinweather.layer.domain.repository.WeatherRepository
 
 class GetWeatherUseCase(private val repository: WeatherRepository) {
-    suspend operator fun invoke(): UiState<Weather> {
-        return repository.loadWeather(37.0, 126.0).fold(
+    suspend operator fun invoke(latitude: Double, longitude: Double): UiState<Weather> {
+        return repository.loadWeather(latitude, longitude).fold(
             onSuccess = { UiState.Success(it) },
             onFailure = { UiState.Error("데이터 처리 실패: ${it.message}") }
         )

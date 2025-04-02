@@ -12,15 +12,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.data.location.LocationProvider
+import com.jin.jjinweather.layer.data.repository.LocationRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
+import com.jin.jjinweather.layer.domain.usecase.GetGeoPointUseCase
 import com.jin.jjinweather.layer.domain.usecase.GetWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
-import com.jin.jjinweather.layer.ui.temperature.TemperatureScreen
-import com.jin.jjinweather.layer.ui.loading.LoadingScreen
-import com.jin.jjinweather.layer.ui.loading.LoadingViewModel
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingViewModel
+import com.jin.jjinweather.layer.ui.temperature.TemperatureScreen
 import com.jin.jjinweather.layer.ui.temperature.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
         }
         val weatherDataSource = WeatherDataSource(this)
         val locationProvider = LocationProvider(this)
+
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
@@ -55,20 +56,12 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: Locatio
     val navController = rememberNavController()
 
     val weatherRepository = WeatherRepositoryImpl(weatherDataSource, locationProvider)
+    val locationRepository = LocationRepositoryImpl(locationProvider)
 
-    val loadingViewModel = LoadingViewModel(GetWeatherUseCase(weatherRepository))
-    val onboardingViewModel = OnboardingViewModel()
+    val onboardingViewModel = OnboardingViewModel(GetWeatherUseCase(weatherRepository), GetGeoPointUseCase(locationRepository))
     val temperatureViewModel = TemperatureViewModel()
 
-    NavHost(navController, Screens.LOADING.route) {
-        composable(Screens.LOADING.route) {
-            LoadingScreen(
-                viewModel = loadingViewModel,
-                onNavigateToOnboarding = {
-                    navController.navigateClearingBackStack(destination = Screens.ONBOARDING, clearUpTo = Screens.LOADING, inclusive = true)
-                }
-            )
-        }
+    NavHost(navController, Screens.ONBOARDING.route) {
         composable(Screens.ONBOARDING.route) {
             OnboardingScreen(
                 viewModel = onboardingViewModel,

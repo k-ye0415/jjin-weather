@@ -58,4 +58,6 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.coil.compose)
+
+    implementation(libs.accompanist.permissions)
 }
