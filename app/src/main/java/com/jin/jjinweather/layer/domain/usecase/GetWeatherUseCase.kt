@@ -8,7 +8,7 @@ class GetWeatherUseCase(private val repository: WeatherRepository) {
     suspend operator fun invoke(latitude: Double, longitude: Double): UiState<Weather> {
         return repository.loadWeather(latitude, longitude).fold(
             onSuccess = { UiState.Success(it) },
-            onFailure = { UiState.Error("데이터 처리 실패: ${it.message}") }
+            onFailure = { UiState.Error("데이터 처리 실패: ${it.message}") } // 실패시 처리는 DB 생성 후 처리 예정.
         )
     }
 }
