@@ -1,6 +1,16 @@
 package com.jin.jjinweather.layer.domain.model.weather
 
 /**
+ * @property iconResId String 으로 응답 받는다. d 와 n는 day 와 night.
+ * - 01d or 01n -> clear sky
+ * - 02d or 02n -> few clouds
+ * - 03d or 03n -> scattered clouds
+ * - 04d or 04n -> broken clouds
+ * - 09d or 09n -> shower rain
+ * - 10d or 10n -> rain
+ * - 11d or 11n -> thunderstorm
+ * - 13d or 13n -> snow
+ * - 50d or 50n -> mist
  * @property moonPhase 값의 범위는 0.0부터 1.0 까지 이며, 주요 값은 다음과 같다.
  * - 0.0 또는 1.0 -> New Moon(삭, 달이 태양과 일직선, 보이지 않음.)
  * - 0.25 -> First Quarter (상현달, 오늘쪽 반달)
