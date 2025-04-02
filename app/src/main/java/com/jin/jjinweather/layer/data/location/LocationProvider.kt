@@ -34,17 +34,17 @@ class LocationProvider(context: Context) {
 
     @SuppressLint("MissingPermission")
     fun loadCurrentGeoPoint(): Result<GeoPoint> {
-        return try {
-            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
-            if (location != null) {
-                Result.success(GeoPoint(location.latitude, location.longitude))
-            } else {
-                Result.failure(Exception(context.getString(R.string.error_location_not_found)))
-            }
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val location = try {
+            locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
         } catch (e: Exception) {
-            Result.failure(e)
+            return Result.failure(e)
+        }
+
+        return if (location != null) {
+            Result.success(GeoPoint(location.latitude, location.longitude))
+        } else {
+            Result.failure(Exception(context.getString(R.string.error_location_not_found)))
         }
     }
 }
