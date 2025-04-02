@@ -4,7 +4,7 @@ package com.jin.jjinweather.layer.domain.model.weather
  * @property yesterdayTemperature API 경로 분리
  * @property minTemperature daily 에서 첫번째 인덱스 값으로 적용
  * @property maxTemperature daily 에서 첫번째 인덱스 값으로 적용
- * @property iconResId String 으로 응답 받는다. d 와 n는 day 와 night.
+ * @property iconCode d 와 n는 day 와 night.
  * - 01d or 01n -> clear sky
  * - 02d or 02n -> few clouds
  * - 03d or 03n -> scattered clouds
@@ -23,7 +23,7 @@ package com.jin.jjinweather.layer.domain.model.weather
  */
 data class Weather(
     val cityName: String,
-    val iconResId: Int,
+    val iconCode: String,
     val currentTemperature: Number,
     val yesterdayTemperature: Number,
     val minTemperature: Number,
