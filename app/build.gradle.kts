@@ -19,13 +19,24 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val localProperties = Properties().apply {
-            load(rootProject.file("local.properties").inputStream())
+        val localPropertiesFile = rootProject.file("local.properties")
+        val openWeatherApiKey: String = when {
+            localPropertiesFile.exists() -> {
+                val properties = Properties().apply {
+                    load(localPropertiesFile.inputStream())
+                }
+                properties.getProperty("OPEN_WEATHER_API_KEY") ?: ""
+            }
+
+            System.getenv("OPEN_WEATHER_API_KEY") != null -> {
+                System.getenv("OPEN_WEATHER_API_KEY") ?: ""
+            }
+
+            else -> ""
         }
 
-        val openWeatherApiKey: String = localProperties.getProperty("OPEN_WEATHER_API_KEY", "")
         defaultConfig {
-            buildConfigField("String", "OPEN_WEATHER_API_KEY", openWeatherApiKey)
+            buildConfigField("String", "OPEN_WEATHER_API_KEY", "\"$openWeatherApiKey\"")
         }
     }
 
