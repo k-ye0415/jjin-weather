@@ -2,7 +2,6 @@ package com.jin.jjinweather.layer.data.weather
 
 import android.util.Log
 import com.jin.jjinweather.BuildConfig
-import com.jin.jjinweather.R
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
