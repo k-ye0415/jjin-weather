@@ -7,7 +7,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherService {
-
     /**
      * 현재 위치 기반의 날씨 정보를 가져오는 API 호출.
      * @param latitude 위도
@@ -47,9 +46,4 @@ interface WeatherService {
         @Query("lang") lang: String,
         @Query("appid") apiKey: String
     ): YesterdayWeatherDTO
-
-    companion object {
-        val openWeatherApi: WeatherService =
-            RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
-    }
 }
