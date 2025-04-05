@@ -11,10 +11,12 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.repository.LocationRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
+import com.jin.jjinweather.layer.data.weather.WeatherService
 import com.jin.jjinweather.layer.domain.usecase.GetGeoPointUseCase
 import com.jin.jjinweather.layer.domain.usecase.GetWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
@@ -39,8 +41,9 @@ class MainActivity : ComponentActivity() {
             delay(1000L)
             keepSplashScreen = false
         }
-        val weatherDataSource = WeatherDataSource(this)
         val locationProvider = LocationProvider(this)
+        val weatherService: WeatherService = RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
+        val weatherDataSource = WeatherDataSource(weatherService, locationProvider)
 
         enableEdgeToEdge()
         setContent {
@@ -55,10 +58,13 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider) {
     val navController = rememberNavController()
 
-    val weatherRepository = WeatherRepositoryImpl(weatherDataSource, locationProvider)
+    val weatherRepository = WeatherRepositoryImpl(weatherDataSource)
     val locationRepository = LocationRepositoryImpl(locationProvider)
 
-    val onboardingViewModel = OnboardingViewModel(GetWeatherUseCase(weatherRepository), GetGeoPointUseCase(locationRepository))
+    val onboardingViewModel = OnboardingViewModel(
+        GetWeatherUseCase(weatherRepository),
+        GetGeoPointUseCase(locationRepository)
+    )
     val temperatureViewModel = TemperatureViewModel()
 
     NavHost(navController, Screens.ONBOARDING.route) {
@@ -66,7 +72,11 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: Locatio
             OnboardingScreen(
                 viewModel = onboardingViewModel,
                 onNavigateToTemperature = {
-                    navController.navigateClearingBackStack(destination = Screens.TEMPERATURE, clearUpTo = Screens.ONBOARDING, inclusive = true)
+                    navController.navigateClearingBackStack(
+                        destination = Screens.TEMPERATURE,
+                        clearUpTo = Screens.ONBOARDING,
+                        inclusive = true
+                    )
                 }
             )
         }

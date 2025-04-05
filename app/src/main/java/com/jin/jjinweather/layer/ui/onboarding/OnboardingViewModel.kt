@@ -30,7 +30,6 @@ class OnboardingViewModel(private val getWeatherUseCase: GetWeatherUseCase, priv
     private fun loadWeather() {
         viewModelScope.launch {
             val geoPoint = getGeoPointUseCase()
-            println("getGeoPointUseCase : $geoPoint")
             _weatherState.value = getWeatherUseCase(geoPoint.latitude, geoPoint.longitude)
         }
     }

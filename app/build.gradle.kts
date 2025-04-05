@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -16,6 +18,26 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localPropertiesFile = rootProject.file("local.properties")
+        val openWeatherApiKey: String = when {
+            localPropertiesFile.exists() -> {
+                val properties = Properties().apply {
+                    load(localPropertiesFile.inputStream())
+                }
+                properties.getProperty("OPEN_WEATHER_API_KEY") ?: ""
+            }
+
+            System.getenv("OPEN_WEATHER_API_KEY") != null -> {
+                System.getenv("OPEN_WEATHER_API_KEY") ?: ""
+            }
+
+            else -> ""
+        }
+
+        defaultConfig {
+            buildConfigField("String", "OPEN_WEATHER_API_KEY", "\"$openWeatherApiKey\"")
+        }
     }
 
     buildTypes {
@@ -33,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -60,4 +83,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.accompanist.permissions)
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
