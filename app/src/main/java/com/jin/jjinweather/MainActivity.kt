@@ -63,7 +63,7 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: Locatio
     val navController = rememberNavController()
 
     val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
-    val locationRepository = LocationRepositoryImpl(locationProvider)
+    val locationRepository = LocationRepositoryImpl(db.geoPointDao(), locationProvider)
 
     val onboardingViewModel = OnboardingViewModel(
         GetWeatherUseCase(weatherRepository),

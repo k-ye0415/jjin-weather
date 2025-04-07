@@ -11,7 +11,7 @@ import java.time.Instant
 
 class WeatherDataSource(private val weatherService: WeatherService, private val locationProvider: LocationProvider) {
 
-    suspend fun loadWeather(latitude: Double, longitude: Double): Weather? {
+    suspend fun loadWeather(latitude: Double, longitude: Double): Result<Weather> {
         return try {
             val cityName = locationProvider.loadCurrentCityName(latitude, longitude)
 
@@ -23,13 +23,13 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
                 "kr",
                 BuildConfig.OPEN_WEATHER_API_KEY
             )
-
             val yesterdayResponse = loadYesterdayTemperature(latitude, longitude)
 
-            response.toWeather(cityName, yesterdayResponse)
+            val weather = response.toWeather(cityName, yesterdayResponse)
+            Result.success(weather)
         } catch (e: Exception) {
             Log.e(TAG, "loadWeather error :${e.printStackTrace()}")
-            null
+            Result.failure(e)
         }
     }
 
