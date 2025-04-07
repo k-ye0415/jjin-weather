@@ -62,7 +62,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider, db: AppDatabase) {
     val navController = rememberNavController()
 
-    val weatherRepository = WeatherRepositoryImpl(weatherDataSource)
+    val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
     val locationRepository = LocationRepositoryImpl(locationProvider)
 
     val onboardingViewModel = OnboardingViewModel(
