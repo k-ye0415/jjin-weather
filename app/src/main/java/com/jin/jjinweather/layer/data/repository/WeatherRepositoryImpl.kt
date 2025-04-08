@@ -17,7 +17,10 @@ class WeatherRepositoryImpl(
         return loadWeather
     }
 
-    override suspend fun insertWeather(weather: Weather) = weatherDAO.insert(weather.toEntityModel())
+    override suspend fun insertWeather(weather: Weather):Boolean{
+        val result = weatherDAO.insert(weather.toEntityModel())
+        return result != -1L
+    }
 
 
     override suspend fun fetchLastWeather(): Weather {

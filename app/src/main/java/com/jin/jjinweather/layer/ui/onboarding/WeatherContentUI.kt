@@ -29,7 +29,7 @@ fun WeatherContentUI(weather: UiState<Weather>, onNavigateToTemperature: () -> U
     when (weather) {
         is UiState.Loading -> WeatherLoadingContent()
         is UiState.Success -> WeatherLoadedContent(weather.data, onNavigateToTemperature)
-        is UiState.Error -> WeatherErrorContent(weather.message, weather.data)
+        is UiState.Error -> WeatherErrorContent(weather.message)
     }
 }
 
@@ -111,9 +111,8 @@ fun WeatherLoadedContent(weather: Weather, onNavigateToOnboarding: () -> Unit) {
 }
 
 @Composable
-fun WeatherErrorContent(message: String, weather: Weather) {
+fun WeatherErrorContent(message: String) {
     // 임시 UI 작성. Main 화면으로 이동 되면 다듬어질 예정.
-    val currentWeatherIconRes = mapWeatherIconToDrawable(weather.iconCode)
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier = Modifier
@@ -122,14 +121,6 @@ fun WeatherErrorContent(message: String, weather: Weather) {
         ) {
             Column {
                 Text("Error : $message", color = Color.Red)
-
-                Text("위치 : ${weather.cityName}")
-                Text("현재 온도 : ${weather.currentTemperature}")
-                Image(
-                    painter = painterResource(id = currentWeatherIconRes),
-                    contentDescription = "current temp icon",
-                    modifier = Modifier.size(64.dp)
-                )
             }
         }
     }
