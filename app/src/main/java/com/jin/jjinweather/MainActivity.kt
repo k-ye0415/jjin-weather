@@ -14,13 +14,12 @@ import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.database.AppDatabase
 import com.jin.jjinweather.layer.data.database.DatabaseProvider
+import com.jin.jjinweather.layer.data.database.RoomDataSource
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.repository.LocationRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.data.weather.WeatherService
-import com.jin.jjinweather.layer.domain.usecase.SaveWeatherUseCase
-import com.jin.jjinweather.layer.domain.usecase.GetCachedLastWeatherUseCase
 import com.jin.jjinweather.layer.domain.usecase.GetGeoPointUseCase
 import com.jin.jjinweather.layer.domain.usecase.GetWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
@@ -64,13 +63,12 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider, db: AppDatabase) {
     val navController = rememberNavController()
 
-    val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
-    val locationRepository = LocationRepositoryImpl(db.geoPointDao(), locationProvider)
+    val roomDataSource = RoomDataSource(db.geoPointDao(), db.weatherDao())
+    val weatherRepository = WeatherRepositoryImpl(roomDataSource, weatherDataSource)
+    val locationRepository = LocationRepositoryImpl(roomDataSource, locationProvider)
 
     val onboardingViewModel = OnboardingViewModel(
         GetWeatherUseCase(weatherRepository),
-        SaveWeatherUseCase(weatherRepository),
-        GetCachedLastWeatherUseCase(weatherRepository),
         GetGeoPointUseCase(locationRepository)
     )
     val temperatureViewModel = TemperatureViewModel()

@@ -8,8 +8,8 @@ import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 @Dao
 interface GeoPointDAO {
     @Insert
-    suspend fun insert(geoPointEntity: GeoPointEntity)
+    suspend fun saveGeoPointToLocalDB(geoPointEntity: GeoPointEntity)
 
     @Query("SELECT * FROM geoPoint ORDER BY id DESC LIMIT 1")
-    suspend fun fetchLastGeoPoint(): GeoPointEntity
+    suspend fun loadLastGeoPointFromLocalDB(): GeoPointEntity?
 }
