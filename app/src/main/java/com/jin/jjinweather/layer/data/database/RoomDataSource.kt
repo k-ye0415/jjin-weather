@@ -4,8 +4,7 @@ import android.util.Log
 import com.jin.jjinweather.layer.data.database.dao.GeoPointDAO
 import com.jin.jjinweather.layer.data.database.dao.WeatherDAO
 import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
-import com.jin.jjinweather.layer.data.weather.toDomainModel
-import com.jin.jjinweather.layer.data.weather.toEntityModel
+import com.jin.jjinweather.layer.data.database.entity.WeatherEntity
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 
@@ -35,6 +34,44 @@ class RoomDataSource(private val geoPointDAO: GeoPointDAO, private val weatherDA
     suspend fun fetchLastWeatherFromLocalDB(): Weather {
         val weather = weatherDAO.fetchLastWeatherFromLocalDB() ?: throw Exception("Database 에서 Weather 를 찾을 수 없습니다.")
         return weather.toDomainModel()
+    }
+
+    /**
+     * Domain layer Model -> Data layer Model 변환
+     * */
+    private fun Weather.toEntityModel(): WeatherEntity {
+        return WeatherEntity(
+            cityName = cityName,
+            iconCode = iconCode,
+            currentTemperature = currentTemperature.toDouble(),
+            yesterdayTemperature = yesterdayTemperature.toDouble(),
+            minTemperature = minTemperature.toDouble(),
+            maxTemperature = maxTemperature.toDouble(),
+            hourlyWeatherList = hourlyWeatherList,
+            dailyWeatherList = dailyWeatherList,
+            sunrise = sunrise,
+            sunset = sunset,
+            moonPhase = moonPhase
+        )
+    }
+
+    /**
+     * Data layer Model -> Domain layer Model 변환
+     * */
+    private fun WeatherEntity.toDomainModel(): Weather {
+        return Weather(
+            cityName = cityName,
+            iconCode = iconCode,
+            currentTemperature = currentTemperature,
+            yesterdayTemperature = yesterdayTemperature,
+            minTemperature = minTemperature,
+            maxTemperature = maxTemperature,
+            hourlyWeatherList = hourlyWeatherList,
+            dailyWeatherList = dailyWeatherList,
+            sunrise = sunrise,
+            sunset = sunset,
+            moonPhase = moonPhase
+        )
     }
 
     companion object {

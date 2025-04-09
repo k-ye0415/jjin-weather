@@ -10,23 +10,23 @@ class Converters {
     private val gson = Gson()
 
     @TypeConverter
-    fun fromHourlyList(value: List<HourlyWeather>): String {
+    fun hourlyWeatherListToJsonString(value: List<HourlyWeather>): String {
         return gson.toJson(value)
     }
 
     @TypeConverter
-    fun toHourlyList(value: String): List<HourlyWeather> {
+    fun jsonStringToHourlyWeatherList(value: String): List<HourlyWeather> {
         val type = object : TypeToken<List<HourlyWeather>>() {}.type
         return gson.fromJson(value, type)
     }
 
     @TypeConverter
-    fun fromDailyList(value: List<DailyWeather>): String {
+    fun dailyWeatherListToJsonString(value: List<DailyWeather>): String {
         return gson.toJson(value)
     }
 
     @TypeConverter
-    fun toDailyList(value: String): List<DailyWeather> {
+    fun jsonStringToDailyWeatherList(value: String): List<DailyWeather> {
         val type = object : TypeToken<List<DailyWeather>>() {}.type
         return gson.fromJson(value, type)
     }
