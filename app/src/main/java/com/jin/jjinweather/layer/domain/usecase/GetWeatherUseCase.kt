@@ -15,7 +15,7 @@ class GetWeatherUseCase(private val repository: WeatherRepository) {
                 try {
                     val weather = repository.fetchLastWeatherFromLocalDB()
                     UiState.Success(weather)
-                } catch (e: Exception) {
+                } catch (e: IllegalStateException) {
                     UiState.Error("데이터 처리 실패: ${it.message}")
                 }
             }
