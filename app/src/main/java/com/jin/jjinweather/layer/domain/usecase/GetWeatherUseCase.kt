@@ -8,10 +8,16 @@ class GetWeatherUseCase(private val repository: WeatherRepository) {
     suspend operator fun invoke(latitude: Double, longitude: Double): UiState<Weather> {
         return repository.loadWeather(latitude, longitude).fold(
             onSuccess = { weather ->
+                repository.insertWeatherToLocalDB(weather)
                 UiState.Success(weather)
             },
             onFailure = {
-                UiState.Error("데이터 처리 실패: ${it.message}")
+                try {
+                    val weather = repository.fetchLastWeatherFromLocalDB()
+                    UiState.Success(weather)
+                } catch (e: Exception) {
+                    UiState.Error("데이터 처리 실패: ${it.message}")
+                }
             }
         )
     }
