@@ -13,7 +13,7 @@ class GetGeoPointUseCase(private val repository: LocationRepository) {
             try {
                 val lastGeoPoint = repository.fetchLastGeoPointFromLocalDB()
                 GeoPoint(lastGeoPoint.latitude, lastGeoPoint.longitude)
-            } catch (e: Exception) {
+            } catch (e: IllegalStateException) {
                 GeoPoint(DEFAULT_LAT, DEFAULT_LNG)
             }
         }
