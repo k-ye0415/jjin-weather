@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class OnboardingViewModel(private val getWeatherUseCase: GetWeatherUseCase, private val getGeoPointUseCase: GetGeoPointUseCase) : ViewModel() {
+class OnboardingViewModel(
+    private val getWeatherUseCase: GetWeatherUseCase,
+    private val getGeoPointUseCase: GetGeoPointUseCase
+) : ViewModel() {
     // todo : 앱 첫 실행 여부 판단
     private val _isFirstLaunch = MutableStateFlow(true)
     val isFirstLaunch: StateFlow<Boolean> = _isFirstLaunch
@@ -32,5 +35,9 @@ class OnboardingViewModel(private val getWeatherUseCase: GetWeatherUseCase, priv
             val geoPoint = getGeoPointUseCase()
             _weatherState.value = getWeatherUseCase(geoPoint.latitude, geoPoint.longitude)
         }
+    }
+
+    companion object {
+        private const val TAG = "OnboardingViewModel"
     }
 }

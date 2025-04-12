@@ -12,6 +12,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.data.RetrofitClient
+import com.jin.jjinweather.layer.data.database.AppDatabase
+import com.jin.jjinweather.layer.data.database.DatabaseProvider
+import com.jin.jjinweather.layer.data.database.RoomDataSource
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.data.repository.LocationRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
@@ -41,6 +44,8 @@ class MainActivity : ComponentActivity() {
             delay(1000L)
             keepSplashScreen = false
         }
+
+        val db = DatabaseProvider.getDatabase(this)
         val locationProvider = LocationProvider(this)
         val weatherService: WeatherService = RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
         val weatherDataSource = WeatherDataSource(weatherService, locationProvider)
@@ -48,18 +53,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
-                AppNavigator(weatherDataSource, locationProvider)
+                AppNavigator(weatherDataSource, locationProvider, db)
             }
         }
     }
 }
 
 @Composable
-fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider) {
+fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider, db: AppDatabase) {
     val navController = rememberNavController()
 
-    val weatherRepository = WeatherRepositoryImpl(weatherDataSource)
-    val locationRepository = LocationRepositoryImpl(locationProvider)
+    val roomDataSource = RoomDataSource(db.geoPointDao(), db.weatherDao())
+    val weatherRepository = WeatherRepositoryImpl(roomDataSource, weatherDataSource)
+    val locationRepository = LocationRepositoryImpl(roomDataSource, locationProvider)
 
     val onboardingViewModel = OnboardingViewModel(
         GetWeatherUseCase(weatherRepository),
