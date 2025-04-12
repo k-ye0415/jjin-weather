@@ -112,7 +112,8 @@ fun WeatherLoadedContent(weather: Weather, onNavigateToOnboarding: () -> Unit) {
 
 @Composable
 fun WeatherErrorContent(message: String) {
-    // 적절한 예외처리 필요
+    // 임시 UI 작성. Main 화면으로 이동 되면 다듬어질 예정.
+    // api 호출도 실패, db 조회도 실패시 ui 처리 필요
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier = Modifier

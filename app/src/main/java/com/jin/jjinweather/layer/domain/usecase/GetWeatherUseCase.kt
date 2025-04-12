@@ -7,8 +7,18 @@ import com.jin.jjinweather.layer.domain.repository.WeatherRepository
 class GetWeatherUseCase(private val repository: WeatherRepository) {
     suspend operator fun invoke(latitude: Double, longitude: Double): UiState<Weather> {
         return repository.loadWeather(latitude, longitude).fold(
-            onSuccess = { UiState.Success(it) },
-            onFailure = { UiState.Error("데이터 처리 실패: ${it.message}") } // 실패시 처리는 DB 생성 후 처리 예정.
+            onSuccess = { weather ->
+                repository.insertWeatherToLocalDB(weather)
+                UiState.Success(weather)
+            },
+            onFailure = {
+                try {
+                    val weather = repository.fetchLastWeatherFromLocalDB()
+                    UiState.Success(weather)
+                } catch (e: IllegalStateException) {
+                    UiState.Error("데이터 처리 실패: ${it.message}")
+                }
+            }
         )
     }
 }
