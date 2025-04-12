@@ -1,21 +1,32 @@
 package com.jin.jjinweather.layer.data.repository
 
-import com.jin.jjinweather.layer.data.database.RoomDataSource
+import com.jin.jjinweather.layer.data.database.dao.GeoPointDAO
+import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import com.jin.jjinweather.layer.domain.repository.LocationRepository
 
 class LocationRepositoryImpl(
-    private val roomDataSource: RoomDataSource,
+    private val geoPointDAO: GeoPointDAO,
     private val locationProvider: LocationProvider
 ) :
     LocationRepository {
-    override suspend fun loadCurrentGeoPoint(): Result<GeoPoint> = locationProvider.loadCurrentGeoPoint()
-
-    override suspend fun insertGeoPointToLocalDB(latitude: Double, longitude: Double) {
-       roomDataSource.insertGeoPointToLocalDB(latitude, longitude)
+    override suspend fun currentGeoPoint(): GeoPoint {
+        return locationProvider.findCurrentGeoPoint().fold(
+            onSuccess = {
+                geoPointDAO.insertGeoPoint(GeoPointEntity(latitude = it.latitude, longitude = it.longitude))
+                GeoPoint(it.latitude, it.longitude)
+            },
+            onFailure = {
+                val geoPoint = geoPointDAO.findLatestGeoPoint()
+                if (geoPoint != null) GeoPoint(geoPoint.latitude, geoPoint.longitude)
+                else GeoPoint(DEFAULT_LAT, DEFAULT_LNG)
+            }
+        )
     }
 
-    override suspend fun fetchLastGeoPointFromLocalDB(): GeoPoint = roomDataSource.fetchLastGeoPointFromLocalDB()
-
+    companion object {
+        private const val DEFAULT_LAT = 37.5
+        private const val DEFAULT_LNG = 126.9
+    }
 }

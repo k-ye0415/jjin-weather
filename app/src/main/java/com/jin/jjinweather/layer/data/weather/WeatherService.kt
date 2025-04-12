@@ -1,6 +1,5 @@
 package com.jin.jjinweather.layer.data.weather
 
-import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.data.weather.dto.YesterdayWeatherDTO
 import retrofit2.http.GET
@@ -18,7 +17,7 @@ interface WeatherService {
      * @return 날씨 정보가 담긴 [WeatherDTO]
      */
     @GET("onecall")
-    suspend fun fetchWeather(
+    suspend fun requestWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
         @Query("exclude") exclude: String,
@@ -38,7 +37,7 @@ interface WeatherService {
      * @return 어제 날씨 정보가 담긴 [YesterdayWeatherDTO]
      */
     @GET("onecall/timemachine")
-    suspend fun fetchYesterdayTemperature(
+    suspend fun requestYesterdayWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
         @Query("dt") dateTime: Long,

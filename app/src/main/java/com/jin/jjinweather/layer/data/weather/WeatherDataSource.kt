@@ -11,11 +11,11 @@ import java.time.Instant
 
 class WeatherDataSource(private val weatherService: WeatherService, private val locationProvider: LocationProvider) {
 
-    suspend fun loadWeather(latitude: Double, longitude: Double): Result<Weather> {
+    suspend fun fetchWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
-            val cityName = locationProvider.loadCurrentCityName(latitude, longitude)
+            val cityName = locationProvider.findCityNameAt(latitude, longitude)
 
-            val response = weatherService.fetchWeather(
+            val response = weatherService.requestWeather(
                 latitude,
                 longitude,
                 "minutely",
@@ -23,7 +23,7 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
                 "kr",
                 BuildConfig.OPEN_WEATHER_API_KEY
             )
-            val yesterdayResponse = loadYesterdayTemperature(latitude, longitude)
+            val yesterdayResponse = fetchYesterdayWeatherAt(latitude, longitude)
 
             val weather = response.toWeather(cityName, yesterdayResponse)
             Result.success(weather)
@@ -33,12 +33,12 @@ class WeatherDataSource(private val weatherService: WeatherService, private val 
         }
     }
 
-    private suspend fun loadYesterdayTemperature(latitude: Double, longitude: Double): Double? {
+    private suspend fun fetchYesterdayWeatherAt(latitude: Double, longitude: Double): Double? {
         val timestamp24hAgo = Instant.now()
             .minusSeconds(60 * 60 * 24)
             .epochSecond
         return try {
-            weatherService.fetchYesterdayTemperature(
+            weatherService.requestYesterdayWeather(
                 latitude = latitude,
                 longitude = longitude,
                 dateTime = timestamp24hAgo,

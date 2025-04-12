@@ -8,8 +8,8 @@ import com.jin.jjinweather.layer.data.database.entity.WeatherEntity
 @Dao
 interface WeatherDAO {
     @Insert
-    suspend fun saveWeatherToLocalDB(weatherEntity: WeatherEntity)
+    suspend fun insertWeather(weatherEntity: WeatherEntity)
 
     @Query("SELECT * FROM weather ORDER BY id DESC LIMIT 1")
-    suspend fun fetchLastWeatherFromLocalDB(): WeatherEntity?
+    suspend fun findLatestWeather(): WeatherEntity?
 }
