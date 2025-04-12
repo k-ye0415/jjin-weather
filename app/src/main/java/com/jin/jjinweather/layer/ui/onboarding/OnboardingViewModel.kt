@@ -5,15 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.jin.jjinweather.layer.domain.model.PermissionState
 import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather
-import com.jin.jjinweather.layer.domain.usecase.GetGeoPointUseCase
-import com.jin.jjinweather.layer.domain.usecase.GetWeatherUseCase
+import com.jin.jjinweather.layer.domain.usecase.GetLocationBasedWeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class OnboardingViewModel(
-    private val getWeatherUseCase: GetWeatherUseCase,
-    private val getGeoPointUseCase: GetGeoPointUseCase
+    private val getLocationBasedWeatherUseCase: GetLocationBasedWeatherUseCase
 ) : ViewModel() {
     // todo : 앱 첫 실행 여부 판단
     private val _isFirstLaunch = MutableStateFlow(true)
@@ -32,8 +30,7 @@ class OnboardingViewModel(
 
     private fun loadWeather() {
         viewModelScope.launch {
-            val geoPoint = getGeoPointUseCase()
-            _weatherState.value = getWeatherUseCase(geoPoint.latitude, geoPoint.longitude)
+            _weatherState.value = getLocationBasedWeatherUseCase()
         }
     }
 

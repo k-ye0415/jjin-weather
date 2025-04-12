@@ -15,7 +15,7 @@ class LocationProvider(context: Context) {
 
     private val context = context.applicationContext
 
-    suspend fun loadCurrentCityName(latitude: Double, longitude: Double): String {
+    suspend fun findCityNameAt(latitude: Double, longitude: Double): String {
         return withContext(Dispatchers.IO) {
             val address = try {
                 val geocoder = Geocoder(context, Locale.getDefault())
@@ -33,7 +33,7 @@ class LocationProvider(context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    fun loadCurrentGeoPoint(): Result<GeoPoint> {
+    fun findCurrentGeoPoint(): Result<GeoPoint> {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val location = try {
             locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
