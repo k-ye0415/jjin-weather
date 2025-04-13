@@ -25,10 +25,10 @@ import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 
 @Composable
-fun WeatherContentUI(weather: UiState<Weather>, onNavigateToTemperature: () -> Unit) {
+fun WeatherContentUI(weather: UiState<Weather>) {
     when (weather) {
         is UiState.Loading -> WeatherLoadingContent()
-        is UiState.Success -> WeatherLoadedContent(weather.data, onNavigateToTemperature)
+        is UiState.Success -> WeatherLoadedContent(weather.data)
         is UiState.Error -> WeatherErrorContent(weather.message)
     }
 }
@@ -50,9 +50,8 @@ fun WeatherLoadingContent() {
 }
 
 @Composable
-fun WeatherLoadedContent(weather: Weather, onNavigateToOnboarding: () -> Unit) {
-    // success 한 후, Main 화면으로 자동으로 이동할 수 있도록 처리필요.
-    // 임시 UI 작성. Main 화면으로 이동 되면 다듬어질 예정.
+fun WeatherLoadedContent(weather: Weather) {
+    // ui 수정 필요
     val currentWeatherIconRes = mapWeatherIconToDrawable(weather.iconCode)
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -104,7 +103,6 @@ fun WeatherLoadedContent(weather: Weather, onNavigateToOnboarding: () -> Unit) {
                         }
                     }
                 }
-                Button(onClick = onNavigateToOnboarding) { Text("GO TO MAIN") }
             }
         }
     }
@@ -112,8 +110,7 @@ fun WeatherLoadedContent(weather: Weather, onNavigateToOnboarding: () -> Unit) {
 
 @Composable
 fun WeatherErrorContent(message: String) {
-    // 임시 UI 작성. Main 화면으로 이동 되면 다듬어질 예정.
-    // api 호출도 실패, db 조회도 실패시 ui 처리 필요
+    // ui 수정 필요
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier = Modifier
