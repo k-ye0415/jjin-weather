@@ -16,6 +16,8 @@ accompanistPermissions = "0.37.2"
 retrofit = "2.9.0"
 room = "2.6.1"
 kspVersion = "2.0.21-1.0.27"
+dataStore = "1.1.4"
+composeFoundation = "1.5.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +44,8 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
+compose-foundation-pager = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
