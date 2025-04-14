@@ -13,7 +13,7 @@ class WeatherRepositoryImpl(
 ) : WeatherRepository {
 
     override suspend fun weatherAt(latitude: Double, longitude: Double): UiState<Weather> {
-        return weatherDataSource.fetchWeatherAt(latitude, longitude).fold(
+        return weatherDataSource.requestWeatherAt(latitude, longitude).fold(
             onSuccess = { weather ->
                 weatherDAO.insertWeather(weather.toEntityModel())
                 UiState.Success(weather)

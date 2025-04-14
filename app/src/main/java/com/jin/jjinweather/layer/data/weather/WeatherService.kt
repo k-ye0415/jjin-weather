@@ -17,7 +17,7 @@ interface WeatherService {
      * @return 날씨 정보가 담긴 [WeatherDTO]
      */
     @GET("onecall")
-    suspend fun requestWeather(
+    suspend fun queryWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
         @Query("exclude") exclude: String,
@@ -37,7 +37,7 @@ interface WeatherService {
      * @return 어제 날씨 정보가 담긴 [YesterdayWeatherDTO]
      */
     @GET("onecall/timemachine")
-    suspend fun requestYesterdayWeather(
+    suspend fun queryYesterdayWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
         @Query("dt") dateTime: Long,
