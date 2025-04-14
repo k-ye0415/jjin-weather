@@ -19,10 +19,11 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
+import com.jin.jjinweather.layer.ui.common.OnboardingWeatherViewModel
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun OnboardingScreen(viewModel: OnboardingViewModel, onNavigateToTemperature: () -> Unit) {
+fun OnboardingScreen(viewModel: OnboardingWeatherViewModel, onNavigateToTemperature: () -> Unit) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
     )
