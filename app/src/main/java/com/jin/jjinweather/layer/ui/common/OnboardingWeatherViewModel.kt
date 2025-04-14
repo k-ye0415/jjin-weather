@@ -6,14 +6,14 @@ import com.jin.jjinweather.layer.domain.model.PermissionState
 import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 import com.jin.jjinweather.layer.domain.repository.PreferencesRepository
-import com.jin.jjinweather.layer.domain.usecase.GetLocationBasedWeatherUseCase
+import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class OnboardingWeatherViewModel(
     private val repository: PreferencesRepository,
-    private val getLocationBasedWeatherUseCase: GetLocationBasedWeatherUseCase
+    private val getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase
 ) : ViewModel() {
     private val _permissionState = MutableStateFlow(PermissionState.DENIED)
     val permissionState: StateFlow<PermissionState> = _permissionState
@@ -48,7 +48,7 @@ class OnboardingWeatherViewModel(
 
     private fun fetchWeather() {
         viewModelScope.launch {
-            _weatherState.value = getLocationBasedWeatherUseCase()
+            _weatherState.value = getCurrentLocationWeatherUseCase()
         }
     }
 }
