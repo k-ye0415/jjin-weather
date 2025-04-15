@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather
-import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
+import com.jin.jjinweather.layer.domain.usecase.GetLocationBasedWeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase) : ViewModel() {
+class TemperatureViewModel(private val getLocationBasedWeatherUseCase: GetLocationBasedWeatherUseCase) : ViewModel() {
     private val _weatherState = MutableStateFlow<UiState<Weather>>(UiState.Loading)
     val weatherState: StateFlow<UiState<Weather>> = _weatherState
 
@@ -19,7 +19,7 @@ class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurr
 
     private fun fetchWeather() {
         viewModelScope.launch {
-            _weatherState.value = getCurrentLocationWeatherUseCase()
+            _weatherState.value = getLocationBasedWeatherUseCase()
         }
     }
 }
