@@ -22,9 +22,10 @@ import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.data.weather.WeatherService
 import com.jin.jjinweather.layer.domain.usecase.GetLocationBasedWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
-import com.jin.jjinweather.layer.ui.common.OnboardingWeatherViewModel
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
+import com.jin.jjinweather.layer.ui.onboarding.OnboardingViewModel
 import com.jin.jjinweather.layer.ui.temperature.TemperatureScreen
+import com.jin.jjinweather.layer.ui.temperature.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,15 +65,15 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: Locatio
     val locationRepository = LocationRepositoryImpl(db.geoPointDao(), locationProvider)
     val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
 
-    val onboardingWeatherViewModel = OnboardingWeatherViewModel(
-        PreferencesRepositoryImpl(context),
+    val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
+    val temperatureViewModel = TemperatureViewModel(
         GetLocationBasedWeatherUseCase(locationRepository, weatherRepository)
     )
 
     NavHost(navController, Screens.ONBOARDING.route) {
         composable(Screens.ONBOARDING.route) {
             OnboardingScreen(
-                viewModel = onboardingWeatherViewModel,
+                viewModel = onboardingViewModel,
                 onNavigateToTemperature = {
                     navController.navigateClearingBackStack(
                         destination = Screens.TEMPERATURE,
@@ -84,7 +85,7 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: Locatio
         }
         composable(Screens.TEMPERATURE.route) {
             TemperatureScreen(
-                viewModel = onboardingWeatherViewModel,
+                viewModel = temperatureViewModel,
                 onNavigate = {}
             )
         }
