@@ -20,7 +20,7 @@ import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.data.weather.WeatherService
-import com.jin.jjinweather.layer.domain.usecase.GetLocationBasedWeatherUseCase
+import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingViewModel
@@ -67,7 +67,7 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: Locatio
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
     val temperatureViewModel = TemperatureViewModel(
-        GetLocationBasedWeatherUseCase(locationRepository, weatherRepository)
+        GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository)
     )
 
     NavHost(navController, Screens.ONBOARDING.route) {
