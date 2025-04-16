@@ -12,7 +12,7 @@ class LocationRepositoryImpl(
     override suspend fun currentGeoPoint(): GeoPoint {
         return geoPointDataSource.currentGeoPoint().fold(
             onSuccess = {
-                geoPointTrackingDataSource.insertGeoPoint(
+                geoPointTrackingDataSource.markAsLatestLocation(
                     GeoPointEntity(
                         latitude = it.latitude,
                         longitude = it.longitude
@@ -21,7 +21,7 @@ class LocationRepositoryImpl(
                 GeoPoint(it.latitude, it.longitude)
             },
             onFailure = {
-                val geoPoint = geoPointTrackingDataSource.findLatestGeoPoint()
+                val geoPoint = geoPointTrackingDataSource.latestGeoPointOrNull()
                 if (geoPoint != null) GeoPoint(geoPoint.latitude, geoPoint.longitude)
                 else GeoPoint(DEFAULT_LAT, DEFAULT_LNG)
             }
