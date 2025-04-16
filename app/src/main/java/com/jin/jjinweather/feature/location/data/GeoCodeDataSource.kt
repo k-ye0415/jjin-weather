@@ -1,5 +1,5 @@
 package com.jin.jjinweather.feature.location.data
 
-interface GeoCodingDataSource {
+interface GeoCodeDataSource {
     suspend fun findCityNameAt(latitude: Double, longitude: Double): String
 }

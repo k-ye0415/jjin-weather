@@ -6,7 +6,7 @@ import android.location.Geocoder
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.jin.jjinweather.R
-import com.jin.jjinweather.feature.location.data.GeoCodingDataSource
+import com.jin.jjinweather.feature.location.data.GeoCodeDataSource
 import com.jin.jjinweather.feature.location.data.GeoPointDataSource
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.util.Locale
 
-class GeoPointDataSourceImpl(context: Context) : GeoPointDataSource, GeoCodingDataSource {
+class GeoPointDataSourceImpl(context: Context) : GeoPointDataSource, GeoCodeDataSource {
 
     private val context = context.applicationContext
 
