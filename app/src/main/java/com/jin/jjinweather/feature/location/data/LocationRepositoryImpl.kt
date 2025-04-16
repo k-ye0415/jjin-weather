@@ -1,9 +1,8 @@
 package com.jin.jjinweather.feature.location.data
 
-import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
-import com.jin.jjinweather.layer.data.location.LocationProvider
-import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import com.jin.jjinweather.feature.location.LocationRepository
+import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
+import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 
 class LocationRepositoryImpl(
     private val geoPointDAO: GeoPointDAO,
@@ -13,7 +12,12 @@ class LocationRepositoryImpl(
     override suspend fun currentGeoPoint(): GeoPoint {
         return locationProvider.findCurrentGeoPoint().fold(
             onSuccess = {
-                geoPointDAO.insertGeoPoint(GeoPointEntity(latitude = it.latitude, longitude = it.longitude))
+                geoPointDAO.insertGeoPoint(
+                    GeoPointEntity(
+                        latitude = it.latitude,
+                        longitude = it.longitude
+                    )
+                )
                 GeoPoint(it.latitude, it.longitude)
             },
             onFailure = {

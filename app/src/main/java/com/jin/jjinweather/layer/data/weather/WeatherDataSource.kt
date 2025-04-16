@@ -2,14 +2,14 @@ package com.jin.jjinweather.layer.data.weather
 
 import android.util.Log
 import com.jin.jjinweather.BuildConfig
-import com.jin.jjinweather.layer.data.location.LocationProvider
+import com.jin.jjinweather.layer.data.location.LocationProviderImpl
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
 import com.jin.jjinweather.layer.domain.model.weather.HourlyWeather
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 import java.time.Instant
 
-class WeatherDataSource(private val weatherService: WeatherService, private val locationProvider: LocationProvider) {
+class WeatherDataSource(private val weatherService: WeatherService, private val locationProvider: LocationProviderImpl) {
 
     suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
