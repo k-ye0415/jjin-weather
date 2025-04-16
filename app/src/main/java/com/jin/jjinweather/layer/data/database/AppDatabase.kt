@@ -12,5 +12,5 @@ import com.jin.jjinweather.layer.data.database.entity.WeatherEntity
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDAO
-    abstract fun geoPointDao(): GeoPointTrackingDataSource
+    abstract fun geoPointTrackingDataSource(): GeoPointTrackingDataSource
 }

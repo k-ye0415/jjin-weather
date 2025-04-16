@@ -2,18 +2,22 @@ package com.jin.jjinweather.layer.data.weather
 
 import android.util.Log
 import com.jin.jjinweather.BuildConfig
-import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
+import com.jin.jjinweather.feature.location.data.GeoCodeDataSource
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
 import com.jin.jjinweather.layer.domain.model.weather.HourlyWeather
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 import java.time.Instant
 
-class WeatherDataSource(private val weatherService: WeatherService, private val locationProvider: GeoPointDataSourceImpl) {
+class WeatherDataSource(
+    private val weatherService: WeatherService,
+    // FIXME: A data source should never dereference any other data source directly.
+    private val geoCodeDataSource: GeoCodeDataSource,
+) {
 
     suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
-            val cityName = locationProvider.findCityNameAt(latitude, longitude)
+            val cityName = geoCodeDataSource.findCityNameAt(latitude, longitude)
 
             val response = weatherService.queryWeather(
                 latitude,
