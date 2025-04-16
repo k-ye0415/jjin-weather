@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator(
     context: Context,
     locationRepository: LocationRepository,
+    // FIXME: Inject "WeatherRepository" instead of "WeatherDataSource"
     weatherDataSource: WeatherDataSource,
     // FIXME: "db" should never be injected.
     db: AppDatabase,
