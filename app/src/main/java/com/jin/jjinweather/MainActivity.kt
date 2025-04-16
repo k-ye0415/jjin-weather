@@ -17,12 +17,12 @@ import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.layer.data.RetrofitClient
-import com.jin.jjinweather.layer.data.database.AppDatabase
 import com.jin.jjinweather.layer.data.database.DatabaseProvider
 import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
 import com.jin.jjinweather.layer.data.weather.WeatherService
+import com.jin.jjinweather.layer.domain.repository.WeatherRepository
 import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
@@ -49,23 +49,26 @@ class MainActivity : ComponentActivity() {
 
         val weatherService: WeatherService =
             RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
-        val weatherDataSource = WeatherDataSource(weatherService, GeoCodeDataSourceImpl(this))
 
         val db = DatabaseProvider.getDatabase(this)
-        val locationRepository = LocationRepositoryImpl(
-            db.geoPointTrackingDataSource(),
-            GeoPointDataSourceImpl(this),
-            GeoCodeDataSourceImpl(this),
-        )
 
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
                 AppNavigator(
                     context = this,
-                    locationRepository = locationRepository,
-                    weatherDataSource = weatherDataSource,
-                    db = db
+                    locationRepository = LocationRepositoryImpl(
+                        db.geoPointTrackingDataSource(),
+                        GeoPointDataSourceImpl(this),
+                        GeoCodeDataSourceImpl(this),
+                    ),
+                    weatherRepository = WeatherRepositoryImpl(
+                        db.weatherDao(),
+                        WeatherDataSource(
+                            weatherService,
+                            GeoCodeDataSourceImpl(this)
+                        )
+                    ),
                 )
             }
         }
@@ -76,14 +79,9 @@ class MainActivity : ComponentActivity() {
 fun AppNavigator(
     context: Context,
     locationRepository: LocationRepository,
-    // FIXME: Inject "WeatherRepository" instead of "WeatherDataSource"
-    weatherDataSource: WeatherDataSource,
-    // FIXME: "db" should never be injected.
-    db: AppDatabase,
+    weatherRepository: WeatherRepository,
 ) {
     val navController = rememberNavController()
-
-    val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
     val temperatureViewModel = TemperatureViewModel(
