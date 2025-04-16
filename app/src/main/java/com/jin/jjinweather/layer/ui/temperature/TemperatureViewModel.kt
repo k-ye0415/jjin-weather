@@ -1,10 +1,25 @@
 package com.jin.jjinweather.layer.ui.temperature
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jin.jjinweather.layer.domain.model.UiState
+import com.jin.jjinweather.layer.domain.model.weather.Weather
+import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class TemperatureViewModel : ViewModel() {
-    /*
-    * todo
-    *  1. location, weather 정보 뿌리기
-    * */
+class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase) : ViewModel() {
+    private val _weatherState = MutableStateFlow<UiState<Weather>>(UiState.Loading)
+    val weatherState: StateFlow<UiState<Weather>> = _weatherState
+
+    fun onLocationPermissionGranted() {
+        fetchWeather()
+    }
+
+    private fun fetchWeather() {
+        viewModelScope.launch {
+            _weatherState.value = getCurrentLocationWeatherUseCase()
+        }
+    }
 }
