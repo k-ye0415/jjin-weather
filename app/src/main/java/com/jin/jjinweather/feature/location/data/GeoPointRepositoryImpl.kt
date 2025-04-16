@@ -1,16 +1,16 @@
 package com.jin.jjinweather.feature.location.data
 
 import android.database.SQLException
-import com.jin.jjinweather.feature.location.LocationRepository
+import com.jin.jjinweather.feature.location.GeoPointRepository
 import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class LocationRepositoryImpl(
+class GeoPointRepositoryImpl(
     private val geoPointTrackingDataSource: GeoPointTrackingDataSource,
     private val geoPointDataSource: GeoPointDataSource
-) : LocationRepository {
+) : GeoPointRepository {
     override suspend fun currentGeoPoint(): GeoPoint =
         geoPointDataSource.currentGeoPoint()
             .onSuccess { keepTrackLocationChanges(it) }
