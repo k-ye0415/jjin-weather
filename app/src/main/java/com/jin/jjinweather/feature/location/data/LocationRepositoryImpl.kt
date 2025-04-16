@@ -6,11 +6,11 @@ import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 
 class LocationRepositoryImpl(
     private val geoPointTrackingDataSource: GeoPointTrackingDataSource,
-    private val locationProvider: LocationProvider
+    private val geoPointDataSource: GeoPointDataSource
 ) :
     LocationRepository {
     override suspend fun currentGeoPoint(): GeoPoint {
-        return locationProvider.currentGeoPoint().fold(
+        return geoPointDataSource.currentGeoPoint().fold(
             onSuccess = {
                 geoPointTrackingDataSource.insertGeoPoint(
                     GeoPointEntity(
