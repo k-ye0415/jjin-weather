@@ -1,16 +1,17 @@
 package com.jin.jjinweather.feature.location.data
 
 import android.database.SQLException
-import com.jin.jjinweather.feature.location.GeoPointRepository
+import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GeoPointRepositoryImpl(
+class LocationRepositoryImpl(
     private val geoPointTrackingDataSource: GeoPointTrackingDataSource,
-    private val geoPointDataSource: GeoPointDataSource
-) : GeoPointRepository {
+    private val geoPointDataSource: GeoPointDataSource,
+    private val geoCodeDataSource: GeoCodeDataSource,
+) : LocationRepository {
     override suspend fun currentGeoPoint(): GeoPoint =
         geoPointDataSource.currentGeoPoint()
             .onSuccess { keepTrackLocationChanges(it) }
@@ -20,6 +21,9 @@ class GeoPointRepositoryImpl(
                     ?: return GeoPoint(DEFAULT_LAT, DEFAULT_LNG)
                 return GeoPoint(latitude, longitude)
             }
+
+    override suspend fun findCityNameAt(location: GeoPoint): String =
+        geoCodeDataSource.findCityNameAt(location.latitude, location.longitude)
 
     private suspend fun queryLatestLocation(): GeoPointEntity? =
         try {
