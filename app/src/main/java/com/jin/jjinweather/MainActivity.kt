@@ -12,10 +12,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.jin.jjinweather.layer.data.RetrofitClient
-import com.jin.jjinweather.layer.data.database.DatabaseProvider
-import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
+import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
+import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
+import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
+import com.jin.jjinweather.layer.data.RetrofitClient
+import com.jin.jjinweather.layer.data.database.AppDatabase
+import com.jin.jjinweather.layer.data.database.DatabaseProvider
 import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
@@ -44,25 +47,41 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
 
-        val locationProvider = GeoPointDataSourceImpl(this)
-        val weatherService: WeatherService = RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
-        val weatherDataSource = WeatherDataSource(weatherService, locationProvider)
+        val weatherService: WeatherService =
+            RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
+        val weatherDataSource = WeatherDataSource(weatherService, GeoCodeDataSourceImpl(this))
+
+        val db = DatabaseProvider.getDatabase(this)
+        val locationRepository = LocationRepositoryImpl(
+            db.geoPointTrackingDataSource(),
+            GeoPointDataSourceImpl(this),
+            GeoCodeDataSourceImpl(this),
+        )
 
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
-                AppNavigator(weatherDataSource, locationProvider, this)
+                AppNavigator(
+                    context = this,
+                    locationRepository = locationRepository,
+                    weatherDataSource = weatherDataSource,
+                    db = db
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: GeoPointDataSourceImpl, context: Context) {
+fun AppNavigator(
+    context: Context,
+    locationRepository: LocationRepository,
+    weatherDataSource: WeatherDataSource,
+    // FIXME: "db" should never be injected.
+    db: AppDatabase,
+) {
     val navController = rememberNavController()
 
-    val db = DatabaseProvider.getDatabase(context)
-    val locationRepository = LocationRepositoryImpl(db.geoPointDao(), locationProvider)
     val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
