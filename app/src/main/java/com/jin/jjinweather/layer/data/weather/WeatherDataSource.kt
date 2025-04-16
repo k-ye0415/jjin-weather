@@ -2,7 +2,7 @@ package com.jin.jjinweather.layer.data.weather
 
 import android.util.Log
 import com.jin.jjinweather.BuildConfig
-import com.jin.jjinweather.layer.data.location.GeoPointDataSourceImpl
+import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
 import com.jin.jjinweather.layer.domain.model.weather.HourlyWeather
