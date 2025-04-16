@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.data.database.dao
+package com.jin.jjinweather.feature.location.data
 
 import androidx.room.Dao
 import androidx.room.Insert

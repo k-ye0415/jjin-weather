@@ -1,10 +1,9 @@
-package com.jin.jjinweather.layer.data.repository
+package com.jin.jjinweather.feature.location.data
 
-import com.jin.jjinweather.layer.data.database.dao.GeoPointDAO
 import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 import com.jin.jjinweather.layer.data.location.LocationProvider
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
-import com.jin.jjinweather.layer.domain.repository.LocationRepository
+import com.jin.jjinweather.feature.location.LocationRepository
 
 class LocationRepositoryImpl(
     private val geoPointDAO: GeoPointDAO,

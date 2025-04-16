@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.database.DatabaseProvider
 import com.jin.jjinweather.layer.data.location.LocationProvider
-import com.jin.jjinweather.layer.data.repository.LocationRepositoryImpl
+import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource

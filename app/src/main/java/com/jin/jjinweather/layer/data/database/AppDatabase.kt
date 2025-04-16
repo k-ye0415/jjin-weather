@@ -3,7 +3,7 @@ package com.jin.jjinweather.layer.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.jin.jjinweather.layer.data.database.dao.GeoPointDAO
+import com.jin.jjinweather.feature.location.data.GeoPointDAO
 import com.jin.jjinweather.layer.data.database.dao.WeatherDAO
 import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 import com.jin.jjinweather.layer.data.database.entity.WeatherEntity
