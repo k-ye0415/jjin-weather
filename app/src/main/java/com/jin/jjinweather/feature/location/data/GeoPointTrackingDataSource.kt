@@ -6,7 +6,7 @@ import androidx.room.Query
 import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 
 @Dao
-interface GeoPointDAO {
+interface GeoPointTrackingDataSource {
     @Insert
     suspend fun insertGeoPoint(geoPointEntity: GeoPointEntity)
 
