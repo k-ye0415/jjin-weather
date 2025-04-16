@@ -24,8 +24,8 @@ class LocationRepositoryImpl(
         )
     }
 
-    companion object {
-        private const val DEFAULT_LAT = 37.5
-        private const val DEFAULT_LNG = 126.9
+    private companion object {
+        const val DEFAULT_LAT = 37.5
+        const val DEFAULT_LNG = 126.9
     }
 }
