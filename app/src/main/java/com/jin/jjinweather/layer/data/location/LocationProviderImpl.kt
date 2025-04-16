@@ -6,17 +6,18 @@ import android.location.Geocoder
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.jin.jjinweather.R
+import com.jin.jjinweather.feature.location.data.LocationProvider
 import com.jin.jjinweather.layer.domain.model.location.GeoPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.util.Locale
 
-class LocationProvider(context: Context) {
+class LocationProviderImpl(context: Context) : LocationProvider {
 
     private val context = context.applicationContext
 
-    suspend fun findCityNameAt(latitude: Double, longitude: Double): String {
+    override suspend fun findCityNameAt(latitude: Double, longitude: Double): String {
         return withContext(Dispatchers.IO) {
             val address = try {
                 val geocoder = Geocoder(context, Locale.getDefault())
@@ -34,7 +35,7 @@ class LocationProvider(context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    fun findCurrentGeoPoint(): Result<GeoPoint> {
+    override fun findCurrentGeoPoint(): Result<GeoPoint> {
         val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)
             ?: return Result.failure(Exception(context.getString(R.string.error_location_not_found)))
         val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)

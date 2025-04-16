@@ -14,7 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.database.DatabaseProvider
-import com.jin.jjinweather.layer.data.location.LocationProvider
+import com.jin.jjinweather.layer.data.location.LocationProviderImpl
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
 
-        val locationProvider = LocationProvider(this)
+        val locationProvider = LocationProviderImpl(this)
         val weatherService: WeatherService = RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
         val weatherDataSource = WeatherDataSource(weatherService, locationProvider)
 
@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider, context: Context) {
+fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProviderImpl, context: Context) {
     val navController = rememberNavController()
 
     val db = DatabaseProvider.getDatabase(context)
