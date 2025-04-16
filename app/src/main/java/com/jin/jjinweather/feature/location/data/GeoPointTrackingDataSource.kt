@@ -8,8 +8,8 @@ import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
 @Dao
 interface GeoPointTrackingDataSource {
     @Insert
-    suspend fun insertGeoPoint(geoPointEntity: GeoPointEntity)
+    suspend fun markAsLatestLocation(geoPointEntity: GeoPointEntity)
 
     @Query("SELECT * FROM geoPoint ORDER BY id DESC LIMIT 1")
-    suspend fun findLatestGeoPoint(): GeoPointEntity?
+    suspend fun latestGeoPointOrNull(): GeoPointEntity?
 }
