@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.database.DatabaseProvider
 import com.jin.jjinweather.layer.data.location.GeoPointDataSourceImpl
-import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
+import com.jin.jjinweather.feature.location.data.GeoPointRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
 import com.jin.jjinweather.layer.data.weather.WeatherDataSource
@@ -62,7 +62,7 @@ fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: GeoPoin
     val navController = rememberNavController()
 
     val db = DatabaseProvider.getDatabase(context)
-    val locationRepository = LocationRepositoryImpl(db.geoPointDao(), locationProvider)
+    val locationRepository = GeoPointRepositoryImpl(db.geoPointDao(), locationProvider)
     val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
