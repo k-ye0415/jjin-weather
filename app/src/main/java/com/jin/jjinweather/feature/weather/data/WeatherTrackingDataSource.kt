@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.data.database.dao
+package com.jin.jjinweather.feature.weather.data
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,10 +6,10 @@ import androidx.room.Query
 import com.jin.jjinweather.layer.data.database.entity.WeatherEntity
 
 @Dao
-interface WeatherDAO {
+interface WeatherTrackingDataSource {
     @Insert
-    suspend fun insertWeather(weatherEntity: WeatherEntity)
+    suspend fun markAsLatestWeather(weatherEntity: WeatherEntity)
 
     @Query("SELECT * FROM weather ORDER BY id DESC LIMIT 1")
-    suspend fun findLatestWeather(): WeatherEntity?
+    suspend fun latestWeatherOrNull(): WeatherEntity?
 }

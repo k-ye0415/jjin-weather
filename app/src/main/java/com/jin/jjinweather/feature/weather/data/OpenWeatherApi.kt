@@ -1,11 +1,11 @@
-package com.jin.jjinweather.layer.data.weather
+package com.jin.jjinweather.feature.weather.data
 
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.data.weather.dto.YesterdayWeatherDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface WeatherService {
+interface OpenWeatherApi {
     /**
      * 현재 위치 기반의 날씨 정보를 가져오는 API 호출.
      * @param latitude 위도
