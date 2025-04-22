@@ -3,7 +3,7 @@ package com.jin.jjinweather.layer.ui.temperature
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jin.jjinweather.layer.domain.model.UiState
-import com.jin.jjinweather.layer.domain.model.weather.Weather
+import com.jin.jjinweather.feature.weather.Weather
 import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

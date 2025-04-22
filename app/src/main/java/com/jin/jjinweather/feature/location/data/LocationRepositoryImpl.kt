@@ -2,8 +2,8 @@ package com.jin.jjinweather.feature.location.data
 
 import android.database.SQLException
 import com.jin.jjinweather.feature.location.LocationRepository
-import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
-import com.jin.jjinweather.layer.domain.model.location.GeoPoint
+import com.jin.jjinweather.feature.location.data.model.GeoPointEntity
+import com.jin.jjinweather.feature.location.GeoPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

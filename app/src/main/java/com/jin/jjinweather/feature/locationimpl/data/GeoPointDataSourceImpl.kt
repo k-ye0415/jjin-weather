@@ -8,7 +8,7 @@ import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.location.data.GeoPointDataSource
-import com.jin.jjinweather.layer.domain.model.location.GeoPoint
+import com.jin.jjinweather.feature.location.GeoPoint
 
 class GeoPointDataSourceImpl(context: Context) : GeoPointDataSource {
     private val context = context.applicationContext

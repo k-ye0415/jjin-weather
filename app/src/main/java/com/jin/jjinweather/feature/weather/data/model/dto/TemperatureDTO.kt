@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.data.weather.dto
+package com.jin.jjinweather.feature.weather.data.model.dto
 
 import com.google.gson.annotations.SerializedName
 

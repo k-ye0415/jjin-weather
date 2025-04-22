@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.data.database.entity
+package com.jin.jjinweather.feature.location.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
