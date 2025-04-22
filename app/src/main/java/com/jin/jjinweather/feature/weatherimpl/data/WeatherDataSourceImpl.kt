@@ -4,10 +4,10 @@ import android.util.Log
 import com.jin.jjinweather.BuildConfig
 import com.jin.jjinweather.feature.weather.data.OpenWeatherDataSource
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
-import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
-import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
-import com.jin.jjinweather.layer.domain.model.weather.HourlyWeather
-import com.jin.jjinweather.layer.domain.model.weather.Weather
+import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
+import com.jin.jjinweather.feature.weather.DailyWeather
+import com.jin.jjinweather.feature.weather.HourlyWeather
+import com.jin.jjinweather.feature.weather.Weather
 import java.time.Instant
 
 class WeatherDataSourceImpl(

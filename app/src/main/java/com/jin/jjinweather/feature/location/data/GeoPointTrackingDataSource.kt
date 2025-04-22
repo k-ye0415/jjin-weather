@@ -3,7 +3,7 @@ package com.jin.jjinweather.feature.location.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.jin.jjinweather.layer.data.database.entity.GeoPointEntity
+import com.jin.jjinweather.feature.location.data.model.GeoPointEntity
 
 @Dao
 interface GeoPointTrackingDataSource {

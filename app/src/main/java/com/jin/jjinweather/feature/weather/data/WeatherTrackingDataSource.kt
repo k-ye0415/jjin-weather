@@ -3,7 +3,7 @@ package com.jin.jjinweather.feature.weather.data
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.jin.jjinweather.layer.data.database.entity.WeatherEntity
+import com.jin.jjinweather.feature.weather.data.model.WeatherEntity
 
 @Dao
 interface WeatherTrackingDataSource {

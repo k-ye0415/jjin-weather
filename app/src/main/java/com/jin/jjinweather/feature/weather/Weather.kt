@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.domain.model.weather
+package com.jin.jjinweather.feature.weather
 
 /**
  * @property yesterdayTemperature API 경로 분리

@@ -1,7 +1,7 @@
 package com.jin.jjinweather.feature.weather.data
 
-import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
-import com.jin.jjinweather.layer.data.weather.dto.YesterdayWeatherDTO
+import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
+import com.jin.jjinweather.feature.weather.data.model.dto.YesterdayWeatherDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
