@@ -2,7 +2,7 @@ package com.jin.jjinweather.layer.ui.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jin.jjinweather.layer.domain.repository.PreferencesRepository
+import com.jin.jjinweather.feature.datastore.PreferencesRepository
 import kotlinx.coroutines.launch
 
 class OnboardingViewModel(private val repository: PreferencesRepository) : ViewModel() {

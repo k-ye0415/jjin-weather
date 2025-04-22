@@ -22,8 +22,8 @@ import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.layer.data.RetrofitClient
-import com.jin.jjinweather.layer.data.database.DatabaseProvider
-import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
+import com.jin.jjinweather.feature.database.data.DatabaseProvider
+import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen

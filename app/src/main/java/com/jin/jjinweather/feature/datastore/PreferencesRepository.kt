@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.domain.repository
+package com.jin.jjinweather.feature.datastore
 
 interface PreferencesRepository {
     suspend fun completeFirstLaunch()
