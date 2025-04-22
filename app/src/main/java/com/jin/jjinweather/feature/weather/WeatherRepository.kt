@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.domain.repository
+package com.jin.jjinweather.feature.weather
 
 import com.jin.jjinweather.layer.domain.model.UiState
 import com.jin.jjinweather.layer.domain.model.weather.Weather

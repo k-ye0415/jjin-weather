@@ -16,13 +16,14 @@ import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
+import com.jin.jjinweather.feature.weather.WeatherRepository
+import com.jin.jjinweather.feature.weather.data.OpenWeatherDataSource
+import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
+import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
+import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.layer.data.RetrofitClient
 import com.jin.jjinweather.layer.data.database.DatabaseProvider
 import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
-import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
-import com.jin.jjinweather.layer.data.weather.WeatherDataSource
-import com.jin.jjinweather.layer.data.weather.WeatherService
-import com.jin.jjinweather.layer.domain.repository.WeatherRepository
 import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.layer.ui.Screens
 import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
 
-        val weatherService: WeatherService =
+        val openWeatherApi: OpenWeatherApi =
             RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
 
         val db = DatabaseProvider.getDatabase(this)
@@ -63,11 +64,9 @@ class MainActivity : ComponentActivity() {
                         GeoCodeDataSourceImpl(this),
                     ),
                     weatherRepository = WeatherRepositoryImpl(
-                        db.weatherDao(),
-                        WeatherDataSource(
-                            weatherService,
-                            GeoCodeDataSourceImpl(this)
-                        )
+                        db.weatherTrackingDataSource(),
+                        WeatherDataSourceImpl(OpenWeatherDataSource(openWeatherApi)),
+                        GeoCodeDataSourceImpl(this),
                     ),
                 )
             }

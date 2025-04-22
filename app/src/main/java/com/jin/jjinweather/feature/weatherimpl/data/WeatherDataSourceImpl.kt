@@ -1,25 +1,21 @@
-package com.jin.jjinweather.layer.data.weather
+package com.jin.jjinweather.feature.weatherimpl.data
 
 import android.util.Log
 import com.jin.jjinweather.BuildConfig
-import com.jin.jjinweather.feature.location.data.GeoCodeDataSource
+import com.jin.jjinweather.feature.weather.data.OpenWeatherDataSource
+import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.layer.data.weather.dto.WeatherDTO
 import com.jin.jjinweather.layer.domain.model.weather.DailyWeather
 import com.jin.jjinweather.layer.domain.model.weather.HourlyWeather
 import com.jin.jjinweather.layer.domain.model.weather.Weather
 import java.time.Instant
 
-class WeatherDataSource(
-    private val weatherService: WeatherService,
-    // FIXME: A data source should never dereference any other data source directly.
-    private val geoCodeDataSource: GeoCodeDataSource,
-) {
-
-    suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
+class WeatherDataSourceImpl(
+    private val openWeatherDataSource: OpenWeatherDataSource
+) : WeatherDataSource {
+    override suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
-            val cityName = geoCodeDataSource.findCityNameAt(latitude, longitude)
-
-            val response = weatherService.queryWeather(
+            val response = openWeatherDataSource.fetchWeather(
                 latitude,
                 longitude,
                 "minutely",
@@ -29,20 +25,20 @@ class WeatherDataSource(
             )
             val yesterdayResponse = requestYesterdayWeatherAt(latitude, longitude)
 
-            val weather = response.toWeather(cityName, yesterdayResponse)
+            val weather = response.toWeather(yesterdayResponse)
             Result.success(weather)
         } catch (e: Exception) {
-            Log.e(TAG, "loadWeather error :${e.printStackTrace()}")
+            Log.e(TAG, "requestWeather error :${e.printStackTrace()}")
             Result.failure(e)
         }
     }
 
-    private suspend fun requestYesterdayWeatherAt(latitude: Double, longitude: Double): Double? {
+    override suspend fun requestYesterdayWeatherAt(latitude: Double, longitude: Double): Double? {
         val timestamp24hAgo = Instant.now()
             .minusSeconds(60 * 60 * 24)
             .epochSecond
         return try {
-            weatherService.queryYesterdayWeather(
+            openWeatherDataSource.fetchYesterdayWeather(
                 latitude = latitude,
                 longitude = longitude,
                 dateTime = timestamp24hAgo,
@@ -51,12 +47,12 @@ class WeatherDataSource(
                 BuildConfig.OPEN_WEATHER_API_KEY
             ).data.firstOrNull()?.temperature
         } catch (e: Exception) {
-            Log.e(TAG, "loadYesterdayTemperature error :${e.printStackTrace()}")
+            Log.e(TAG, "requestYesterdayWeather error :${e.printStackTrace()}")
             null
         }
     }
 
-    private fun WeatherDTO.toWeather(cityName: String, yesterdayTemp: Double?): Weather {
+    private fun WeatherDTO.toWeather(yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
             HourlyWeather(
                 forecastTime = hourly.dt,
@@ -75,7 +71,7 @@ class WeatherDataSource(
         }
 
         return Weather(
-            cityName = cityName,
+            cityName = "",
             iconCode = current.weather.firstOrNull()?.icon.orEmpty(),
             currentTemperature = current.temperature,
             yesterdayTemperature = yesterdayTemp ?: current.temperature,
@@ -89,7 +85,7 @@ class WeatherDataSource(
         )
     }
 
-    companion object {
-        private const val TAG = "WeatherDataSource"
+    private companion object {
+        const val TAG = "WeatherDataSource"
     }
 }
