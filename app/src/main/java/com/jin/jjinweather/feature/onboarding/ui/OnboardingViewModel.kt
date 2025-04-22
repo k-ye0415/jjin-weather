@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.ui.onboarding
+package com.jin.jjinweather.feature.onboarding.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

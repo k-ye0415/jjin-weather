@@ -2,8 +2,8 @@ package com.jin.jjinweather.feature.weather.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jin.jjinweather.feature.weather.DailyWeather
-import com.jin.jjinweather.feature.weather.HourlyWeather
+import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
+import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
 
 /**
  * 위치 기반 날씨 정보

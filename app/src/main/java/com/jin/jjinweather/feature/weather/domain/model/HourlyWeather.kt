@@ -1,4 +1,4 @@
-package com.jin.jjinweather.feature.weather
+package com.jin.jjinweather.feature.weather.domain.model
 
 data class HourlyWeather(
     val forecastTime: Long,

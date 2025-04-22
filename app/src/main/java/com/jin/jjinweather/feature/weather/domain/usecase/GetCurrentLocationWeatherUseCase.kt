@@ -1,9 +1,9 @@
-package com.jin.jjinweather.layer.domain.usecase
+package com.jin.jjinweather.feature.weather.domain.usecase
 
-import com.jin.jjinweather.layer.domain.model.UiState
-import com.jin.jjinweather.feature.weather.Weather
+import com.jin.jjinweather.feature.weather.ui.state.UiState
+import com.jin.jjinweather.feature.weather.domain.model.Weather
 import com.jin.jjinweather.feature.location.LocationRepository
-import com.jin.jjinweather.feature.weather.WeatherRepository
+import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
 
 class GetCurrentLocationWeatherUseCase(
     private val locationRepository: LocationRepository,

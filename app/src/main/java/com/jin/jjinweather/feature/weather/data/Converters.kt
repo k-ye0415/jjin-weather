@@ -3,8 +3,8 @@ package com.jin.jjinweather.feature.weather.data
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jin.jjinweather.feature.weather.DailyWeather
-import com.jin.jjinweather.feature.weather.HourlyWeather
+import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
+import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
 
 class Converters {
     private val gson = Gson()

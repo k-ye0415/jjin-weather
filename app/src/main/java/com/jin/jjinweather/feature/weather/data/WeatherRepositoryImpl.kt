@@ -3,9 +3,9 @@ package com.jin.jjinweather.feature.weather.data
 import android.database.SQLException
 import com.jin.jjinweather.feature.location.data.GeoCodeDataSource
 import com.jin.jjinweather.feature.weather.data.model.WeatherEntity
-import com.jin.jjinweather.layer.domain.model.UiState
-import com.jin.jjinweather.feature.weather.Weather
-import com.jin.jjinweather.feature.weather.WeatherRepository
+import com.jin.jjinweather.feature.weather.ui.state.UiState
+import com.jin.jjinweather.feature.weather.domain.model.Weather
+import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

@@ -1,6 +1,6 @@
 package com.jin.jjinweather.feature.weather.data
 
-import com.jin.jjinweather.feature.weather.Weather
+import com.jin.jjinweather.feature.weather.domain.model.Weather
 
 interface WeatherDataSource {
     suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather>
