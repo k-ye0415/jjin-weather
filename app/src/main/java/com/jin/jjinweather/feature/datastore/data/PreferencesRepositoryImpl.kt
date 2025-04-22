@@ -1,11 +1,15 @@
-package com.jin.jjinweather.layer.data.repository
+package com.jin.jjinweather.feature.datastore.data
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import com.jin.jjinweather.layer.data.datastore.settingDataStore
-import com.jin.jjinweather.layer.domain.repository.PreferencesRepository
+import androidx.datastore.preferences.preferencesDataStore
+import com.jin.jjinweather.feature.datastore.PreferencesRepository
 import kotlinx.coroutines.flow.first
+
+val Context.settingDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class PreferencesRepositoryImpl(context: Context) : PreferencesRepository {
     private val context = context.applicationContext
