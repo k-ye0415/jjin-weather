@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.data
+package com.jin.jjinweather.feature.network
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

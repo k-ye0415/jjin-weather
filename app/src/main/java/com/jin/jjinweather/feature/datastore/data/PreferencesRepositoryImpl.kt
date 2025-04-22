@@ -9,6 +9,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.jin.jjinweather.feature.datastore.PreferencesRepository
 import kotlinx.coroutines.flow.first
 
+// 현재 PreferencesRepositoryImpl 내에서만 사용하는 확장 함수.
+// 재사용 시 별도 파일로 분리 필요.
 val Context.settingDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class PreferencesRepositoryImpl(context: Context) : PreferencesRepository {

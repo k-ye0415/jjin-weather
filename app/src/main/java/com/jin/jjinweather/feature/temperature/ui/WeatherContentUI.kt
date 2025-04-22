@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.ui.onboarding
+package com.jin.jjinweather.feature.temperature.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -20,8 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
-import com.jin.jjinweather.layer.domain.model.UiState
-import com.jin.jjinweather.feature.weather.Weather
+import com.jin.jjinweather.feature.weather.ui.state.UiState
+import com.jin.jjinweather.feature.weather.domain.model.Weather
 
 @Composable
 fun WeatherContentUI(weather: UiState<Weather>) {

@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.ui.temperature
+package com.jin.jjinweather.feature.temperature.ui
 
 import android.Manifest
 import androidx.compose.runtime.Composable
@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
-import com.jin.jjinweather.layer.ui.onboarding.WeatherContentUI
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

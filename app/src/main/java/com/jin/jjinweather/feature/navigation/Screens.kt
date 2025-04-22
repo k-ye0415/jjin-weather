@@ -1,7 +1,6 @@
-package com.jin.jjinweather.layer.ui
+package com.jin.jjinweather.feature.navigation
 
 enum class Screens(val route:String) {
-    LOADING("loadingScreen"),
     ONBOARDING("onboardingScreen"),
     TEMPERATURE("temperatureScreen"),
 }

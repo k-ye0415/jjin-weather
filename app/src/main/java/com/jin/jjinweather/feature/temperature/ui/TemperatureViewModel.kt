@@ -1,10 +1,10 @@
-package com.jin.jjinweather.layer.ui.temperature
+package com.jin.jjinweather.feature.temperature.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jin.jjinweather.layer.domain.model.UiState
-import com.jin.jjinweather.feature.weather.Weather
-import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
+import com.jin.jjinweather.feature.weather.ui.state.UiState
+import com.jin.jjinweather.feature.weather.domain.model.Weather
+import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

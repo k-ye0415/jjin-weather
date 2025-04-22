@@ -1,4 +1,4 @@
-package com.jin.jjinweather.layer.domain.model
+package com.jin.jjinweather.feature.weather.ui.state
 
 sealed class UiState<out T> {
     object Loading : UiState<Nothing>()
