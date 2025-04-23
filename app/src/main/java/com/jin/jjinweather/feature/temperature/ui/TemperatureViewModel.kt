@@ -9,7 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase) : ViewModel() {
+class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurrentLocationWeatherUseCase) :
+    ViewModel() {
     private val _weatherState = MutableStateFlow<UiState<Weather>>(UiState.Loading)
     val weatherState: StateFlow<UiState<Weather>> = _weatherState
 
@@ -19,7 +20,10 @@ class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurr
 
     private fun fetchWeather() {
         viewModelScope.launch {
-            _weatherState.value = getCurrentLocationWeatherUseCase()
+            _weatherState.value = getCurrentLocationWeatherUseCase().fold(
+                onSuccess = { UiState.Success(it) },
+                onFailure = { UiState.Error(it.message.orEmpty()) }
+            )
         }
     }
 }
