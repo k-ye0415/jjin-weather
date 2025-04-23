@@ -52,7 +52,6 @@ class WeatherDataSourceImpl(
         }
 
         return Weather(
-            cityName = "",
             iconCode = current.weather.firstOrNull()?.icon.orEmpty(),
             currentTemperature = current.temperature,
             yesterdayTemperature = yesterdayTemp ?: current.temperature,

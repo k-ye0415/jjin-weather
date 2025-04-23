@@ -22,7 +22,6 @@ package com.jin.jjinweather.feature.weather.domain.model
  * - 0.75 -> Last Quarter (하현달, 왼쪽 반달)
  */
 data class Weather(
-    val cityName: String,
     val iconCode: String,
     val currentTemperature: Number,
     val yesterdayTemperature: Number,

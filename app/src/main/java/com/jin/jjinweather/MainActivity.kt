@@ -60,13 +60,13 @@ class MainActivity : ComponentActivity() {
                     context = this,
                     locationRepository = LocationRepositoryImpl(
                         db.geoPointTrackingDataSource(),
+                        db.cityNameTrackingDataSource(),
                         GeoPointDataSourceImpl(this),
                         GeoCodeDataSourceImpl(this),
                     ),
                     weatherRepository = WeatherRepositoryImpl(
                         db.weatherTrackingDataSource(),
                         WeatherDataSourceImpl(OpenWeatherDataSourceImpl(openWeatherApi)),
-                        GeoCodeDataSourceImpl(this),
                     ),
                 )
             }

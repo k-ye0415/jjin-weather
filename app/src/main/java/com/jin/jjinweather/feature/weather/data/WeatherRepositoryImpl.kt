@@ -1,9 +1,7 @@
 package com.jin.jjinweather.feature.weather.data
 
 import android.database.SQLException
-import com.jin.jjinweather.feature.location.data.GeoCodeDataSource
 import com.jin.jjinweather.feature.weather.data.model.WeatherEntity
-import com.jin.jjinweather.feature.weather.ui.state.UiState
 import com.jin.jjinweather.feature.weather.domain.model.Weather
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
@@ -11,19 +9,13 @@ import kotlinx.coroutines.withContext
 
 class WeatherRepositoryImpl(
     private val weatherTrackingDataSource: WeatherTrackingDataSource,
-    private val weatherDataSource: WeatherDataSource,
-    private val geoCodeDataSource: GeoCodeDataSource,
+    private val weatherDataSource: WeatherDataSource
 ) : WeatherRepository {
 
     override suspend fun weatherAt(latitude: Double, longitude: Double): Result<Weather> =
         weatherDataSource.requestWeatherAt(latitude, longitude)
-            .map {
-                val cityName = geoCodeDataSource.findCityNameAt(latitude, longitude)
-                val weather = it.copy(cityName = cityName)
-
-                keepTrackWeatherChanges(weather)
-                Result.success(weather)
-            }
+            .onSuccess { keepTrackWeatherChanges(it) }
+            .map { Result.success(it) }
             .getOrElse {
                 val weather = queryLatestWeather() ?: return Result.failure(it)
                 return Result.success(weather.toDomainModel())
@@ -55,7 +47,6 @@ class WeatherRepositoryImpl(
      * */
     private fun Weather.toEntityModel(): WeatherEntity {
         return WeatherEntity(
-            cityName = cityName,
             iconCode = iconCode,
             currentTemperature = currentTemperature.toDouble(),
             yesterdayTemperature = yesterdayTemperature.toDouble(),
@@ -74,7 +65,6 @@ class WeatherRepositoryImpl(
      * */
     private fun WeatherEntity.toDomainModel(): Weather {
         return Weather(
-            cityName = cityName,
             iconCode = iconCode,
             currentTemperature = currentTemperature,
             yesterdayTemperature = yesterdayTemperature,
