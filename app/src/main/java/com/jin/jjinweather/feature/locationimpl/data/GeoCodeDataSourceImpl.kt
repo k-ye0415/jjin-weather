@@ -12,19 +12,19 @@ import java.util.Locale
 class GeoCodeDataSourceImpl(context: Context) : GeoCodeDataSource {
     private val context = context.applicationContext
 
-    override suspend fun findCityNameAt(latitude: Double, longitude: Double): String =
+    override suspend fun findCityNameAt(latitude: Double, longitude: Double): Result<String> =
         withContext(Dispatchers.IO) {
-            val address = try {
+            try {
                 val geocoder = Geocoder(context, Locale.getDefault())
-                geocoder.getFromLocation(latitude, longitude, 1)?.firstOrNull()
+                val address = geocoder.getFromLocation(latitude, longitude, 1)?.firstOrNull()
+                if (address == null) {
+                    Result.failure(IOException(context.getString(R.string.error_unknown_address)))
+                } else {
+                    val cityName = "${address.adminArea.orEmpty()} ${address.subLocality.orEmpty()}".trim()
+                    Result.success(cityName)
+                }
             } catch (e: IOException) {
-                null
-            }
-
-            if (address == null) {
-                context.getString(R.string.error_unknown_address)
-            } else {
-                "${address.adminArea.orEmpty()} ${address.subLocality.orEmpty()}".trim()
+                Result.failure(IOException(context.getString(R.string.error_unknown_address)))
             }
         }
 }

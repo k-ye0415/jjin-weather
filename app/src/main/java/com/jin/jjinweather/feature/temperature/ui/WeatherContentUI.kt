@@ -21,14 +21,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.ui.state.UiState
-import com.jin.jjinweather.feature.weather.domain.model.Weather
+import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 
 @Composable
-fun WeatherContentUI(weather: UiState<Weather>) {
-    when (weather) {
+fun WeatherContentUI(cityWeather: UiState<CityWeather>) {
+    when (cityWeather) {
         is UiState.Loading -> WeatherLoadingContent()
-        is UiState.Success -> WeatherLoadedContent(weather.data)
-        is UiState.Error -> WeatherErrorContent(weather.message)
+        is UiState.Success -> WeatherLoadedContent(cityWeather.data)
+        is UiState.Error -> WeatherErrorContent(cityWeather.message)
     }
 }
 
@@ -49,9 +49,9 @@ fun WeatherLoadingContent() {
 }
 
 @Composable
-fun WeatherLoadedContent(weather: Weather) {
+fun WeatherLoadedContent(cityWeather: CityWeather) {
     // ui 수정 필요
-    val currentWeatherIconRes = mapWeatherIconToDrawable(weather.iconCode)
+    val currentWeatherIconRes = mapWeatherIconToDrawable(cityWeather.weather.iconCode)
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
@@ -60,8 +60,8 @@ fun WeatherLoadedContent(weather: Weather) {
                 .padding(innerPadding), contentAlignment = Alignment.Center
         ) {
             Column {
-                Text("위치 : ${weather.cityName}")
-                Text("현재 온도 : ${weather.currentTemperature}")
+                Text("위치 : ${cityWeather.cityName}")
+                Text("현재 온도 : ${cityWeather.weather.currentTemperature}")
                 Image(
                     painter = painterResource(id = currentWeatherIconRes),
                     contentDescription = "current temp icon",
@@ -73,15 +73,16 @@ fun WeatherLoadedContent(weather: Weather) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(weather.hourlyWeatherList.size) { index ->
-                        val hourlyWeatherIconRes = mapWeatherIconToDrawable(weather.hourlyWeatherList[index].iconCode)
+                    items(cityWeather.weather.hourlyWeatherList.size) { index ->
+                        val hourlyWeatherIconRes =
+                            mapWeatherIconToDrawable(cityWeather.weather.hourlyWeatherList[index].iconCode)
                         Column {
                             Image(
                                 painter = painterResource(id = hourlyWeatherIconRes),
                                 contentDescription = "hourly temp icon",
                                 modifier = Modifier.size(32.dp)
                             )
-                            Text("${weather.hourlyWeatherList[index].temperature}")
+                            Text("${cityWeather.weather.hourlyWeatherList[index].temperature}")
                         }
                     }
                 }
@@ -91,8 +92,9 @@ fun WeatherLoadedContent(weather: Weather) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(weather.dailyWeatherList.size) { index ->
-                        val dailyWeatherIconRes = mapWeatherIconToDrawable(weather.dailyWeatherList[index].iconCode)
+                    items(cityWeather.weather.dailyWeatherList.size) { index ->
+                        val dailyWeatherIconRes =
+                            mapWeatherIconToDrawable(cityWeather.weather.dailyWeatherList[index].iconCode)
                         Column {
                             Image(
                                 painter = painterResource(id = dailyWeatherIconRes),
