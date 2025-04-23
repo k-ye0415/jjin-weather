@@ -15,18 +15,18 @@ class WeatherRepositoryImpl(
     private val geoCodeDataSource: GeoCodeDataSource,
 ) : WeatherRepository {
 
-    override suspend fun weatherAt(latitude: Double, longitude: Double): UiState<Weather> =
+    override suspend fun weatherAt(latitude: Double, longitude: Double): Result<Weather> =
         weatherDataSource.requestWeatherAt(latitude, longitude)
             .map {
                 val cityName = geoCodeDataSource.findCityNameAt(latitude, longitude)
                 val weather = it.copy(cityName = cityName)
 
                 keepTrackWeatherChanges(weather)
-                UiState.Success(weather)
+                Result.success(weather)
             }
             .getOrElse {
-                val weather = queryLatestWeather() ?: return UiState.Error(it.message.orEmpty())
-                return UiState.Success(weather.toDomainModel())
+                val weather = queryLatestWeather() ?: return Result.failure(it)
+                return Result.success(weather.toDomainModel())
             }
 
 
