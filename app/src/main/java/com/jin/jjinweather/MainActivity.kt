@@ -12,20 +12,24 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.jin.jjinweather.layer.data.RetrofitClient
-import com.jin.jjinweather.layer.data.database.DatabaseProvider
-import com.jin.jjinweather.layer.data.location.LocationProvider
-import com.jin.jjinweather.layer.data.repository.LocationRepositoryImpl
-import com.jin.jjinweather.layer.data.repository.PreferencesRepositoryImpl
-import com.jin.jjinweather.layer.data.repository.WeatherRepositoryImpl
-import com.jin.jjinweather.layer.data.weather.WeatherDataSource
-import com.jin.jjinweather.layer.data.weather.WeatherService
-import com.jin.jjinweather.layer.domain.usecase.GetCurrentLocationWeatherUseCase
-import com.jin.jjinweather.layer.ui.Screens
-import com.jin.jjinweather.layer.ui.onboarding.OnboardingScreen
-import com.jin.jjinweather.layer.ui.onboarding.OnboardingViewModel
-import com.jin.jjinweather.layer.ui.temperature.TemperatureScreen
-import com.jin.jjinweather.layer.ui.temperature.TemperatureViewModel
+import com.jin.jjinweather.feature.location.LocationRepository
+import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
+import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
+import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
+import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
+import com.jin.jjinweather.feature.weatherimpl.data.OpenWeatherDataSourceImpl
+import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
+import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
+import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
+import com.jin.jjinweather.feature.network.RetrofitClient
+import com.jin.jjinweather.feature.database.data.DatabaseProvider
+import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
+import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
+import com.jin.jjinweather.feature.navigation.Screens
+import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
+import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
+import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
+import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,26 +48,39 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
 
-        val locationProvider = LocationProvider(this)
-        val weatherService: WeatherService = RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
-        val weatherDataSource = WeatherDataSource(weatherService, locationProvider)
+        val openWeatherApi: OpenWeatherApi =
+            RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
+
+        val db = DatabaseProvider.getDatabase(this)
 
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
-                AppNavigator(weatherDataSource, locationProvider, this)
+                AppNavigator(
+                    context = this,
+                    locationRepository = LocationRepositoryImpl(
+                        db.geoPointTrackingDataSource(),
+                        db.cityNameTrackingDataSource(),
+                        GeoPointDataSourceImpl(this),
+                        GeoCodeDataSourceImpl(this),
+                    ),
+                    weatherRepository = WeatherRepositoryImpl(
+                        db.weatherTrackingDataSource(),
+                        WeatherDataSourceImpl(OpenWeatherDataSourceImpl(openWeatherApi)),
+                    ),
+                )
             }
         }
     }
 }
 
 @Composable
-fun AppNavigator(weatherDataSource: WeatherDataSource, locationProvider: LocationProvider, context: Context) {
+fun AppNavigator(
+    context: Context,
+    locationRepository: LocationRepository,
+    weatherRepository: WeatherRepository,
+) {
     val navController = rememberNavController()
-
-    val db = DatabaseProvider.getDatabase(context)
-    val locationRepository = LocationRepositoryImpl(db.geoPointDao(), locationProvider)
-    val weatherRepository = WeatherRepositoryImpl(db.weatherDao(), weatherDataSource)
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
     val temperatureViewModel = TemperatureViewModel(
