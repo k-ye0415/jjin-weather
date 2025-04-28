@@ -21,15 +21,21 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jin.jjinweather.ui.theme.ButtonColor
+import com.jin.jjinweather.ui.theme.FeatureBackgroundColor
+import com.jin.jjinweather.ui.theme.HighlightFeatureBackgroundColor
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
+import com.jin.jjinweather.ui.theme.PointColor
+import com.jin.jjinweather.ui.theme.WelcomeBackgroundColor
 
 @Composable
 fun TutorialFooterScreen(currentPage: Int, onRequestPermission: () -> Unit) {
     val backgroundColor = when (currentPage) {
-        0 -> Color(0xFF458CFE)
-        1 -> Color(0xFF46bc4b)
-        else -> Color(0xFFffa32c)
+        0 -> WelcomeBackgroundColor
+        1 -> FeatureBackgroundColor
+        else -> HighlightFeatureBackgroundColor
     }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,7 +51,7 @@ fun TutorialFooterScreen(currentPage: Int, onRequestPermission: () -> Unit) {
             Text(
                 buildAnnotatedString {
                     append("시작하기 클릭 시 ")
-                    withStyle(style = SpanStyle(Color(0xFF458CFE))) {
+                    withStyle(style = SpanStyle(PointColor)) {
                         append("개인정보 처리방침")
                     }
                     append("에 동의하는 것으로 간주합니다.")
@@ -61,7 +67,7 @@ fun TutorialFooterScreen(currentPage: Int, onRequestPermission: () -> Unit) {
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White,
-                    containerColor = Color(0xFF118cfe),
+                    containerColor = ButtonColor,
                 )
             ) {
                 Text("시작하기", modifier = Modifier.padding(vertical = 4.dp))
@@ -73,7 +79,7 @@ fun TutorialFooterScreen(currentPage: Int, onRequestPermission: () -> Unit) {
 
 @Composable
 @Preview
-fun PermissionScreenPreview(){
+fun PermissionScreenPreview() {
     JJinWeatherTheme {
         TutorialFooterScreen(0, {})
     }
