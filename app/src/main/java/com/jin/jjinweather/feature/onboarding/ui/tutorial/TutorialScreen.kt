@@ -35,8 +35,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jin.jjinweather.R
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -86,7 +88,7 @@ private fun NavigationContent(modifier: Modifier, pagerState: PagerState, corout
         // back button
         NavigationIconButton(
             Icons.Outlined.ArrowBackIosNew,
-            "back",
+            stringResource(R.string.tutorial_back_arrow_icon_desc),
             pagerState.currentPage != 0
         ) {
             val prevPage = (pagerState.currentPage - 1).coerceAtLeast(0)
@@ -99,7 +101,7 @@ private fun NavigationContent(modifier: Modifier, pagerState: PagerState, corout
         // nex button
         NavigationIconButton(
             icon = Icons.Outlined.ArrowForwardIos,
-            contentDescription = "next",
+            stringResource(R.string.tutorial_next_arrow_icon_desc),
             pagerState.currentPage != pagerState.pageCount - 1
         ) {
             val nextPage = (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount - 1)

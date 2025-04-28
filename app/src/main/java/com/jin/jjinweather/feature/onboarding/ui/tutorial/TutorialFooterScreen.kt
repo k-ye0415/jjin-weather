@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jin.jjinweather.R
 import com.jin.jjinweather.ui.theme.ButtonColor
 import com.jin.jjinweather.ui.theme.FeatureBackgroundColor
 import com.jin.jjinweather.ui.theme.HighlightFeatureBackgroundColor
@@ -50,11 +52,11 @@ fun TutorialFooterScreen(currentPage: Int, onRequestPermission: () -> Unit) {
         ) {
             Text(
                 buildAnnotatedString {
-                    append("시작하기 클릭 시 ")
+                    append(stringResource(R.string.tutorial_content_before))
                     withStyle(style = SpanStyle(PointColor)) {
-                        append("개인정보 처리방침")
+                        append(stringResource(R.string.tutorial_content_highlight))
                     }
-                    append("에 동의하는 것으로 간주합니다.")
+                    append(stringResource(R.string.tutorial_content_after))
                 },
                 modifier = Modifier.padding(horizontal = 28.dp, vertical = 10.dp),
                 fontSize = 12.sp,
@@ -70,7 +72,7 @@ fun TutorialFooterScreen(currentPage: Int, onRequestPermission: () -> Unit) {
                     containerColor = ButtonColor,
                 )
             ) {
-                Text("시작하기", modifier = Modifier.padding(vertical = 4.dp))
+                Text(stringResource(R.string.tutorial_button_start), modifier = Modifier.padding(vertical = 4.dp))
             }
         }
     }
