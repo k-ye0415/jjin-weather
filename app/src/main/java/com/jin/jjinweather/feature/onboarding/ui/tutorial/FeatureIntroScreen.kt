@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.ui.theme.FeatureBackgroundColor
 
 @Composable
 fun FeatureIntroScreen() {
@@ -44,7 +45,7 @@ fun FeatureIntroScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF46bc4b)),
+            .background(FeatureBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {

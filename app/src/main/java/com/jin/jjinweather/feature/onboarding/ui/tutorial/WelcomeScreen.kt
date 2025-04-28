@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
+import com.jin.jjinweather.ui.theme.WelcomeBackgroundColor
 
 @Composable
 fun WelcomeScreen() {
@@ -46,7 +47,7 @@ fun WelcomeScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF458CFE)),
+            .background(WelcomeBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {

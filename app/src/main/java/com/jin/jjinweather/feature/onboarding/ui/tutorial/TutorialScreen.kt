@@ -1,7 +1,10 @@
 package com.jin.jjinweather.feature.onboarding.ui.tutorial
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.ArrowForwardIos
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,8 +49,8 @@ fun TutorialScreen(onRequestPermission: () -> Unit) {
         { HighlightFeatureScreen() }
     )
     val pagerState = rememberPagerState { tutorialPages.size }
-    val navigationBarHeightDp = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().value.toInt().dp
     val coroutineScope = rememberCoroutineScope()
+    val navigationBarHeightDp = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding().value.toInt().dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -83,7 +87,7 @@ private fun NavigationContent(modifier: Modifier, pagerState: PagerState, corout
         NavigationIconButton(
             Icons.Outlined.ArrowBackIosNew,
             "back",
-            if (pagerState.currentPage != 0) 1.0f else 0f
+            pagerState.currentPage != 0
         ) {
             val prevPage = (pagerState.currentPage - 1).coerceAtLeast(0)
             coroutineScope.launch {
@@ -96,7 +100,7 @@ private fun NavigationContent(modifier: Modifier, pagerState: PagerState, corout
         NavigationIconButton(
             icon = Icons.Outlined.ArrowForwardIos,
             contentDescription = "next",
-            if (pagerState.currentPage != pagerState.pageCount - 1) 1.0f else 0f
+            pagerState.currentPage != pagerState.pageCount - 1
         ) {
             val nextPage = (pagerState.currentPage + 1).coerceAtMost(pagerState.pageCount - 1)
             coroutineScope.launch {
@@ -110,23 +114,29 @@ private fun NavigationContent(modifier: Modifier, pagerState: PagerState, corout
 private fun NavigationIconButton(
     icon: ImageVector,
     contentDescription: String,
-    alpha: Float,
+    visible: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(
-        onClick = onClick,
-        modifier = Modifier.alpha(alpha)
+    val targetAlpha = if (visible) 1f else 0f
+    val alpha by animateFloatAsState(
+        targetValue = targetAlpha,
+        animationSpec = tween(durationMillis = 300),
+        label = "NavigationButtonAlpha"
+    )
+    Box(
+        modifier = Modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .alpha(alpha)
     ) {
         Box(
             modifier = Modifier
                 .size(32.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(Color(0x50FFFFFF))
-                .clickable(
-                    interactionSource = null,
-                    indication = null,
-                    onClick = onClick
-                ),
+                .background(Color.White.copy(alpha = 0.4f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(

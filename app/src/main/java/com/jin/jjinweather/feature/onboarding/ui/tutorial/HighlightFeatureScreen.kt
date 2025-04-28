@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.ui.theme.HighlightFeatureBackgroundColor
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 
 @Composable
@@ -48,7 +49,7 @@ fun HighlightFeatureScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFffa32c)),
+            .background(HighlightFeatureBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -99,7 +100,7 @@ fun HighlightFeatureScreen() {
                 Icon(
                     painter = painterResource(R.drawable.ic_baseline_arrow_upward_24),
                     contentDescription = "arrow",
-                    tint = Color(0xFFffa32c)
+                    tint = HighlightFeatureBackgroundColor
                 )
             }
         }
