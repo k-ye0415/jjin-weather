@@ -1,4 +1,4 @@
-package com.jin.jjinweather.feature.onboarding.ui
+package com.jin.jjinweather.feature.onboarding.ui.tutorial
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
