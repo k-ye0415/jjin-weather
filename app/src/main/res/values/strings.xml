@@ -4,4 +4,27 @@
     <!-- error -->
     <string name="error_unknown_address">알 수 없는 위치</string>
     <string name="error_location_not_found">위치를 가져올 수 없습니다.</string>
+
+    <string name="welcome_title">안녕하세요,\n저는 당신의 날씨 비서에요!</string>
+    <string name="welcome_top_background_img_desc">웰컴 화면 상단 배경 이미지</string>
+    <string name="welcome_middle_background_img_desc">웰컴 화면 중앙 배경 이미지</string>
+    <string name="welcome_middle_icon_desc">웰컴 화면 중앙 아이콘</string>
+
+    <string name="feature_title">일기예보와 옷차림의\n정보를 보여드리며</string>
+    <string name="feature_top_background_img_desc">기능 소개 화면 상단 배경 이미지</string>
+    <string name="feature_middle_background_img_desc">기능 소개 화면 중앙 배경 이미지</string>
+
+    <string name="highlight_feature_title">어제보다 추운지 더운지\n확인할 수 있어요!</string>
+    <string name="highlight_feature_content">어제보다 2° 높아요</string>
+    <string name="highlight_feature_top_background_img_desc">특별 기능 화면 상단 배경 이미지</string>
+    <string name="highlight_feature_content_weather_icon_desc">특별 기능 화면 중앙 날씨 아이콘</string>
+    <string name="highlight_feature_content_arrow_icon_desc">특별 기능 화면 중앙 화살표 아이콘</string>
+    
+    <string name="tutorial_content_before">시작하기 클릭 시</string>
+    <string name="tutorial_content_highlight">개인정보 처리방침</string>
+    <string name="tutorial_content_after">에 동의하는 것으로 간주합니다.</string>
+    <string name="tutorial_button_start">시작하기</string>
+
+    <string name="tutorial_back_arrow_icon_desc">이전</string>
+    <string name="tutorial_next_arrow_icon_desc">다음</string>
 </resources>

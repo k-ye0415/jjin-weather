@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.ui.theme.FeatureBackgroundColor
@@ -35,7 +41,7 @@ fun FeatureIntroScreen() {
     val scale by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
         animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing),
-        label = ""
+        label = "FeatureBackgroundAnimation"
     )
 
     LaunchedEffect(Unit) {
@@ -51,27 +57,30 @@ fun FeatureIntroScreen() {
     ) {
         Image(
             painter = painterResource(R.drawable.bg_feature_intro_top),
-            contentDescription = "Top Decoration",
+            contentDescription = stringResource(R.string.feature_top_background_img_desc),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Column(
-            horizontalAlignment = Alignment.Start,
+        Text(
+            stringResource(R.string.feature_title),
+            color = Color.White,
+            fontSize = 24.sp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            Text(
-                text = "일기예보와 옷차림의",
-                color = Color.White,
-                fontSize = 24.sp
+                .padding(horizontal = 20.dp),
+            style = LocalTextStyle.current.merge(
+                TextStyle(
+                    lineHeight = 1.5.em,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    ),
+                    lineHeightStyle = LineHeightStyle(
+                        alignment = LineHeightStyle.Alignment.Center,
+                        trim = LineHeightStyle.Trim.None
+                    )
+                )
             )
-            Text(
-                text = "정보를 보여드리며",
-                color = Color.White,
-                fontSize = 24.sp
-            )
-        }
+        )
         Spacer(modifier = Modifier.weight(1f))
         Box(
             contentAlignment = Alignment.Center,
@@ -79,7 +88,7 @@ fun FeatureIntroScreen() {
         ) {
             Image(
                 painter = painterResource(R.drawable.bg_feature_intro_decoration),
-                contentDescription = "Background Decoration",
+                contentDescription = stringResource(R.string.feature_middle_background_img_desc),
                 modifier = Modifier
                     .fillMaxWidth()
                     .graphicsLayer {

@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,8 +28,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.ui.theme.HighlightFeatureBackgroundColor
@@ -36,7 +42,7 @@ import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 
 @Composable
 fun HighlightFeatureScreen() {
-    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val infiniteTransition = rememberInfiniteTransition(label = "highlightFeatureTransition")
     val scale by infiniteTransition.animateFloat(
         initialValue = 1f,
         targetValue = 1.05f,
@@ -44,7 +50,7 @@ fun HighlightFeatureScreen() {
             animation = tween(1000, easing = EaseInOutCubic),
             repeatMode = RepeatMode.Reverse
         ),
-        label = ""
+        label = "highlightFeatureAnimation"
     )
     Column(
         modifier = Modifier
@@ -55,27 +61,29 @@ fun HighlightFeatureScreen() {
     ) {
         Image(
             painter = painterResource(R.drawable.bg_highlight_feature_top),
-            contentDescription = "top"
+            contentDescription = stringResource(R.string.highlight_feature_top_background_img_desc)
         )
 
-        Column(
-            horizontalAlignment = Alignment.Start,
+        Text(
+            stringResource(R.string.highlight_feature_title),
+            color = Color.White,
+            fontSize = 24.sp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 140.dp)
-        ) {
-            Text(
-                "어제보다 추운지 더운지",
-                color = Color.White,
-                fontSize = 24.sp,
+                .padding(start = 20.dp, bottom = 140.dp, end = 20.dp),
+            style = LocalTextStyle.current.merge(
+                TextStyle(
+                    lineHeight = 1.5.em,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false
+                    ),
+                    lineHeightStyle = LineHeightStyle(
+                        alignment = LineHeightStyle.Alignment.Center,
+                        trim = LineHeightStyle.Trim.None
+                    )
+                )
             )
-            Text(
-                "확인할 수 있어요!",
-                color = Color.White,
-                fontSize = 24.sp,
-            )
-        }
+        )
 
         // FIXME : App Icon 이 필요함으로 App icon 정의 후 조금 더 다듬어질 예정
         Box(modifier = Modifier
@@ -91,15 +99,15 @@ fun HighlightFeatureScreen() {
             Row {
                 Image(
                     painter = painterResource(id = R.drawable.ic_main_clear_sky_day),
-                    contentDescription = "intro icon",
+                    contentDescription = stringResource(R.string.highlight_feature_content_weather_icon_desc),
                     modifier = Modifier
                         .padding(end = 10.dp)
                 )
-                Text("어제보다 2° 높아요")
+                Text(stringResource(R.string.highlight_feature_content))
                 Spacer(Modifier.weight(1f))
                 Icon(
                     painter = painterResource(R.drawable.ic_baseline_arrow_upward_24),
-                    contentDescription = "arrow",
+                    contentDescription = stringResource(R.string.highlight_feature_content_arrow_icon_desc),
                     tint = HighlightFeatureBackgroundColor
                 )
             }
