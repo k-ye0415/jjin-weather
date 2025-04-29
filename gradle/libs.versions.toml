@@ -18,6 +18,7 @@ room = "2.6.1"
 kspVersion = "2.0.21-1.0.27"
 dataStore = "1.1.4"
 composeFoundation = "1.5.3"
+materialIcons = "1.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -46,6 +47,7 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 compose-foundation-pager = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation" }
+androidx-compose-material = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIcons" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
