@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
@@ -50,13 +51,13 @@ fun WeatherLoadingScreen() {
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_main_clear_sky_night),
-                contentDescription = "로딩 이미지",
+                contentDescription = stringResource(R.string.loading_background_img_desc),
                 modifier = Modifier
                     .size(100.dp)
                     .rotate(rotation)
             )
             Text(
-                "Loading...", fontSize = 24.sp, color = Color.White,
+                stringResource(R.string.loading_title), fontSize = 24.sp, color = Color.White,
                 modifier = Modifier.padding(top = 20.dp)
             )
         }
