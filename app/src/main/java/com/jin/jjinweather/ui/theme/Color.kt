@@ -17,3 +17,5 @@ val HighlightFeatureBackgroundColor = Color(0xFFffa32c)
 val ButtonColor = Color(0xFF118cfe)
 
 val PointColor = Color(0xFF458CFE)
+
+val LoadingBackgroundColor = Color(0xFF3b91e8)
