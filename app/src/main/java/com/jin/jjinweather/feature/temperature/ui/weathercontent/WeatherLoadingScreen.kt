@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.ui.theme.LoadingBackgroundColor
 
 @Composable
 fun WeatherLoadingScreen() {
@@ -44,7 +45,7 @@ fun WeatherLoadingScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF3b91e8))
+                .background(LoadingBackgroundColor)
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
