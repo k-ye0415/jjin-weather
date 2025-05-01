@@ -19,3 +19,4 @@ val ButtonColor = Color(0xFF118cfe)
 val PointColor = Color(0xFF458CFE)
 
 val LoadingBackgroundColor = Color(0xFF3b91e8)
+val ErrorBackgroundColor = Color(0xFF1A5A9B)
