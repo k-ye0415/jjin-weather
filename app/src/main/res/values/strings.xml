@@ -30,4 +30,9 @@
 
     <string name="loading_background_img_desc">로딩 화면 중앙 배경 이미지</string>
     <string name="loading_title">Loading...</string>
+
+    <string name="error_background_img_desc">에러 화면 중앙 배경 이미지</string>
+    <string name="error_glasses_img_desc">에러 화면 중앙 돋보기 이미지</string>
+    <string name="error_title">정보를 불러오지 못했습니다.</string>
+    <string name="error_button_retry">다시 시도하기</string>
 </resources>
