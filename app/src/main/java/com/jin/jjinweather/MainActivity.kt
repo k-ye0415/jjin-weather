@@ -17,7 +17,6 @@ import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
-import com.jin.jjinweather.feature.weatherimpl.data.OpenWeatherDataSourceImpl
 import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
@@ -66,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     ),
                     weatherRepository = WeatherRepositoryImpl(
                         db.weatherTrackingDataSource(),
-                        WeatherDataSourceImpl(OpenWeatherDataSourceImpl(openWeatherApi)),
+                        WeatherDataSourceImpl(openWeatherApi),
                     ),
                 )
             }

@@ -1,19 +1,32 @@
 package com.jin.jjinweather.feature.weatherimpl.data
 
 import android.util.Log
-import com.jin.jjinweather.feature.weather.data.OpenWeatherDataSource
+import com.jin.jjinweather.BuildConfig
+import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
 import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
 import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
 import com.jin.jjinweather.feature.weather.domain.model.Weather
+import java.time.Instant
 
 class WeatherDataSourceImpl(
-    private val openWeatherDataSource: OpenWeatherDataSource
+    private val openWeatherApi: OpenWeatherApi
 ) : WeatherDataSource {
+    private val exclude = "minutely"
+    private val units = "metric"
+    private val lang = "kr"
+    private val apiKey = BuildConfig.OPEN_WEATHER_API_KEY
     override suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
-            val response = openWeatherDataSource.fetchWeather(latitude, longitude)
+            val response = openWeatherApi.queryWeather(
+                latitude = latitude,
+                longitude = longitude,
+                exclude = exclude,
+                units = units,
+                lang = lang,
+                apiKey = apiKey
+            )
             val yesterdayResponse = requestYesterdayWeatherAt(latitude, longitude)
 
             val weather = response.toWeather(yesterdayResponse)
@@ -26,7 +39,17 @@ class WeatherDataSourceImpl(
 
     override suspend fun requestYesterdayWeatherAt(latitude: Double, longitude: Double): Double? {
         return try {
-            openWeatherDataSource.fetchYesterdayWeather(latitude, longitude).data.firstOrNull()?.temperature
+            val timestamp24hAgo = Instant.now()
+                .minusSeconds(60 * 60 * 24)
+                .epochSecond
+            openWeatherApi.queryHistoricalWeather(
+                latitude = latitude,
+                longitude = longitude,
+                dateTime = timestamp24hAgo,
+                units = units,
+                lang = lang,
+                apiKey = apiKey
+            ).data.firstOrNull()?.temperature
         } catch (e: Exception) {
             Log.e(TAG, "requestYesterdayWeather error :${e.printStackTrace()}")
             null
