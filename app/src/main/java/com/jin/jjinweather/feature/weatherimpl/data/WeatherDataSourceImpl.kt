@@ -11,12 +11,13 @@ import com.jin.jjinweather.feature.weather.domain.model.Weather
 import java.time.Instant
 
 class WeatherDataSourceImpl(
-    private val openWeatherApi: OpenWeatherApi
+    private val openWeatherApi: OpenWeatherApi,
+    private val apiKey: String,
 ) : WeatherDataSource {
     private val exclude = "minutely"
     private val units = "metric"
     private val lang = "kr"
-    private val apiKey = BuildConfig.OPEN_WEATHER_API_KEY
+
     override suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
             val response = openWeatherApi.queryWeather(

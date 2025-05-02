@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     ),
                     weatherRepository = WeatherRepositoryImpl(
                         db.weatherTrackingDataSource(),
-                        WeatherDataSourceImpl(openWeatherApi),
+                        WeatherDataSourceImpl(openWeatherApi, BuildConfig.OPEN_WEATHER_API_KEY),
                     ),
                 )
             }
