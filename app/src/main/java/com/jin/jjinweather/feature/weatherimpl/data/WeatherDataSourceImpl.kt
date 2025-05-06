@@ -45,14 +45,14 @@ class WeatherDataSourceImpl(
         val hourlyList = hourly.map { hourly ->
             TemperatureSnapshot(
                 timeStamp = Instant.ofEpochMilli(hourly.dt),
-                icon = WeatherIcon.findByWeatherIcon(hourly.weather.first().icon),
+                icon = WeatherIcon.findByWeatherCode(hourly.weather.first().icon),
                 temperature = hourly.temperature
             )
         }
         val dailyList = daily.map { daily ->
             DailyForecast(
                 date = Calendar.getInstance().apply { timeInMillis = daily.dt },
-                icon = WeatherIcon.findByWeatherIcon(daily.weather.first().icon),
+                icon = WeatherIcon.findByWeatherCode(daily.weather.first().icon),
                 temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max)
             )
         }
@@ -60,7 +60,7 @@ class WeatherDataSourceImpl(
         return Weather(
             dayWeather = DayWeather(
                 date = Calendar.getInstance(),
-                icon = WeatherIcon.findByWeatherIcon(current.weather.first().icon),
+                icon = WeatherIcon.findByWeatherCode(current.weather.first().icon),
                 temperature = current.temperature,
                 sunrise = convertLongToLocalTime(current.sunrise),
                 sunset = convertLongToLocalTime(current.sunset),
