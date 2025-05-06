@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
@@ -22,7 +23,6 @@ import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.feature.network.RetrofitClient
-import com.jin.jjinweather.feature.database.data.DatabaseProvider
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.feature.navigation.Screens
@@ -51,7 +51,8 @@ class MainActivity : ComponentActivity() {
         val openWeatherApi: OpenWeatherApi =
             RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
 
-        val db = DatabaseProvider.getDatabase(this)
+        val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
+
 
         enableEdgeToEdge()
         setContent {
