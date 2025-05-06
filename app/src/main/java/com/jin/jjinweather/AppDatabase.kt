@@ -1,4 +1,4 @@
-package com.jin.jjinweather.feature.database.data
+package com.jin.jjinweather
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
