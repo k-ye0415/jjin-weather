@@ -2,10 +2,18 @@ package com.jin.jjinweather.feature.weather.data
 
 import android.database.SQLException
 import com.jin.jjinweather.feature.weather.data.model.WeatherEntity
+import com.jin.jjinweather.feature.weather.domain.model.DayWeather
+import com.jin.jjinweather.feature.weather.domain.model.Forecast
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.Weather
+import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.LocalTime
+import java.util.Calendar
 
 class WeatherRepositoryImpl(
     private val weatherTrackingDataSource: WeatherTrackingDataSource,
@@ -47,16 +55,16 @@ class WeatherRepositoryImpl(
      * */
     private fun Weather.toEntityModel(): WeatherEntity {
         return WeatherEntity(
-            iconCode = iconCode,
-            currentTemperature = currentTemperature.toDouble(),
-            yesterdayTemperature = yesterdayTemperature.toDouble(),
-            minTemperature = minTemperature.toDouble(),
-            maxTemperature = maxTemperature.toDouble(),
-            hourlyWeatherList = hourlyWeatherList,
-            dailyWeatherList = dailyWeatherList,
-            sunrise = sunrise,
-            sunset = sunset,
-            moonPhase = moonPhase
+            iconCode = dayWeather.icon.name,
+            currentTemperature = dayWeather.temperature.toDouble(),
+            yesterdayTemperature = yesterdayWeather.temperature.toDouble(),
+            minTemperature = dayWeather.temperatureRange.min.toDouble(),
+            maxTemperature = dayWeather.temperatureRange.max.toDouble(),
+            hourlyWeatherList = forecast.hourly,
+            dailyWeatherList = forecast.daily,
+            sunrise = dayWeather.sunrise.toSecondOfDay().toLong(),
+            sunset = dayWeather.sunset.toSecondOfDay().toLong(),
+            moonPhase = dayWeather.moonPhase
         )
     }
 
@@ -65,16 +73,22 @@ class WeatherRepositoryImpl(
      * */
     private fun WeatherEntity.toDomainModel(): Weather {
         return Weather(
-            iconCode = iconCode,
-            currentTemperature = currentTemperature,
-            yesterdayTemperature = yesterdayTemperature,
-            minTemperature = minTemperature,
-            maxTemperature = maxTemperature,
-            hourlyWeatherList = hourlyWeatherList,
-            dailyWeatherList = dailyWeatherList,
-            sunrise = sunrise,
-            sunset = sunset,
-            moonPhase = moonPhase
+            dayWeather = DayWeather(
+                date = Calendar.getInstance(),
+                icon = WeatherIcon.valueOf(iconCode),
+                temperature = currentTemperature,
+                sunrise = LocalTime.ofSecondOfDay(sunrise),
+                sunset = LocalTime.ofSecondOfDay(sunset),
+                moonPhase = moonPhase,
+                temperatureRange = TemperatureRange(min = minTemperature, max = maxTemperature)
+            ),
+            yesterdayWeather = TemperatureSnapshot(
+                timeStamp = Instant.now(),
+                icon = WeatherIcon.valueOf(iconCode),
+                temperature = yesterdayTemperature
+            ),
+            forecast = Forecast(hourly = hourlyWeatherList, daily = dailyWeatherList)
+
         )
     }
 
