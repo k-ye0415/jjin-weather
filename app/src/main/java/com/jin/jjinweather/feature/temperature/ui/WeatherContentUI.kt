@@ -51,7 +51,7 @@ fun WeatherLoadingContent() {
 @Composable
 fun WeatherLoadedContent(cityWeather: CityWeather) {
     // ui 수정 필요
-    val currentWeatherIconRes = mapWeatherIconToDrawable(cityWeather.weather.iconCode)
+    val currentWeatherIconRes = cityWeather.weather.dayWeather.icon.drawableRes
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
@@ -61,7 +61,7 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
         ) {
             Column {
                 Text("위치 : ${cityWeather.cityName}")
-                Text("현재 온도 : ${cityWeather.weather.currentTemperature}")
+                Text("현재 온도 : ${cityWeather.weather.dayWeather.temperature}")
                 Image(
                     painter = painterResource(id = currentWeatherIconRes),
                     contentDescription = "current temp icon",
@@ -73,16 +73,15 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(cityWeather.weather.hourlyWeatherList.size) { index ->
-                        val hourlyWeatherIconRes =
-                            mapWeatherIconToDrawable(cityWeather.weather.hourlyWeatherList[index].iconCode)
+                    items(cityWeather.weather.forecast.hourly.size) { index ->
+                        val hourlyWeatherIconRes =cityWeather.weather.forecast.hourly[index].icon.drawableRes
                         Column {
                             Image(
                                 painter = painterResource(id = hourlyWeatherIconRes),
                                 contentDescription = "hourly temp icon",
                                 modifier = Modifier.size(32.dp)
                             )
-                            Text("${cityWeather.weather.hourlyWeatherList[index].temperature}")
+                            Text("${cityWeather.weather.forecast.hourly[index].temperature}")
                         }
                     }
                 }
@@ -92,9 +91,8 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(cityWeather.weather.dailyWeatherList.size) { index ->
-                        val dailyWeatherIconRes =
-                            mapWeatherIconToDrawable(cityWeather.weather.dailyWeatherList[index].iconCode)
+                    items(cityWeather.weather.forecast.daily.size) { index ->
+                        val dailyWeatherIconRes =cityWeather.weather.forecast.daily[index].icon.drawableRes
                         Column {
                             Image(
                                 painter = painterResource(id = dailyWeatherIconRes),

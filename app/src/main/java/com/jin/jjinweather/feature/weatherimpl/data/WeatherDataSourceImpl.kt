@@ -4,9 +4,17 @@ import android.util.Log
 import com.jin.jjinweather.feature.weather.data.OpenWeatherDataSource
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
-import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
-import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
+import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
+import com.jin.jjinweather.feature.weather.domain.model.DayWeather
+import com.jin.jjinweather.feature.weather.domain.model.Forecast
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.Weather
+import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
+import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
+import java.util.Calendar
 
 class WeatherDataSourceImpl(
     private val openWeatherDataSource: OpenWeatherDataSource
@@ -35,34 +43,46 @@ class WeatherDataSourceImpl(
 
     private fun WeatherDTO.toWeather(yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
-            HourlyWeather(
-                forecastTime = hourly.dt,
-                iconCode = hourly.weather.firstOrNull()?.icon.orEmpty(),
+            TemperatureSnapshot(
+                timeStamp = Instant.ofEpochMilli(hourly.dt),
+                icon = WeatherIcon.findByWeatherIcon(hourly.weather.first().icon),
                 temperature = hourly.temperature
             )
         }
-
         val dailyList = daily.map { daily ->
-            DailyWeather(
-                forecastDay = daily.dt,
-                iconCode = daily.weather.firstOrNull()?.icon.orEmpty(),
-                minTemperature = daily.temperature.min,
-                maxTemperature = daily.temperature.max
+            DailyForecast(
+                date = Calendar.getInstance().apply { timeInMillis = daily.dt },
+                icon = WeatherIcon.findByWeatherIcon(daily.weather.first().icon),
+                temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max)
             )
         }
 
         return Weather(
-            iconCode = current.weather.firstOrNull()?.icon.orEmpty(),
-            currentTemperature = current.temperature,
-            yesterdayTemperature = yesterdayTemp ?: current.temperature,
-            minTemperature = daily.first().temperature.min,
-            maxTemperature = daily.first().temperature.max,
-            hourlyWeatherList = hourlyList,
-            dailyWeatherList = dailyList,
-            sunrise = current.sunrise,
-            sunset = current.sunset,
-            moonPhase = daily.first().moonPhase
+            dayWeather = DayWeather(
+                date = Calendar.getInstance(),
+                icon = WeatherIcon.findByWeatherIcon(current.weather.first().icon),
+                temperature = current.temperature,
+                sunrise = convertLongToLocalTime(current.sunrise),
+                sunset = convertLongToLocalTime(current.sunset),
+                moonPhase = daily.first().moonPhase,
+                temperatureRange = TemperatureRange(
+                    min = daily.first().temperature.min,
+                    max = daily.first().temperature.max
+                ),
+            ),
+            yesterdayWeather = TemperatureSnapshot( // FIXME : need Yesterday timeStamp, icon
+                timeStamp = Instant.now(),
+                icon = WeatherIcon.RAIN_NIGHT,
+                temperature = yesterdayTemp ?: current.temperature
+            ),
+            forecast = Forecast(hourlyList, dailyList)
         )
+    }
+
+    private fun convertLongToLocalTime(epoch: Long): LocalTime {
+        return Instant.ofEpochSecond(epoch)
+            .atZone(ZoneId.systemDefault())
+            .toLocalTime()
     }
 
     private companion object {
