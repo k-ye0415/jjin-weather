@@ -122,20 +122,3 @@ fun WeatherErrorContent(message: String) {
         }
     }
 }
-
-private fun mapWeatherIconToDrawable(icon: String): Int {
-    return when (icon) {
-        "01d" -> R.drawable.ic_main_clear_sky_day
-        "01n" -> R.drawable.ic_main_clear_sky_night
-        "02d" -> R.drawable.ic_main_few_clouds_day
-        "02n" -> R.drawable.ic_main_few_clouds_night
-        "03d", "03n", "04d", "04n" -> R.drawable.ic_main_scattered_clouds
-        "09d", "09n" -> R.drawable.ic_main_shower_rain
-        "10d" -> R.drawable.ic_main_rain_day
-        "10n" -> R.drawable.ic_main_rain_night
-        "11d", "11n" -> R.drawable.ic_main_thunderstorm
-        "13d", "13n" -> R.drawable.ic_main_snow
-        "50d", "50n" -> R.drawable.ic_main_mist
-        else -> R.drawable.ic_main_clear_sky_day
-    }
-}
