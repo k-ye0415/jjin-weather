@@ -53,7 +53,6 @@ class MainActivity : ComponentActivity() {
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
 
-
         enableEdgeToEdge()
         setContent {
             JJinWeatherTheme {
