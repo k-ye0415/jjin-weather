@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -78,17 +77,16 @@ fun WeatherErrorScreen(message: String) {
                     painter = painterResource(R.drawable.ic_main_thunderstorm),
                     contentDescription = stringResource(R.string.error_background_img_desc)
                 )
-                val radius = 48.dp
-                val angleRad = Math.toRadians(angle.value.toDouble())
-                val offsetX = cos(angleRad) * with(LocalDensity.current) { radius.toPx() }
-                val offsetY = sin(angleRad) * with(LocalDensity.current) { radius.toPx() }
-
                 Image(
                     painter = painterResource(R.drawable.ic_reading_glasses),
                     contentDescription = stringResource(R.string.error_glasses_img_desc),
                     modifier = Modifier
                         .size(64.dp)
                         .graphicsLayer {
+                            val radius = 48.dp
+                            val angleRad = Math.toRadians(angle.value.toDouble())
+                            val offsetX = cos(angleRad) * radius.toPx()
+                            val offsetY = sin(angleRad) * radius.toPx()
                             translationX = offsetX.toFloat()
                             translationY = offsetY.toFloat()
                         }
