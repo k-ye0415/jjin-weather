@@ -44,15 +44,15 @@ class WeatherDataSourceImpl(
     private fun WeatherDTO.toWeather(yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
             TemperatureSnapshot(
-                timeStamp = Instant.ofEpochMilli(hourly.dt),
-                icon = WeatherIcon.findByWeatherCode(hourly.weather.first().icon),
+                timeStamp = Instant.ofEpochSecond(hourly.dt),
+                icon = WeatherIcon.findByWeatherCode(hourly.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = hourly.temperature
             )
         }
         val dailyList = daily.map { daily ->
             DailyForecast(
                 date = Calendar.getInstance().apply { timeInMillis = daily.dt },
-                icon = WeatherIcon.findByWeatherCode(daily.weather.first().icon),
+                icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
                 temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max)
             )
         }
@@ -60,14 +60,14 @@ class WeatherDataSourceImpl(
         return Weather(
             dayWeather = DayWeather(
                 date = Calendar.getInstance(),
-                icon = WeatherIcon.findByWeatherCode(current.weather.first().icon),
+                icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = current.temperature,
-                sunrise = convertLongToLocalTime(current.sunrise),
-                sunset = convertLongToLocalTime(current.sunset),
-                moonPhase = daily.first().moonPhase,
+                sunrise = epochTimestampToLocalTime(current.sunrise),
+                sunset = epochTimestampToLocalTime(current.sunset),
+                moonPhase = daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE,
                 temperatureRange = TemperatureRange(
-                    min = daily.first().temperature.min,
-                    max = daily.first().temperature.max
+                    min = daily.firstOrNull()?.temperature?.min ?: DEFAULT_MIN_TEMPERATURE,
+                    max = daily.firstOrNull()?.temperature?.max ?: DEFAULT_MAX_TEMPERATURE
                 ),
             ),
             yesterdayWeather = TemperatureSnapshot( // FIXME : need Yesterday timeStamp, icon
@@ -79,7 +79,7 @@ class WeatherDataSourceImpl(
         )
     }
 
-    private fun convertLongToLocalTime(epoch: Long): LocalTime {
+    private fun epochTimestampToLocalTime(epoch: Long): LocalTime {
         return Instant.ofEpochSecond(epoch)
             .atZone(ZoneId.systemDefault())
             .toLocalTime()
@@ -87,5 +87,8 @@ class WeatherDataSourceImpl(
 
     private companion object {
         const val TAG = "WeatherDataSource"
+        const val DEFAULT_MOON_PHASE = 0.0
+        const val DEFAULT_MIN_TEMPERATURE = 0
+        const val DEFAULT_MAX_TEMPERATURE = 30
     }
 }
