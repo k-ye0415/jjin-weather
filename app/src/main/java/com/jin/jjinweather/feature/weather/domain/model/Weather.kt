@@ -46,22 +46,35 @@ data class TemperatureRange(
     val max: Number
 )
 
-enum class WeatherIcon(@DrawableRes val drawableRes: Int, val codes: Set<String>) {
-    CLEAR_SKY_DAY(R.drawable.ic_main_clear_sky_day, setOf("01d")),
-    CLEAR_SKY_NIGHT(R.drawable.ic_main_clear_sky_night, setOf("01n")),
-    FEW_CLOUDS_DAY(R.drawable.ic_main_few_clouds_day, setOf("02d")),
-    FEW_CLOUDS_NIGHT(R.drawable.ic_main_few_clouds_night, setOf("02n")),
-    SCATTERED_CLOUDS(R.drawable.ic_main_scattered_clouds, setOf("03d", "03n", "04d", "04n")),
-    SHOWER_RAIN(R.drawable.ic_main_shower_rain, setOf("09d", "09n")),
-    RAIN_DAY(R.drawable.ic_main_rain_day, setOf("10d")),
-    RAIN_NIGHT(R.drawable.ic_main_rain_night, setOf("10n")),
-    THUNDERSTORM(R.drawable.ic_main_thunderstorm, setOf("11d", "11n")),
-    SNOW(R.drawable.ic_main_snow, setOf("13d", "13n")),
-    MIST(R.drawable.ic_main_mist, setOf("50d", "50n"));
+enum class WeatherIcon(@DrawableRes val drawableRes: Int) {
+    CLEAR_SKY_DAY(R.drawable.ic_main_clear_sky_day),
+    CLEAR_SKY_NIGHT(R.drawable.ic_main_clear_sky_night),
+    FEW_CLOUDS_DAY(R.drawable.ic_main_few_clouds_day),
+    FEW_CLOUDS_NIGHT(R.drawable.ic_main_few_clouds_night),
+    SCATTERED_CLOUDS(R.drawable.ic_main_scattered_clouds),
+    SHOWER_RAIN(R.drawable.ic_main_shower_rain),
+    RAIN_DAY(R.drawable.ic_main_rain_day),
+    RAIN_NIGHT(R.drawable.ic_main_rain_night),
+    THUNDERSTORM(R.drawable.ic_main_thunderstorm),
+    SNOW(R.drawable.ic_main_snow),
+    MIST(R.drawable.ic_main_mist);
 
     companion object {
-        fun findByWeatherIcon(code: String): WeatherIcon {
-            return entries.firstOrNull { code in it.codes } ?: CLEAR_SKY_DAY
+        fun findByWeatherCode(code: String): WeatherIcon {
+            return when (code) {
+                "01d" -> CLEAR_SKY_DAY
+                "01n" -> CLEAR_SKY_NIGHT
+                "02d" -> FEW_CLOUDS_DAY
+                "02n" -> FEW_CLOUDS_NIGHT
+                "03d", "03n", "04d", "04n" -> SCATTERED_CLOUDS
+                "09d", "09n" -> SHOWER_RAIN
+                "10d" -> RAIN_DAY
+                "10n" -> RAIN_NIGHT
+                "11d", "11n" -> THUNDERSTORM
+                "13d", "13n" -> SNOW
+                "50d", "50n" -> MIST
+                else -> CLEAR_SKY_DAY
+            }
         }
     }
 }
