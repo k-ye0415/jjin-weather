@@ -1,7 +1,6 @@
 package com.jin.jjinweather.feature.weatherimpl.data
 
 import android.util.Log
-import com.jin.jjinweather.BuildConfig
 import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
@@ -14,18 +13,15 @@ class WeatherDataSourceImpl(
     private val openWeatherApi: OpenWeatherApi,
     private val apiKey: String,
 ) : WeatherDataSource {
-    private val exclude = "minutely"
-    private val units = "metric"
-    private val lang = "kr"
 
     override suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
         return try {
             val response = openWeatherApi.queryWeather(
                 latitude = latitude,
                 longitude = longitude,
-                exclude = exclude,
-                units = units,
-                lang = lang,
+                exclude = EXCLUDE,
+                units = UNITS,
+                lang = LANGUAGE,
                 apiKey = apiKey
             )
             val yesterdayResponse = requestYesterdayWeatherAt(latitude, longitude)
@@ -47,8 +43,8 @@ class WeatherDataSourceImpl(
                 latitude = latitude,
                 longitude = longitude,
                 dateTime = timestamp24hAgo,
-                units = units,
-                lang = lang,
+                units = UNITS,
+                lang = LANGUAGE,
                 apiKey = apiKey
             ).data.firstOrNull()?.temperature
         } catch (e: Exception) {
@@ -91,5 +87,8 @@ class WeatherDataSourceImpl(
 
     private companion object {
         const val TAG = "WeatherDataSource"
+        const val EXCLUDE = "minutely"
+        const val UNITS = "metric"
+        const val LANGUAGE = "kr"
     }
 }
