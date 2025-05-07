@@ -15,36 +15,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
-import com.jin.jjinweather.feature.weather.ui.state.UiState
+import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
+import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
+import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @Composable
 fun WeatherContentUI(cityWeather: UiState<CityWeather>) {
     when (cityWeather) {
-        is UiState.Loading -> WeatherLoadingContent()
+        is UiState.Loading -> WeatherLoadingScreen()
         is UiState.Success -> WeatherLoadedContent(cityWeather.data)
-        is UiState.Error -> WeatherErrorContent(cityWeather.message)
-    }
-}
-
-@Composable
-fun WeatherLoadingContent() {
-    // indicator
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding), contentAlignment = Alignment.Center
-        ) {
-            Column {
-                Text("Loading...", fontSize = 24.sp)
-            }
-        }
+        is UiState.Error -> WeatherErrorScreen(cityWeather.message)
     }
 }
 
