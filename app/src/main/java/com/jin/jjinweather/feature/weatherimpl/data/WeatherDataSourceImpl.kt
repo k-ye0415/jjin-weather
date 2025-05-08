@@ -70,7 +70,7 @@ class WeatherDataSourceImpl(
         }
         val dailyList = daily.map { daily ->
             DailyForecast(
-                date = Calendar.getInstance().apply { timeInMillis = daily.dt },
+                date = Calendar.getInstance().apply { timeInMillis = daily.dt * 1000 },
                 icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
                 temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max)
             )
