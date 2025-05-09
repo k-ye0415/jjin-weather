@@ -4,10 +4,17 @@ import android.util.Log
 import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
-import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
-import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
+import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
+import com.jin.jjinweather.feature.weather.domain.model.DayWeather
+import com.jin.jjinweather.feature.weather.domain.model.Forecast
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.Weather
+import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
 import java.time.Instant
+import java.time.LocalTime
+import java.time.ZoneId
+import java.util.Calendar
 
 class WeatherDataSourceImpl(
     private val openWeatherApi: OpenWeatherApi,
@@ -55,38 +62,53 @@ class WeatherDataSourceImpl(
 
     private fun WeatherDTO.toWeather(yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
-            HourlyWeather(
-                forecastTime = hourly.dt,
-                iconCode = hourly.weather.firstOrNull()?.icon.orEmpty(),
+            TemperatureSnapshot(
+                timeStamp = Instant.ofEpochSecond(hourly.dt),
+                icon = WeatherIcon.findByWeatherCode(hourly.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = hourly.temperature
             )
         }
-
         val dailyList = daily.map { daily ->
-            DailyWeather(
-                forecastDay = daily.dt,
-                iconCode = daily.weather.firstOrNull()?.icon.orEmpty(),
-                minTemperature = daily.temperature.min,
-                maxTemperature = daily.temperature.max
+            DailyForecast(
+                date = Calendar.getInstance().apply { timeInMillis = daily.dt * 1000 },
+                icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
+                temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max)
             )
         }
 
         return Weather(
-            iconCode = current.weather.firstOrNull()?.icon.orEmpty(),
-            currentTemperature = current.temperature,
-            yesterdayTemperature = yesterdayTemp ?: current.temperature,
-            minTemperature = daily.first().temperature.min,
-            maxTemperature = daily.first().temperature.max,
-            hourlyWeatherList = hourlyList,
-            dailyWeatherList = dailyList,
-            sunrise = current.sunrise,
-            sunset = current.sunset,
-            moonPhase = daily.first().moonPhase
+            dayWeather = DayWeather(
+                date = Calendar.getInstance(),
+                icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
+                temperature = current.temperature,
+                sunrise = epochTimestampToLocalTime(current.sunrise),
+                sunset = epochTimestampToLocalTime(current.sunset),
+                moonPhase = daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE,
+                temperatureRange = TemperatureRange(
+                    min = daily.firstOrNull()?.temperature?.min ?: DEFAULT_MIN_TEMPERATURE,
+                    max = daily.firstOrNull()?.temperature?.max ?: DEFAULT_MAX_TEMPERATURE
+                ),
+            ),
+            yesterdayWeather = TemperatureSnapshot( // FIXME : need Yesterday timeStamp, icon
+                timeStamp = Instant.now(),
+                icon = WeatherIcon.RAIN_NIGHT,
+                temperature = yesterdayTemp ?: current.temperature
+            ),
+            forecast = Forecast(hourlyList, dailyList)
         )
+    }
+
+    private fun epochTimestampToLocalTime(epoch: Long): LocalTime {
+        return Instant.ofEpochSecond(epoch)
+            .atZone(ZoneId.systemDefault())
+            .toLocalTime()
     }
 
     private companion object {
         const val TAG = "WeatherDataSource"
+        const val DEFAULT_MOON_PHASE = 0.0
+        const val DEFAULT_MIN_TEMPERATURE = 0
+        const val DEFAULT_MAX_TEMPERATURE = 30
         const val EXCLUDE = "minutely"
         const val UNITS = "metric"
         const val LANGUAGE = "kr"

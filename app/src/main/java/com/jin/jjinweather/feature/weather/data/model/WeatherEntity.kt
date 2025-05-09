@@ -2,7 +2,9 @@ package com.jin.jjinweather.feature.weather.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
+import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
 
 /**
@@ -32,8 +34,8 @@ data class WeatherEntity(
     val yesterdayTemperature: Double,
     val minTemperature: Double,
     val maxTemperature: Double,
-    val hourlyWeatherList: List<HourlyWeather>,
-    val dailyWeatherList: List<DailyWeather>,
+    val hourlyWeatherList: HourlyForecast,
+    val dailyWeatherList: List<DailyForecast>,
     val sunrise: Long,
     val sunset: Long,
     val moonPhase: Double

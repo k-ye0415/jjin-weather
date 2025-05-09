@@ -15,9 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
@@ -35,7 +35,7 @@ fun WeatherContentUI(cityWeather: UiState<CityWeather>) {
 @Composable
 fun WeatherLoadedContent(cityWeather: CityWeather) {
     // ui 수정 필요
-    val currentWeatherIconRes = mapWeatherIconToDrawable(cityWeather.weather.iconCode)
+    val currentWeatherIconRes = cityWeather.weather.dayWeather.icon.drawableRes
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
@@ -45,7 +45,7 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
         ) {
             Column {
                 Text("위치 : ${cityWeather.cityName}")
-                Text("현재 온도 : ${cityWeather.weather.currentTemperature}")
+                Text("현재 온도 : ${cityWeather.weather.dayWeather.temperature}")
                 Image(
                     painter = painterResource(id = currentWeatherIconRes),
                     contentDescription = "current temp icon",
@@ -57,16 +57,15 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(cityWeather.weather.hourlyWeatherList.size) { index ->
-                        val hourlyWeatherIconRes =
-                            mapWeatherIconToDrawable(cityWeather.weather.hourlyWeatherList[index].iconCode)
+                    items(cityWeather.weather.forecast.hourly.size) { index ->
+                        val hourlyWeatherIconRes =cityWeather.weather.forecast.hourly[index].icon.drawableRes
                         Column {
                             Image(
                                 painter = painterResource(id = hourlyWeatherIconRes),
                                 contentDescription = "hourly temp icon",
                                 modifier = Modifier.size(32.dp)
                             )
-                            Text("${cityWeather.weather.hourlyWeatherList[index].temperature}")
+                            Text("${cityWeather.weather.forecast.hourly[index].temperature}")
                         }
                     }
                 }
@@ -76,9 +75,8 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(cityWeather.weather.dailyWeatherList.size) { index ->
-                        val dailyWeatherIconRes =
-                            mapWeatherIconToDrawable(cityWeather.weather.dailyWeatherList[index].iconCode)
+                    items(cityWeather.weather.forecast.daily.size) { index ->
+                        val dailyWeatherIconRes =cityWeather.weather.forecast.daily[index].icon.drawableRes
                         Column {
                             Image(
                                 painter = painterResource(id = dailyWeatherIconRes),
@@ -93,19 +91,18 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
     }
 }
 
-private fun mapWeatherIconToDrawable(icon: String): Int {
-    return when (icon) {
-        "01d" -> R.drawable.ic_main_clear_sky_day
-        "01n" -> R.drawable.ic_main_clear_sky_night
-        "02d" -> R.drawable.ic_main_few_clouds_day
-        "02n" -> R.drawable.ic_main_few_clouds_night
-        "03d", "03n", "04d", "04n" -> R.drawable.ic_main_scattered_clouds
-        "09d", "09n" -> R.drawable.ic_main_shower_rain
-        "10d" -> R.drawable.ic_main_rain_day
-        "10n" -> R.drawable.ic_main_rain_night
-        "11d", "11n" -> R.drawable.ic_main_thunderstorm
-        "13d", "13n" -> R.drawable.ic_main_snow
-        "50d", "50n" -> R.drawable.ic_main_mist
-        else -> R.drawable.ic_main_clear_sky_day
+@Composable
+fun WeatherErrorContent(message: String) {
+    // ui 수정 필요
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding), contentAlignment = Alignment.Center
+        ) {
+            Column {
+                Text("Error : $message", color = Color.Red)
+            }
+        }
     }
 }
