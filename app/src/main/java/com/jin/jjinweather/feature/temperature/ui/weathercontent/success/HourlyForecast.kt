@@ -172,27 +172,3 @@ private fun formatDayOrHourLabelAt(timeStamp: Instant): String {
         stringResource(R.string.success_hourly_forecast_hour, hour12)
     }
 }
-
-
-fun mapTemperatureToColor(temperature: Int): Color {
-    return when (temperature) {
-        9 -> Temperature9
-        10 -> Temperature10
-        11 -> Temperature11
-        12 -> Temperature12
-        13 -> Temperature13
-        14 -> Temperature14
-        15 -> Temperature15
-        16 -> Temperature16
-        17 -> Temperature17
-        18 -> Temperature18
-        19 -> Temperature19
-        20 -> Temperature20
-        21 -> Temperature21
-        22 -> Temperature22
-        23 -> Temperature23
-        24 -> Temperature24
-        25 -> Temperature25
-        else -> Temperature10
-    }
-}
