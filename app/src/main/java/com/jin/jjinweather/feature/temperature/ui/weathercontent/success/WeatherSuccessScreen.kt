@@ -9,22 +9,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
+import com.jin.jjinweather.ui.theme.SuccessBackgroundBottomDayColor
+import com.jin.jjinweather.ui.theme.SuccessBackgroundBottomNightColor
+import com.jin.jjinweather.ui.theme.SuccessBackgroundTopDayColor
+import com.jin.jjinweather.ui.theme.SuccessBackgroundTopNightColor
+import com.jin.jjinweather.ui.theme.SuccessCardBackgroundDayColor
+import com.jin.jjinweather.ui.theme.SuccessCardBackgroundNightColor
 import java.time.LocalTime
 
 @Composable
 fun WeatherSuccessScreen(weather: CityWeather) {
     val isAfterSunset = LocalTime.now().isAfter(weather.weather.dayWeather.sunset)
-    val backgroundGradientBrush = Brush.verticalGradient(
-        colors = if (isAfterSunset) {
-            listOf(Color(0xFF1d1c66), Color(0xFF7f6d8e))
-        } else {
-            listOf(Color(0xFF128cfe), Color(0xFF0074df))
-        }
-    )
-    val cardBackgroundColor = if (isAfterSunset) Color(0x501d1c66) else Color(0x50035198)
+    val backgroundGradientBrush = generateBackgroundColor(isAfterSunset)
+    val cardBackgroundColor = generatedCardBackgroundColor(isAfterSunset)
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         LazyColumn(
@@ -78,3 +77,14 @@ fun WeatherSuccessScreen(weather: CityWeather) {
         }
     }
 }
+
+private fun generateBackgroundColor(isAfterSunset: Boolean) = Brush.verticalGradient(
+    colors = if (isAfterSunset) {
+        listOf(SuccessBackgroundTopNightColor, SuccessBackgroundBottomNightColor)
+    } else {
+        listOf(SuccessBackgroundTopDayColor, SuccessBackgroundBottomDayColor)
+    }
+)
+
+private fun generatedCardBackgroundColor(isAfterSunset: Boolean) =
+    if (isAfterSunset) SuccessCardBackgroundNightColor else SuccessCardBackgroundDayColor

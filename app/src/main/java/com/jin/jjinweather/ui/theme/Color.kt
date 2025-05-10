@@ -38,3 +38,11 @@ val Temperature22 = Color(0xFFf6c443)
 val Temperature23 = Color(0xFFf5ba40)
 val Temperature24 = Color(0xFFf4b53f)
 val Temperature25 = Color(0xFFf3aa3c)
+
+val SuccessBackgroundTopNightColor = Color(0xFF1d1c66)
+val SuccessBackgroundBottomNightColor = Color(0xFF7f6d8e)
+val SuccessBackgroundTopDayColor = Color(0xFF128cfe)
+val SuccessBackgroundBottomDayColor = Color(0xFF0074df)
+
+val SuccessCardBackgroundNightColor = Color(0x501d1c66)
+val SuccessCardBackgroundDayColor = Color(0x50035198)
