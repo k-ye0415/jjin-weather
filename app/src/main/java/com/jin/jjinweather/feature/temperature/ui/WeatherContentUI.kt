@@ -90,19 +90,3 @@ fun WeatherLoadedContent(cityWeather: CityWeather) {
         }
     }
 }
-
-@Composable
-fun WeatherErrorContent(message: String) {
-    // ui 수정 필요
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding), contentAlignment = Alignment.Center
-        ) {
-            Column {
-                Text("Error : $message", color = Color.Red)
-            }
-        }
-    }
-}
