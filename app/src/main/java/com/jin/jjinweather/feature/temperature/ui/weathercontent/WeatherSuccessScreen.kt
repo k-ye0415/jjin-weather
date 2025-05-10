@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.CurrentWeatherOverview
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.TopMenuAction
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 import java.time.LocalTime
@@ -35,6 +36,16 @@ fun WeatherSuccessScreen(weather: CityWeather) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item { TopMenuAction() }
+            item {
+                CurrentWeatherOverview(
+                    cityName = weather.cityName,
+                    currentTemperature = weather.weather.dayWeather.temperature.toInt(),
+                    currentWeatherIconRes = weather.weather.dayWeather.icon.drawableRes,
+                    todayMinTemperature = weather.weather.dayWeather.temperatureRange.min.toInt(),
+                    todayMaxTemperature = weather.weather.dayWeather.temperatureRange.max.toInt(),
+                    yesterdayTemperature = weather.weather.yesterdayWeather.temperature.toInt()
+                )
+            }
         }
     }
 }
