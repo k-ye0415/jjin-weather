@@ -122,7 +122,7 @@ private fun HourlyItem(item: TemperatureSnapshot) {
         if (timeOrDayLabel == stringResource(R.string.success_day_after_tomorrow)) {
             Box(modifier = Modifier.background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))) {
                 Text(
-                    text = timeOrDayLabel, color = Color(0xFF444444), fontSize = 14.sp,
+                    text = timeOrDayLabel, color = TextColor40, fontSize = 14.sp,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
             }

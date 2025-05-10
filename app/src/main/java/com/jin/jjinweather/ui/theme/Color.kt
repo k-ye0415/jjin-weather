@@ -46,3 +46,9 @@ val SuccessBackgroundBottomDayColor = Color(0xFF0074df)
 
 val SuccessCardBackgroundNightColor = Color(0x501d1c66)
 val SuccessCardBackgroundDayColor = Color(0x50035198)
+
+val TemperatureGraphBackgroundColor = Color(0x701d1c66)
+
+val DetailWeatherIconBackgroundColor = Color(0x30FFFFFF)
+
+val TextColor40 = Color(0xFF444444)
