@@ -1,4 +1,4 @@
-package com.jin.jjinweather.feature.temperature.ui.weathercontent
+package com.jin.jjinweather.feature.temperature.ui.weathercontent.success
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.CurrentWeatherOverview
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.DailyForecast
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.HourlyForecast
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.TopMenuAction
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.YesterdayWeatherOutfit
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 import java.time.LocalTime
 
@@ -69,6 +64,15 @@ fun WeatherSuccessScreen(weather: CityWeather) {
                     modifier = Modifier.padding(bottom = 10.dp),
                     backgroundColor = cardBackgroundColor,
                     dailyWeatherList = weather.weather.forecast.daily
+                )
+            }
+            item {
+                DetailWeather(
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    backgroundColor = cardBackgroundColor,
+                    sunrise = weather.weather.dayWeather.sunrise,
+                    sunset = weather.weather.dayWeather.sunset,
+                    moonPhase = weather.weather.dayWeather.moonPhase
                 )
             }
         }
