@@ -122,71 +122,69 @@ private fun SunProgressIndicator(
                 .padding(top = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column {
-                Box(
-                    modifier = Modifier
-                        .size(200.dp)
-                        .padding(top = 100.dp),
-                    contentAlignment = Alignment.Center
+            Box(
+                modifier = Modifier
+                    .size(200.dp)
+                    .padding(top = 100.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val stroke = 20f
+                    val arcDiameter = size.minDimension * 2f
+                    val arcSize = Size(arcDiameter, arcDiameter)
+                    val arcTopLeft = Offset(
+                        (size.width - arcSize.width) / 2f,
+                        (size.height - arcSize.height)
+                    )
+
+                    drawArc(
+                        color = Color.LightGray,
+                        startAngle = 180f,
+                        sweepAngle = 180f,
+                        useCenter = false,
+                        topLeft = arcTopLeft,
+                        size = arcSize,
+                        style = Stroke(width = stroke, cap = StrokeCap.Round)
+                    )
+
+                    drawArc(
+                        color = Color.White,
+                        startAngle = 180f,
+                        sweepAngle = 180f * animatedPercent.value,
+                        useCenter = false,
+                        topLeft = arcTopLeft,
+                        size = arcSize,
+                        style = Stroke(width = stroke, cap = StrokeCap.Round)
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val stroke = 20f
-                        val arcDiameter = size.minDimension * 2f
-                        val arcSize = Size(arcDiameter, arcDiameter)
-                        val arcTopLeft = Offset(
-                            (size.width - arcSize.width) / 2f,
-                            (size.height - arcSize.height)
-                        )
-
-                        drawArc(
+                    val formatter = DateTimeFormatter.ofPattern("a h:mm", Locale.getDefault())
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = stringResource(R.string.success_detail_weather_sunrise),
                             color = Color.LightGray,
-                            startAngle = 180f,
-                            sweepAngle = 180f,
-                            useCenter = false,
-                            topLeft = arcTopLeft,
-                            size = arcSize,
-                            style = Stroke(width = stroke, cap = StrokeCap.Round)
+                            fontSize = 8.sp,
+                            lineHeight = 1.5.em
                         )
-
-                        drawArc(
-                            color = Color.White,
-                            startAngle = 180f,
-                            sweepAngle = 180f * animatedPercent.value,
-                            useCenter = false,
-                            topLeft = arcTopLeft,
-                            size = arcSize,
-                            style = Stroke(width = stroke, cap = StrokeCap.Round)
-                        )
+                        Text(text = sunrise.format(formatter), color = Color.White, fontSize = 12.sp)
                     }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        val formatter = DateTimeFormatter.ofPattern("a h:mm", Locale.getDefault())
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                text = stringResource(R.string.success_detail_weather_sunrise),
-                                color = Color.LightGray,
-                                fontSize = 8.sp,
-                                lineHeight = 1.5.em
-                            )
-                            Text(text = sunrise.format(formatter), color = Color.White, fontSize = 12.sp)
-                        }
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                stringResource(R.string.success_detail_weather_sunset),
-                                color = Color.LightGray,
-                                fontSize = 8.sp,
-                                lineHeight = 1.5.em
-                            )
-                            Text(sunset.format(formatter), color = Color.White, fontSize = 12.sp)
-                        }
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.success_detail_weather_sunset),
+                            color = Color.LightGray,
+                            fontSize = 8.sp,
+                            lineHeight = 1.5.em
+                        )
+                        Text(sunset.format(formatter), color = Color.White, fontSize = 12.sp)
                     }
                 }
             }
         }
         // FIXME : 일몰 이후 다음 날의 일출 시간 정보 필요.
-        val sunDiff = calculateNextSunLabel(now, sunrise, sunset)
+        val sunDiff = formatRemainingSunEventLabel(now, sunrise, sunset)
         Text(text = sunDiff, color = Color.White, fontSize = 12.sp)
     }
 }
@@ -210,7 +208,7 @@ private fun calculateSunProgress(
 }
 
 @Composable
-private fun calculateNextSunLabel(
+private fun formatRemainingSunEventLabel(
     now: LocalTime,
     nextSunrise: LocalTime,
     sunset: LocalTime

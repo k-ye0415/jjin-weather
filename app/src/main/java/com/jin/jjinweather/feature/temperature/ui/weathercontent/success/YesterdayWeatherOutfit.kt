@@ -35,14 +35,14 @@ fun YesterdayWeatherOutfit(backgroundColor: Color, yesterdayTemperature: Int) {
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         // FIXME : need yesterday weather icon resource
-        InfoCard(
+        WeatherSummaryCard(
             backgroundColor,
             iconPainter = painterResource(R.drawable.ic_main_mist),
             title = stringResource(R.string.success_yesterday),
             subtitle = stringResource(R.string.success_temperature, yesterdayTemperature),
             stringResource(R.string.success_yesterday_icon_desc)
         )
-        InfoCard(
+        WeatherSummaryCard(
             backgroundColor,
             iconPainter = painterResource(R.drawable.ic_clothes),
             title = stringResource(R.string.success_today_outfit_title),
@@ -52,8 +52,9 @@ fun YesterdayWeatherOutfit(backgroundColor: Color, yesterdayTemperature: Int) {
     }
 }
 
+// FIXME : Outfit 개발 시 수정 필요
 @Composable
-private fun InfoCard(
+private fun WeatherSummaryCard(
     backgroundColor: Color,
     iconPainter: Painter,
     title: String,

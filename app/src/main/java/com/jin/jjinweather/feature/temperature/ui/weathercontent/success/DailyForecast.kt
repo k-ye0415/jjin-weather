@@ -51,12 +51,10 @@ fun DailyForecast(modifier: Modifier, backgroundColor: Color, dailyWeatherList: 
             HorizontalDivider(thickness = 1.dp)
             val absoluteMinTemperature = dailyWeatherList
                 .map { it.temperatureRange.min }
-                .minOfOrNull { it.toInt() }
-                ?: 0
+                .minOfOrNull { it.toInt() } ?: 0
             val absoluteMaxTemperature = dailyWeatherList
                 .map { it.temperatureRange.max }
-                .maxOfOrNull { it.toInt() }
-                ?: 30
+                .maxOfOrNull { it.toInt() } ?: 30
             dailyWeatherList.forEachIndexed { index, forecast ->
                 val shouldDrawSeparator = index != dailyWeatherList.lastIndex
                 DailyItem(shouldDrawSeparator, forecast, absoluteMinTemperature, absoluteMaxTemperature)
@@ -89,8 +87,8 @@ private fun DailyHeader() {
 }
 
 @Composable
-private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, minTemp: Int, maxTemp: Int) {
-    val (dayOfWeek, month, day) = splitDateOrToday(forecast.date)
+private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, absoluteMinTemp: Int, absoluteMaxTemp: Int) {
+    val (dayOfWeek, month, day) = formatDateOrToday(forecast.date)
     val isToday = dayOfWeek == stringResource(R.string.success_daily_forecast_today)
     val dailyMinTemp = forecast.temperatureRange.min.toInt()
     val dailyMaxTemp = forecast.temperatureRange.max.toInt()
@@ -136,7 +134,7 @@ private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, min
                 painter = painterResource(forecast.icon.drawableRes),
                 contentDescription = stringResource(R.string.success_daily_forecast_temperature_icon_desc)
             )
-            TemperatureGraph(dailyMinTemp, dailyMaxTemp, minTemp, maxTemp)
+            TemperatureGraph(dailyMinTemp, dailyMaxTemp, absoluteMinTemp, absoluteMaxTemp)
         }
         if (shouldDrawSeparator) {
             HorizontalDivider(thickness = 1.dp)
@@ -145,22 +143,7 @@ private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, min
 }
 
 @Composable
-private fun splitDateOrToday(date: Calendar): Triple<String, String, String> {
-    val today = Calendar.getInstance()
-    val isToday = today.get(Calendar.YEAR) == date.get(Calendar.YEAR)
-            && today.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
-    return if (isToday) {
-        Triple(stringResource(R.string.success_daily_forecast_today), "", "")
-    } else {
-        val month = date.get(Calendar.MONTH) + 1
-        val day = date.get(Calendar.DAY_OF_MONTH)
-        val dayOfWeek = date.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) ?: ""
-        Triple(dayOfWeek, month.toString(), day.toString())
-    }
-}
-
-@Composable
-private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, minTemp: Int, maxTemp: Int) {
+private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, absoluteMinTemp: Int, absoluteMaxTemp: Int) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
@@ -187,11 +170,11 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, minTemp: Int,
             // 가로 길이를 확인.
             val boxWidthPx = with(LocalDensity.current) { maxWidth.toPx() }
 
-            val tempRange = (maxTemp - minTemp).takeIf { it != 0 } ?: 1
+            val tempRange = (absoluteMaxTemp - absoluteMinTemp).takeIf { it != 0 } ?: 1
 
             // 온도 그래프의 시작점과 끝점을 구하기 위하여 요일의 최저/최고 온도와 모든 요일의 최저/최고 온도로 padding 값을 구한다.
-            val startRatio = (dailyMinTemp - minTemp).toFloat() / tempRange
-            val endRatio = (maxTemp - dailyMaxTemp).toFloat() / tempRange
+            val startRatio = (dailyMinTemp - absoluteMinTemp).toFloat() / tempRange
+            val endRatio = (absoluteMaxTemp - dailyMaxTemp).toFloat() / tempRange
 
             val startPx = boxWidthPx * startRatio
             val endPx = boxWidthPx * endRatio
@@ -225,5 +208,20 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, minTemp: Int,
                 .padding(start = 4.dp)
                 .width(32.dp)
         )
+    }
+}
+
+@Composable
+private fun formatDateOrToday(date: Calendar): Triple<String, String, String> {
+    val today = Calendar.getInstance()
+    val isToday = today.get(Calendar.YEAR) == date.get(Calendar.YEAR)
+            && today.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
+    return if (isToday) {
+        Triple(stringResource(R.string.success_daily_forecast_today), "", "")
+    } else {
+        val month = date.get(Calendar.MONTH) + 1
+        val day = date.get(Calendar.DAY_OF_MONTH)
+        val dayOfWeek = date.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) ?: ""
+        Triple(dayOfWeek, month.toString(), day.toString())
     }
 }
