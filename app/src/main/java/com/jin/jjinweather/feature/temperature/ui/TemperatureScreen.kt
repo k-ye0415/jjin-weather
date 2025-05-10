@@ -10,7 +10,7 @@ import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherSuccessScreen
+import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.WeatherSuccessScreen
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
