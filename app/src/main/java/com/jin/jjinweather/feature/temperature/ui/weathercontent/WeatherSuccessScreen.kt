@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.CurrentWeatherOverview
+import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.DailyForecast
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.HourlyForecast
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.TopMenuAction
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.YesterdayWeatherOutfit
@@ -61,6 +62,13 @@ fun WeatherSuccessScreen(weather: CityWeather) {
                     modifier = Modifier.padding(bottom = 10.dp),
                     backgroundColor = cardBackgroundColor,
                     hourlyWeatherList = weather.weather.forecast.hourly
+                )
+            }
+            item {
+                DailyForecast(
+                    modifier = Modifier.padding(bottom = 10.dp),
+                    backgroundColor = cardBackgroundColor,
+                    dailyWeatherList = weather.weather.forecast.daily
                 )
             }
         }
