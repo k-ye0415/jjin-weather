@@ -2,7 +2,6 @@ package com.jin.jjinweather.feature.temperature.ui.weathercontent.success
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -26,7 +25,6 @@ fun TopMenuAction() {
                 tint = Color.White
             )
         }
-        Spacer(Modifier.weight(1f))
         IconButton({}) {
             Icon(
                 imageVector = Icons.Outlined.Add,
