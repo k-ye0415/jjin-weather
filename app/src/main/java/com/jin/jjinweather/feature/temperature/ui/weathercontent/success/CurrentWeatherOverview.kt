@@ -22,9 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jin.jjinweather.R
 
 @Composable
 fun CurrentWeatherOverview(
@@ -55,24 +57,29 @@ fun CurrentWeatherOverview(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = currentWeatherIconRes),
-                contentDescription = "current temp icon",
+                contentDescription = stringResource(R.string.success_current_temperature_icon_desc),
                 modifier = Modifier
                     .size(64.dp)
                     .rotate(rotation)
             )
-            Text("${currentTemperature}°", color = Color.White, fontSize = 64.sp, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(R.string.success_temperature, currentTemperature),
+                color = Color.White,
+                fontSize = 64.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Text(temperatureDescription, color = Color.White, fontSize = 20.sp)
         Row(modifier = Modifier.padding(bottom = 60.dp)) {
             Text(
-                "최저: ${todayMinTemperature}°",
+                stringResource(R.string.success_current_min_temperature, todayMinTemperature),
                 modifier = Modifier.padding(end = 8.dp),
                 fontSize = 18.sp,
                 color = Color.LightGray
             )
             Text(
-                "최고: ${todayMaxTemperature}°",
+                stringResource(R.string.success_current_max_temperature, todayMaxTemperature),
                 fontSize = 18.sp,
                 color = Color.LightGray
             )
@@ -83,12 +90,12 @@ fun CurrentWeatherOverview(
     }
 }
 
-
+@Composable
 private fun describeTemperatureComparedToYesterday(currentTemperature: Int, yesterdayTemperature: Int): String {
     val difference = currentTemperature - yesterdayTemperature
     return when {
-        difference > 0 -> "어제보다 ${difference}° 높아요"
-        difference < 0 -> "어제보다 ${-difference}° 낮아요"
-        else -> "어제와 동일해요"
+        difference > 0 -> stringResource(R.string.success_compared_high, difference)
+        difference < 0 -> stringResource(R.string.success_compared_low, -difference)
+        else -> stringResource(R.string.success_compared_same)
     }
 }

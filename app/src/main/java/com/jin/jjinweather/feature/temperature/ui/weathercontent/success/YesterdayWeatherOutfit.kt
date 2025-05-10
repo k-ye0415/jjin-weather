@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,23 +29,25 @@ import com.jin.jjinweather.R
 @Composable
 fun YesterdayWeatherOutfit(backgroundColor: Color, yesterdayTemperature: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         // FIXME : need yesterday weather icon resource
         InfoCard(
             backgroundColor,
             iconPainter = painterResource(R.drawable.ic_main_mist),
-            title = "어제 날씨",
-            subtitle = "${yesterdayTemperature}°",
-            "어제날씨"
+            title = stringResource(R.string.success_yesterday),
+            subtitle = stringResource(R.string.success_temperature, yesterdayTemperature),
+            stringResource(R.string.success_yesterday_icon_desc)
         )
         InfoCard(
             backgroundColor,
             iconPainter = painterResource(R.drawable.ic_clothes),
-            title = "오늘의",
-            subtitle = "옷 추천",
-            "옷추천"
+            title = stringResource(R.string.success_today_outfit_title),
+            subtitle = stringResource(R.string.success_today_outfit_sub_title),
+            stringResource(R.string.success_today_outfit_icon_desc)
         )
     }
 }
@@ -90,6 +93,7 @@ private fun InfoCard(
                 lineHeight = 16.sp
             )
         }
+        // FIXME : 옷 추천 진입 부분 필요
         Icon(
             Icons.Outlined.ArrowForwardIos,
             contentDescription = null,

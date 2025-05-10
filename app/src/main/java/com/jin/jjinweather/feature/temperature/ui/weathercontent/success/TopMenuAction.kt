@@ -11,6 +11,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.jin.jjinweather.R
 
 @Composable
 fun TopMenuAction() {
@@ -21,14 +23,14 @@ fun TopMenuAction() {
         IconButton({}) {
             Icon(
                 imageVector = Icons.Outlined.Dehaze,
-                contentDescription = "더보기",
+                contentDescription = stringResource(R.string.success_more_icon_desc),
                 tint = Color.White
             )
         }
         IconButton({}) {
             Icon(
                 imageVector = Icons.Outlined.Add,
-                contentDescription = "추가",
+                contentDescription = stringResource(R.string.success_add_location_icon_secs),
                 tint = Color.White
             )
         }
