@@ -27,11 +27,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import java.util.Calendar
 import java.util.Locale
@@ -72,18 +74,23 @@ private fun DailyHeader() {
     ) {
         Icon(
             Icons.Filled.CalendarToday,
-            contentDescription = "",
+            contentDescription = stringResource(R.string.success_daily_forecast_icon_desc),
             tint = Color.White,
             modifier = Modifier.size(16.dp)
         )
-        Text("일별 예보", fontSize = 14.sp, color = Color.LightGray, modifier = Modifier.padding(start = 4.dp))
+        Text(
+            stringResource(R.string.success_daily_forecast_title),
+            fontSize = 14.sp,
+            color = Color.LightGray,
+            modifier = Modifier.padding(start = 4.dp)
+        )
     }
 }
 
 @Composable
 private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, minTemp: Int, maxTemp: Int) {
     val (dayOfWeek, month, day) = splitDateOrToday(forecast.date)
-    val isToday = dayOfWeek == "오늘"
+    val isToday = dayOfWeek == stringResource(R.string.success_daily_forecast_today)
     val dailyMinTemp = forecast.temperatureRange.min.toInt()
     val dailyMaxTemp = forecast.temperatureRange.max.toInt()
     Column {
@@ -102,7 +109,12 @@ private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, min
                 verticalArrangement = Arrangement.Center
             ) {
                 if (isToday) {
-                    Text("오늘", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.success_daily_forecast_today),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 } else {
                     Text(
                         text = dayOfWeek,
@@ -111,10 +123,18 @@ private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, min
                         fontWeight = FontWeight.Bold,
                         lineHeight = 1.5.em
                     )
-                    Text("$month.$day", color = Color.LightGray, fontSize = 10.sp, lineHeight = 1.5.em)
+                    Text(
+                        stringResource(R.string.success_daily_forecast_month_day, month, day),
+                        color = Color.LightGray,
+                        fontSize = 10.sp,
+                        lineHeight = 1.5.em
+                    )
                 }
             }
-            Image(painter = painterResource(forecast.icon.drawableRes), contentDescription = "")
+            Image(
+                painter = painterResource(forecast.icon.drawableRes),
+                contentDescription = stringResource(R.string.success_daily_forecast_temperature_icon_desc)
+            )
             TemperatureGraph(dailyMinTemp, dailyMaxTemp, minTemp, maxTemp)
         }
         if (shouldDrawSeparator) {
@@ -123,12 +143,13 @@ private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, min
     }
 }
 
+@Composable
 private fun splitDateOrToday(date: Calendar): Triple<String, String, String> {
     val today = Calendar.getInstance()
     val isToday = today.get(Calendar.YEAR) == date.get(Calendar.YEAR)
             && today.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
     return if (isToday) {
-        Triple("오늘", "오늘", "오늘")
+        Triple(stringResource(R.string.success_daily_forecast_today), "", "")
     } else {
         val month = date.get(Calendar.MONTH) + 1
         val day = date.get(Calendar.DAY_OF_MONTH)
@@ -144,7 +165,7 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, minTemp: Int,
         horizontalArrangement = Arrangement.End
     ) {
         Text(
-            "${dailyMinTemp}°",
+            stringResource(R.string.success_temperature, dailyMinTemp),
             color = Color.LightGray,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
@@ -194,7 +215,7 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, minTemp: Int,
             )
         }
         Text(
-            "${dailyMaxTemp}°",
+            stringResource(R.string.success_temperature, dailyMaxTemp),
             color = Color.LightGray,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,

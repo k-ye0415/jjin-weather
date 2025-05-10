@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -77,13 +78,13 @@ private fun DetailWeatherHeader() {
     ) {
         Icon(
             Icons.Outlined.Apps,
-            contentDescription = "",
+            contentDescription = stringResource(R.string.success_detail_weather_icon_desc),
             tint = Color.White,
             modifier = Modifier
                 .size(16.dp)
         )
         Text(
-            text = "상세날씨",
+            text = stringResource(R.string.success_detail_weather_title),
             fontSize = 14.sp,
             color = Color.LightGray,
             modifier = Modifier.padding(start = 4.dp)
@@ -113,7 +114,7 @@ private fun SunProgressIndicator(
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column( // 그래프 컬럼
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
@@ -162,11 +163,21 @@ private fun SunProgressIndicator(
                     ) {
                         val formatter = DateTimeFormatter.ofPattern("a h:mm", Locale.getDefault())
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "일출", color = Color.LightGray, fontSize = 8.sp, lineHeight = 1.5.em)
+                            Text(
+                                text = stringResource(R.string.success_detail_weather_sunrise),
+                                color = Color.LightGray,
+                                fontSize = 8.sp,
+                                lineHeight = 1.5.em
+                            )
                             Text(text = sunrise.format(formatter), color = Color.White, fontSize = 12.sp)
                         }
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("일몰", color = Color.LightGray, fontSize = 8.sp, lineHeight = 1.5.em)
+                            Text(
+                                stringResource(R.string.success_detail_weather_sunset),
+                                color = Color.LightGray,
+                                fontSize = 8.sp,
+                                lineHeight = 1.5.em
+                            )
                             Text(sunset.format(formatter), color = Color.White, fontSize = 12.sp)
                         }
                     }
@@ -197,6 +208,7 @@ private fun calculateSunProgress(
     }
 }
 
+@Composable
 private fun calculateNextSunLabel(
     now: LocalTime,
     nextSunrise: LocalTime,
@@ -207,13 +219,13 @@ private fun calculateNextSunLabel(
         val duration = Duration.between(now, nextSunrise)
         val hours = duration.toHours()
         val minutes = duration.minusHours(hours).toMinutes()
-        "${hours}시간 ${minutes}분 후에 일출이 시작됩니다."
+        stringResource(R.string.success_detail_weather_start_sunrise, hours, minutes)
     } else {
         // 오늘 일몰까지 남은 시간
         val duration = Duration.between(now, sunset)
         val hours = duration.toHours()
         val minutes = duration.minusHours(hours).toMinutes()
-        "${hours}시간 ${minutes}분 후에 일몰이 시작됩니다."
+        stringResource(R.string.success_detail_weather_start_sunset, hours, minutes)
     }
 }
 
@@ -234,11 +246,16 @@ private fun MoreWeather(moonPhase: Double) {
             Icon(
                 modifier = Modifier.size(20.dp),
                 painter = painterResource(R.drawable.ic_main_few_clouds_night),
-                contentDescription = "",
+                contentDescription = stringResource(R.string.success_detail_weather_weather_icon_desc),
                 tint = Color.Unspecified
             )
         }
-        Text(modifier = Modifier.padding(start = 8.dp), text = "날씨", color = Color.White, fontSize = 14.sp)
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = stringResource(R.string.success_detail_weather_weather),
+            color = Color.White,
+            fontSize = 14.sp
+        )
         Spacer(Modifier.weight(1f))
         // FIXME : 날씨에 대한 설명글 필요
         Text("대체로 맑음", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
@@ -258,7 +275,12 @@ private fun MoreWeather(moonPhase: Double) {
         ) {
             Text(moonIcon)
         }
-        Text(modifier = Modifier.padding(start = 8.dp), text = "달 모양", color = Color.White, fontSize = 14.sp)
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = stringResource(R.string.success_detail_weather_moon),
+            color = Color.White,
+            fontSize = 14.sp
+        )
         Spacer(Modifier.weight(1f))
         Text(moonLabel, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
     }

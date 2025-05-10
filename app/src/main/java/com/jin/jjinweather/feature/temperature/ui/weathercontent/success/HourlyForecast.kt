@@ -27,9 +27,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.ui.theme.*
@@ -83,14 +85,23 @@ private fun HourlyHeader() {
     ) {
         Icon(
             Icons.Filled.AccessTimeFilled,
-            contentDescription = "",
+            contentDescription = stringResource(R.string.success_hourly_forecast_icon_desc),
             tint = Color.White,
             modifier = Modifier
                 .size(16.dp)
         )
-        Text("시간별 예보", fontSize = 14.sp, color = Color.LightGray, modifier = Modifier.padding(start = 4.dp))
+        Text(
+            stringResource(R.string.success_hourly_forecast_title),
+            fontSize = 14.sp,
+            color = Color.LightGray,
+            modifier = Modifier.padding(start = 4.dp)
+        )
         Spacer(Modifier.weight(1f))
-        Text("세로로 보기", fontSize = 14.sp, color = Color.LightGray)
+        Text(
+            stringResource(R.string.success_hourly_forecast_view_vertically),
+            fontSize = 14.sp,
+            color = Color.LightGray
+        )
         // FIXME : 세로 or 가로 toggle and saveSetting Value
         Switch(modifier = Modifier.scale(0.5f), checked = false, onCheckedChange = {})
     }
@@ -108,7 +119,7 @@ private fun HourlyItem(item: TemperatureSnapshot) {
         Text(
             text = amPmLabel, modifier = Modifier.alpha(textAlpha), color = Color.White, fontSize = 12.sp
         )
-        if (timeOrDayLabel == "모레") {
+        if (timeOrDayLabel == stringResource(R.string.success_day_after_tomorrow)) {
             Box(modifier = Modifier.background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))) {
                 Text(
                     text = timeOrDayLabel, color = Color(0xFF444444), fontSize = 14.sp,
@@ -122,25 +133,31 @@ private fun HourlyItem(item: TemperatureSnapshot) {
         }
         Image(
             painter = painterResource(id = item.icon.drawableRes),
-            contentDescription = "hourly temp icon",
+            contentDescription = stringResource(R.string.success_hourly_forecast_temperature_icon_desc),
             modifier = Modifier.size(32.dp)
         )
         Text(
-            "${item.temperature.toInt()}°", color = Color.White, fontSize = 14.sp,
-            fontWeight = FontWeight.Bold, modifier = Modifier
+            stringResource(R.string.success_temperature, item.temperature.toInt()),
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
                 .padding(top = 10.dp)
         )
     }
 }
 
+@Composable
 private fun formatAmPmLabelAt(timeStamp: Instant): String {
     val hour = timeStamp.atZone(ZoneId.systemDefault()).hour
     return when (hour) {
-        0, 6 -> "오전"
-        12, 18 -> "오후"
+        0, 6 -> stringResource(R.string.success_hourly_forecast_am)
+        12, 18 -> stringResource(R.string.success_hourly_forecast_pm)
         else -> ""
     }
 }
+
+@Composable
 private fun formatDayOrHourLabelAt(timeStamp: Instant): String {
     val now = LocalDate.now()
     val date = timeStamp.atZone(ZoneId.systemDefault())
@@ -150,9 +167,9 @@ private fun formatDayOrHourLabelAt(timeStamp: Instant): String {
     val hour12 = if (hour24 % 12 == 0) 12 else hour24 % 12
 
     return if (dayDiff == 2 && hour24 == 0 && minute == 0) {
-        "모레"
+        stringResource(R.string.success_day_after_tomorrow)
     } else {
-        "${hour12}시"
+        stringResource(R.string.success_hourly_forecast_hour, hour12)
     }
 }
 
