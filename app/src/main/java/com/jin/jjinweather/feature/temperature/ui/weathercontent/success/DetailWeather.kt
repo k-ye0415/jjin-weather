@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.ui.theme.DetailWeatherIconBackgroundColor
 import java.time.Duration
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -239,7 +240,7 @@ private fun MoreWeather(moonPhase: Double) {
     ) {
         Box(
             modifier = Modifier
-                .background(Color(0x30FFFFFF), CircleShape)
+                .background(DetailWeatherIconBackgroundColor, CircleShape)
                 .size(30.dp),
             contentAlignment = Alignment.Center,
         ) {
@@ -269,7 +270,7 @@ private fun MoreWeather(moonPhase: Double) {
         val (moonIcon, moonLabel) = mapMoonPhaseToMoonIconAndLabel(moonPhase)
         Box(
             modifier = Modifier
-                .background(Color(0x30FFFFFF), CircleShape)
+                .background(DetailWeatherIconBackgroundColor, CircleShape)
                 .size(30.dp),
             contentAlignment = Alignment.Center
         ) {

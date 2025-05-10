@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
+import com.jin.jjinweather.ui.theme.TemperatureGraphBackgroundColor
 import java.util.Calendar
 import java.util.Locale
 
@@ -179,7 +180,7 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, minTemp: Int,
                 .width(130.dp)
                 .height(10.dp)
                 .background(
-                    Color(0x701d1c66),
+                    TemperatureGraphBackgroundColor,
                     shape = RoundedCornerShape(30.dp)
                 )
         ) {
