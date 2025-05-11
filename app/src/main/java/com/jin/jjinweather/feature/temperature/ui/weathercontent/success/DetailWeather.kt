@@ -201,7 +201,7 @@ private fun calculateSunProgress(
         now >= sunset -> 1f
         else -> {
             val totalSeconds = Duration.between(sunrise, sunset).seconds
-            val elapsedSeconds = Duration.between(sunrise, sunset).seconds
+            val elapsedSeconds = Duration.between(sunrise, now).seconds
             (elapsedSeconds.toFloat() / totalSeconds.toFloat()).coerceIn(0f, 1f)
         }
     }
