@@ -34,6 +34,8 @@ import com.jin.jjinweather.ui.theme.Temperature22
 import com.jin.jjinweather.ui.theme.Temperature23
 import com.jin.jjinweather.ui.theme.Temperature24
 import com.jin.jjinweather.ui.theme.Temperature25
+import com.jin.jjinweather.ui.theme.Temperature26
+import com.jin.jjinweather.ui.theme.Temperature27
 import com.jin.jjinweather.ui.theme.Temperature9
 import java.time.LocalTime
 
@@ -126,6 +128,8 @@ fun mapTemperatureToColor(temperature: Int): Color {
         23 -> Temperature23
         24 -> Temperature24
         25 -> Temperature25
+        26 -> Temperature26
+        27 -> Temperature27
         else -> Temperature10
     }
 }
