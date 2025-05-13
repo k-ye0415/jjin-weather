@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.feature.temperature.ui.ForecastTime
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.ui.theme.*
@@ -119,18 +120,7 @@ private fun HourlyItem(item: TemperatureSnapshot) {
         Text(
             text = amPmLabel, modifier = Modifier.alpha(textAlpha), color = Color.White, fontSize = 12.sp
         )
-        if (timeOrDayLabel == stringResource(R.string.success_day_after_tomorrow)) {
-            Box(modifier = Modifier.background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))) {
-                Text(
-                    text = timeOrDayLabel, color = TextColor40, fontSize = 14.sp,
-                    modifier = Modifier.padding(horizontal = 2.dp)
-                )
-            }
-        } else {
-            Text(
-                text = timeOrDayLabel, color = Color.White, fontSize = 14.sp
-            )
-        }
+        ForecastTimeText(timeOrDayLabel)
         Image(
             painter = painterResource(id = item.icon.drawableRes),
             contentDescription = stringResource(R.string.success_hourly_forecast_temperature_icon_desc),
@@ -148,6 +138,28 @@ private fun HourlyItem(item: TemperatureSnapshot) {
 }
 
 @Composable
+private fun ForecastTimeText(timeOrDayLabel: ForecastTime) {
+    when (timeOrDayLabel) {
+        is ForecastTime.RelativeDay -> {
+            Box(modifier = Modifier.background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))) {
+                Text(
+                    text = stringResource(timeOrDayLabel.labelRes), color = TextColor40, fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 2.dp)
+                )
+            }
+        }
+
+        is ForecastTime.Hour -> {
+            Text(
+                text = stringResource(R.string.success_hourly_forecast_hour, timeOrDayLabel.hour),
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
 private fun formatAmPmLabelAt(timeStamp: Instant): String {
     val hour = timeStamp.atZone(ZoneId.systemDefault()).hour
     return when (hour) {
@@ -158,17 +170,17 @@ private fun formatAmPmLabelAt(timeStamp: Instant): String {
 }
 
 @Composable
-private fun formatDayOrHourLabelAt(timeStamp: Instant): String {
+private fun formatDayOrHourLabelAt(timeStamp: Instant): ForecastTime {
     val now = LocalDate.now()
     val date = timeStamp.atZone(ZoneId.systemDefault())
     val dayDiff = ChronoUnit.DAYS.between(now, date).toInt()
     val hour24 = date.hour
     val minute = date.minute
-    val hour12 = if (hour24 % 12 == 0) 12 else hour24 % 12
+    val hour12 = if (hour24 > 12) hour24 - 12 else hour24
 
-    return if (dayDiff == 2 && hour24 == 0 && minute == 0) {
-        stringResource(R.string.success_day_after_tomorrow)
-    } else {
-        stringResource(R.string.success_hourly_forecast_hour, hour12)
+    return when {
+        dayDiff == 2 && hour24 == 0 && minute == 0 -> ForecastTime.RelativeDay(R.string.success_day_after_tomorrow)
+        dayDiff == 1 && hour24 == 0 -> ForecastTime.RelativeDay(R.string.success_tomorrow)
+        else -> ForecastTime.Hour(hour12)
     }
 }
