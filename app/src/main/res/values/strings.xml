@@ -55,6 +55,7 @@
     <string name="success_hourly_forecast_icon_desc">시간별 예보 아이콘</string>
     <string name="success_hourly_forecast_title">시간별 예보</string>
     <string name="success_hourly_forecast_view_vertically">세로로 보기</string>
+    <string name="success_tomorrow">내일</string>
     <string name="success_day_after_tomorrow">모레</string>
     <string name="success_hourly_forecast_temperature_icon_desc">시간별 날씨 아이콘</string>
     <string name="success_hourly_forecast_am">오전</string>
