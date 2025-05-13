@@ -98,7 +98,7 @@ fun WeatherSuccessScreen(weather: CityWeather) {
     }
 }
 
-private fun generateBackgroundColor(isAfterSunset: Boolean) = Brush.verticalGradient(
+private fun generateBackgroundColor(isAfterSunset: Boolean): Brush = Brush.verticalGradient(
     colors = if (isAfterSunset) {
         listOf(SuccessBackgroundTopNightColor, SuccessBackgroundBottomNightColor)
     } else {
@@ -106,7 +106,7 @@ private fun generateBackgroundColor(isAfterSunset: Boolean) = Brush.verticalGrad
     }
 )
 
-private fun generatedCardBackgroundColor(isAfterSunset: Boolean) =
+private fun generatedCardBackgroundColor(isAfterSunset: Boolean): Color =
     if (isAfterSunset) SuccessCardBackgroundNightColor else SuccessCardBackgroundDayColor
 
 fun mapTemperatureToColor(temperature: Int): Color {
