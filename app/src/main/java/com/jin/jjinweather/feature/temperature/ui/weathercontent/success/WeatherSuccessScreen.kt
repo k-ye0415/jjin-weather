@@ -18,25 +18,6 @@ import com.jin.jjinweather.ui.theme.SuccessBackgroundTopDayColor
 import com.jin.jjinweather.ui.theme.SuccessBackgroundTopNightColor
 import com.jin.jjinweather.ui.theme.SuccessCardBackgroundDayColor
 import com.jin.jjinweather.ui.theme.SuccessCardBackgroundNightColor
-import com.jin.jjinweather.ui.theme.Temperature10
-import com.jin.jjinweather.ui.theme.Temperature11
-import com.jin.jjinweather.ui.theme.Temperature12
-import com.jin.jjinweather.ui.theme.Temperature13
-import com.jin.jjinweather.ui.theme.Temperature14
-import com.jin.jjinweather.ui.theme.Temperature15
-import com.jin.jjinweather.ui.theme.Temperature16
-import com.jin.jjinweather.ui.theme.Temperature17
-import com.jin.jjinweather.ui.theme.Temperature18
-import com.jin.jjinweather.ui.theme.Temperature19
-import com.jin.jjinweather.ui.theme.Temperature20
-import com.jin.jjinweather.ui.theme.Temperature21
-import com.jin.jjinweather.ui.theme.Temperature22
-import com.jin.jjinweather.ui.theme.Temperature23
-import com.jin.jjinweather.ui.theme.Temperature24
-import com.jin.jjinweather.ui.theme.Temperature25
-import com.jin.jjinweather.ui.theme.Temperature26
-import com.jin.jjinweather.ui.theme.Temperature27
-import com.jin.jjinweather.ui.theme.Temperature9
 import java.time.LocalTime
 
 @Composable
@@ -109,28 +90,3 @@ private fun generateBackgroundColor(isNight: Boolean): Brush = Brush.verticalGra
 
 private fun generatedCardBackgroundColor(isNight: Boolean): Color =
     if (isNight) SuccessCardBackgroundNightColor else SuccessCardBackgroundDayColor
-
-fun mapTemperatureToColor(temperature: Int): Color {
-    return when (temperature) {
-        9 -> Temperature9
-        10 -> Temperature10
-        11 -> Temperature11
-        12 -> Temperature12
-        13 -> Temperature13
-        14 -> Temperature14
-        15 -> Temperature15
-        16 -> Temperature16
-        17 -> Temperature17
-        18 -> Temperature18
-        19 -> Temperature19
-        20 -> Temperature20
-        21 -> Temperature21
-        22 -> Temperature22
-        23 -> Temperature23
-        24 -> Temperature24
-        25 -> Temperature25
-        26 -> Temperature26
-        27 -> Temperature27
-        else -> Temperature10
-    }
-}
