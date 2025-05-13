@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.feature.temperature.ui.FormattedDate
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.ui.theme.TemperatureGraphBackgroundColor
 import java.util.Calendar
@@ -90,8 +91,7 @@ private fun DailyHeader() {
 
 @Composable
 private fun DailyItem(forecast: DailyForecast, absoluteMinTemp: Int, absoluteMaxTemp: Int) {
-    val (dayOfWeek, month, day) = formatDateOrToday(forecast.date)
-    val isToday = dayOfWeek == stringResource(R.string.success_daily_forecast_today)
+    val formattedDate = formatDateOrToday(forecast.date)
     val dailyMinTemp = forecast.temperatureRange.min.toInt()
     val dailyMaxTemp = forecast.temperatureRange.max.toInt()
     Column {
@@ -109,34 +109,45 @@ private fun DailyItem(forecast: DailyForecast, absoluteMinTemp: Int, absoluteMax
                     .padding(vertical = 4.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                if (isToday) {
-                    Text(
-                        stringResource(R.string.success_daily_forecast_today),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                } else {
-                    Text(
-                        text = dayOfWeek,
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 1.5.em
-                    )
-                    Text(
-                        stringResource(R.string.success_daily_forecast_month_day, month, day),
-                        color = Color.LightGray,
-                        fontSize = 10.sp,
-                        lineHeight = 1.5.em
-                    )
-                }
+                DayOfWeekText(formattedDate)
             }
             Image(
                 painter = painterResource(forecast.icon.drawableRes),
                 contentDescription = stringResource(R.string.success_daily_forecast_temperature_icon_desc)
             )
             TemperatureGraph(dailyMinTemp, dailyMaxTemp, absoluteMinTemp, absoluteMaxTemp)
+        }
+    }
+}
+
+@Composable
+private fun DayOfWeekText(formattedDate: FormattedDate) {
+    when (formattedDate) {
+        is FormattedDate.Today -> Text(
+            stringResource(formattedDate.labelRes),
+            color = Color.White,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        is FormattedDate.Date -> {
+            Text(
+                text = formattedDate.dayOfWeek,
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 1.5.em
+            )
+            Text(
+                stringResource(
+                    R.string.success_daily_forecast_month_day,
+                    formattedDate.month,
+                    formattedDate.day
+                ),
+                color = Color.LightGray,
+                fontSize = 10.sp,
+                lineHeight = 1.5.em
+            )
         }
     }
 }
@@ -210,17 +221,16 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, absoluteMinTe
     }
 }
 
-@Composable
-private fun formatDateOrToday(date: Calendar): Triple<String, String, String> {
+private fun formatDateOrToday(date: Calendar): FormattedDate {
     val today = Calendar.getInstance()
     val isToday = today.get(Calendar.YEAR) == date.get(Calendar.YEAR)
             && today.get(Calendar.DAY_OF_YEAR) == date.get(Calendar.DAY_OF_YEAR)
     return if (isToday) {
-        Triple(stringResource(R.string.success_daily_forecast_today), "", "")
+        FormattedDate.Today(R.string.success_daily_forecast_today)
     } else {
         val month = date.get(Calendar.MONTH) + 1
         val day = date.get(Calendar.DAY_OF_MONTH)
         val dayOfWeek = date.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) ?: ""
-        Triple(dayOfWeek, month.toString(), day.toString())
+        FormattedDate.Date(dayOfWeek, month, day)
     }
 }
