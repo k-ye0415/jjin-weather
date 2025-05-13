@@ -191,8 +191,12 @@ private fun SunProgressIndicator(
                 }
             }
         }
-        // FIXME : 일몰 이후 다음 날의 일출 시간 정보 필요.
-        val sunEventLabel = formatSunEventLabel(now, sunrise, sunset)
+        val sunEventLabel = if (now.isAfter(sunset)) {
+            // FIXME : 일몰 이후 다음 날의 일출 시간 정보 필요.
+            formatUntilNextSunriseLabel(now, sunrise)
+        } else {
+            formatUntilSunsetLabel(now, sunset)
+        }
         Text(text = sunEventLabel, color = Color.White, fontSize = 12.sp)
     }
 }
@@ -215,14 +219,6 @@ private fun calculateSunProgress(
         }
     }
 }
-
-@Composable
-private fun formatSunEventLabel(now: LocalTime, nextSunrise: LocalTime, sunset: LocalTime) =
-    if (now.isAfter(sunset)) {
-        formatUntilNextSunriseLabel(now, nextSunrise)
-    } else {
-        formatUntilSunsetLabel(now, sunset)
-    }
 
 @Composable
 private fun formatUntilNextSunriseLabel(now: LocalTime, nextSunrise: LocalTime): String {
