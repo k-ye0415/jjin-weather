@@ -192,8 +192,8 @@ private fun SunProgressIndicator(
             }
         }
         // FIXME : 일몰 이후 다음 날의 일출 시간 정보 필요.
-        val sunDiff = formatRemainingSunEventLabel(now, sunrise, sunset)
-        Text(text = sunDiff, color = Color.White, fontSize = 12.sp)
+        val sunEventLabel = formatSunEventLabel(now, sunrise, sunset)
+        Text(text = sunEventLabel, color = Color.White, fontSize = 12.sp)
     }
 }
 
@@ -217,24 +217,27 @@ private fun calculateSunProgress(
 }
 
 @Composable
-private fun formatRemainingSunEventLabel(
-    now: LocalTime,
-    nextSunrise: LocalTime,
-    sunset: LocalTime
-): String {
-    return if (now.isAfter(sunset)) {
-        // 다음 날 일출까지 남은 시간
-        val duration = Duration.between(now, nextSunrise)
-        val hours = duration.toHours()
-        val minutes = duration.minusHours(hours).toMinutes()
-        stringResource(R.string.success_detail_weather_start_sunrise, hours, minutes)
+private fun formatSunEventLabel(now: LocalTime, nextSunrise: LocalTime, sunset: LocalTime) =
+    if (now.isAfter(sunset)) {
+        formatUntilNextSunriseLabel(now, nextSunrise)
     } else {
-        // 오늘 일몰까지 남은 시간
-        val duration = Duration.between(now, sunset)
-        val hours = duration.toHours()
-        val minutes = duration.minusHours(hours).toMinutes()
-        stringResource(R.string.success_detail_weather_start_sunset, hours, minutes)
+        formatUntilSunsetLabel(now, sunset)
     }
+
+@Composable
+private fun formatUntilNextSunriseLabel(now: LocalTime, nextSunrise: LocalTime): String {
+    val duration = Duration.between(now, nextSunrise)
+    val hours = duration.toHours()
+    val minutes = duration.minusHours(hours).toMinutes()
+    return stringResource(R.string.success_detail_weather_start_sunrise, hours, minutes)
+}
+
+@Composable
+private fun formatUntilSunsetLabel(now: LocalTime, sunset: LocalTime): String {
+    val duration = Duration.between(now, sunset)
+    val hours = duration.toHours()
+    val minutes = duration.minusHours(hours).toMinutes()
+    return stringResource(R.string.success_detail_weather_start_sunset, hours, minutes)
 }
 
 @Composable
