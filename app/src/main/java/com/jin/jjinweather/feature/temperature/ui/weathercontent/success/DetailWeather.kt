@@ -130,13 +130,20 @@ private fun SunProgressIndicator(
             ) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val stroke = 20f
+
+                    // 직경 계산 후 아크 크기 지정
                     val arcDiameter = size.minDimension * 2f
                     val arcSize = Size(arcDiameter, arcDiameter)
+
+                    // 아크의 중심을 캔버스 좌상단의 기준으로 중앙에 정렬하기 위한 계산.
+                    // x : 좌우 중앙
+                    // y : 아크의 하단이 캔버스 하단과 닿도록 bottom 계산
                     val arcTopLeft = Offset(
-                        (size.width - arcSize.width) / 2f,
-                        (size.height - arcSize.height)
+                        x = (size.width - arcSize.width) / 2f,
+                        y = (size.height - arcSize.height)
                     )
 
+                    // 배경 아크
                     drawArc(
                         color = Color.LightGray,
                         startAngle = 180f,
@@ -147,6 +154,7 @@ private fun SunProgressIndicator(
                         style = Stroke(width = stroke, cap = StrokeCap.Round)
                     )
 
+                    // 진행률 아크
                     drawArc(
                         color = Color.White,
                         startAngle = 180f,
@@ -194,7 +202,8 @@ private fun calculateSunProgress(
     sunset: LocalTime,
     now: LocalTime
 ): Float {
-    if (sunset <= sunrise) return 0f // 방어 코드
+    // 일몰이 일출보다 큰 경우에 대한 방어 코드.
+    if (sunset <= sunrise) return 0f
 
     return when {
         now <= sunrise -> 0f
