@@ -41,9 +41,10 @@ import java.time.LocalTime
 
 @Composable
 fun WeatherSuccessScreen(weather: CityWeather) {
-    val isAfterSunset = LocalTime.now().isAfter(weather.weather.dayWeather.sunset)
-    val backgroundGradientBrush = generateBackgroundColor(isAfterSunset)
-    val cardBackgroundColor = generatedCardBackgroundColor(isAfterSunset)
+    val now = LocalTime.now()
+    val isNight = now.isBefore(weather.weather.dayWeather.sunrise) || now.isAfter(weather.weather.dayWeather.sunset)
+    val backgroundGradientBrush = generateBackgroundColor(isNight)
+    val cardBackgroundColor = generatedCardBackgroundColor(isNight)
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         LazyColumn(
@@ -98,16 +99,16 @@ fun WeatherSuccessScreen(weather: CityWeather) {
     }
 }
 
-private fun generateBackgroundColor(isAfterSunset: Boolean): Brush = Brush.verticalGradient(
-    colors = if (isAfterSunset) {
+private fun generateBackgroundColor(isNight: Boolean): Brush = Brush.verticalGradient(
+    colors = if (isNight) {
         listOf(SuccessBackgroundTopNightColor, SuccessBackgroundBottomNightColor)
     } else {
         listOf(SuccessBackgroundTopDayColor, SuccessBackgroundBottomDayColor)
     }
 )
 
-private fun generatedCardBackgroundColor(isAfterSunset: Boolean): Color =
-    if (isAfterSunset) SuccessCardBackgroundNightColor else SuccessCardBackgroundDayColor
+private fun generatedCardBackgroundColor(isNight: Boolean): Color =
+    if (isNight) SuccessCardBackgroundNightColor else SuccessCardBackgroundDayColor
 
 fun mapTemperatureToColor(temperature: Int): Color {
     return when (temperature) {
