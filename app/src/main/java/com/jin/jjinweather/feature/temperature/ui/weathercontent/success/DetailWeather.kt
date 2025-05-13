@@ -63,7 +63,10 @@ fun DetailWeather(
             DetailWeatherHeader()
             HorizontalDivider(thickness = 1.dp)
             SunProgressIndicator(sunrise, sunset, LocalTime.now())
-            HorizontalDivider(modifier = Modifier.padding(vertical = 20.dp), thickness = 1.dp)
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 20.dp),
+                thickness = 1.dp
+            )
             MoreWeather(moonPhase)
         }
     }
@@ -78,7 +81,7 @@ private fun DetailWeatherHeader() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Outlined.Apps,
+            imageVector = Icons.Outlined.Apps,
             contentDescription = stringResource(R.string.success_detail_weather_icon_desc),
             tint = Color.White,
             modifier = Modifier
@@ -177,16 +180,24 @@ private fun SunProgressIndicator(
                             fontSize = 8.sp,
                             lineHeight = 1.5.em
                         )
-                        Text(text = sunrise.format(formatter), color = Color.White, fontSize = 12.sp)
+                        Text(
+                            text = sunrise.format(formatter),
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
                     }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            stringResource(R.string.success_detail_weather_sunset),
+                            text = stringResource(R.string.success_detail_weather_sunset),
                             color = Color.LightGray,
                             fontSize = 8.sp,
                             lineHeight = 1.5.em
                         )
-                        Text(sunset.format(formatter), color = Color.White, fontSize = 12.sp)
+                        Text(
+                            text = sunset.format(formatter),
+                            color = Color.White,
+                            fontSize = 12.sp
+                        )
                     }
                 }
             }
@@ -197,7 +208,11 @@ private fun SunProgressIndicator(
         } else {
             formatUntilSunsetLabel(now, sunset)
         }
-        Text(text = sunEventLabel, color = Color.White, fontSize = 12.sp)
+        Text(
+            text = sunEventLabel,
+            color = Color.White,
+            fontSize = 12.sp
+        )
     }
 }
 
@@ -265,7 +280,12 @@ private fun MoreWeather(moonPhase: Double) {
         )
         Spacer(Modifier.weight(1f))
         // FIXME : 날씨에 대한 설명글 필요
-        Text("대체로 맑음", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = "대체로 맑음",
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
     Row(
         modifier = Modifier
@@ -289,7 +309,12 @@ private fun MoreWeather(moonPhase: Double) {
             fontSize = 14.sp
         )
         Spacer(Modifier.weight(1f))
-        Text(moonLabel, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = moonLabel,
+            color = Color.White,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 

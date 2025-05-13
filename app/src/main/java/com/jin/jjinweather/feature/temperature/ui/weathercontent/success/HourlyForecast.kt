@@ -58,8 +58,7 @@ fun HourlyForecast(modifier: Modifier, backgroundColor: Color, hourlyWeatherList
                     val temperatureColor =
                         mapTemperatureToColor(hourlyWeatherList[index].temperature.toInt())
                     Column(
-                        modifier = Modifier
-                            .width(56.dp),
+                        modifier = Modifier.width(56.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         HourlyItem(hourlyWeatherList[index])
@@ -85,21 +84,20 @@ private fun HourlyHeader() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Filled.AccessTimeFilled,
+            imageVector = Icons.Filled.AccessTimeFilled,
             contentDescription = stringResource(R.string.success_hourly_forecast_icon_desc),
             tint = Color.White,
-            modifier = Modifier
-                .size(16.dp)
+            modifier = Modifier.size(16.dp)
         )
         Text(
-            stringResource(R.string.success_hourly_forecast_title),
+            text = stringResource(R.string.success_hourly_forecast_title),
             fontSize = 14.sp,
             color = Color.LightGray,
             modifier = Modifier.padding(start = 4.dp)
         )
         Spacer(Modifier.weight(1f))
         Text(
-            stringResource(R.string.success_hourly_forecast_view_vertically),
+            text = stringResource(R.string.success_hourly_forecast_view_vertically),
             fontSize = 14.sp,
             color = Color.LightGray
         )
@@ -114,11 +112,12 @@ private fun HourlyItem(item: TemperatureSnapshot) {
     val textAlpha = if (amPmLabel.isNotEmpty()) 1f else 0f
     val timeOrDayLabel = formatDayOrHourLabelAt(item.timeStamp)
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = amPmLabel, modifier = Modifier.alpha(textAlpha), color = Color.White, fontSize = 12.sp
+            text = amPmLabel,
+            modifier = Modifier.alpha(textAlpha),
+            color = Color.White,
+            fontSize = 12.sp
         )
         ForecastTimeText(timeOrDayLabel)
         Image(
@@ -127,12 +126,11 @@ private fun HourlyItem(item: TemperatureSnapshot) {
             modifier = Modifier.size(32.dp)
         )
         Text(
-            stringResource(R.string.success_temperature, item.temperature.toInt()),
+            text = stringResource(R.string.success_temperature, item.temperature.toInt()),
             color = Color.White,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(top = 10.dp)
+            modifier = Modifier.padding(top = 10.dp)
         )
     }
 }
@@ -141,9 +139,16 @@ private fun HourlyItem(item: TemperatureSnapshot) {
 private fun ForecastTimeText(timeOrDayLabel: ForecastTime) {
     when (timeOrDayLabel) {
         is ForecastTime.RelativeDay -> {
-            Box(modifier = Modifier.background(color = Color.LightGray, shape = RoundedCornerShape(12.dp))) {
+            Box(
+                modifier = Modifier.background(
+                    color = Color.LightGray,
+                    shape = RoundedCornerShape(12.dp)
+                )
+            ) {
                 Text(
-                    text = stringResource(timeOrDayLabel.labelRes), color = TextColor40, fontSize = 14.sp,
+                    text = stringResource(timeOrDayLabel.labelRes),
+                    color = TextColor40,
+                    fontSize = 14.sp,
                     modifier = Modifier.padding(horizontal = 2.dp)
                 )
             }
