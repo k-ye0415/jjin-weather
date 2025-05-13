@@ -53,7 +53,11 @@ fun CurrentWeatherOverview(
         modifier = Modifier.padding(top = 50.dp, bottom = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(cityName, color = Color.White, fontSize = 20.sp)
+        Text(
+            text = cityName,
+            color = Color.White,
+            fontSize = 20.sp
+        )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = currentWeatherIconRes),
@@ -70,7 +74,11 @@ fun CurrentWeatherOverview(
             )
         }
 
-        Text(temperatureDescription, color = Color.White, fontSize = 20.sp)
+        Text(
+            text = temperatureDescription,
+            color = Color.White,
+            fontSize = 20.sp
+        )
         Row(modifier = Modifier.padding(bottom = 60.dp)) {
             Text(
                 stringResource(R.string.success_current_min_temperature, todayMinTemperature),
@@ -86,7 +94,12 @@ fun CurrentWeatherOverview(
         }
 
         // FIXME : need pager and indicator
-        Icon(Icons.Filled.NearMe, contentDescription = "현재위치", tint = Color.White, modifier = Modifier.size(12.dp))
+        Icon(
+            imageVector = Icons.Filled.NearMe,
+            contentDescription = "현재위치",
+            tint = Color.White,
+            modifier = Modifier.size(12.dp)
+        )
     }
 }
 

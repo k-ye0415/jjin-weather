@@ -36,18 +36,18 @@ fun YesterdayWeatherOutfit(backgroundColor: Color, yesterdayTemperature: Int) {
     ) {
         // FIXME : need yesterday weather icon resource
         WeatherSummaryCard(
-            backgroundColor,
+            backgroundColor = backgroundColor,
             iconPainter = painterResource(R.drawable.ic_main_mist),
             title = stringResource(R.string.success_yesterday),
             subtitle = stringResource(R.string.success_temperature, yesterdayTemperature),
-            stringResource(R.string.success_yesterday_icon_desc)
+            iconDescription = stringResource(R.string.success_yesterday_icon_desc)
         )
         WeatherSummaryCard(
-            backgroundColor,
+            backgroundColor = backgroundColor,
             iconPainter = painterResource(R.drawable.ic_clothes),
             title = stringResource(R.string.success_today_outfit_title),
             subtitle = stringResource(R.string.success_today_outfit_sub_title),
-            stringResource(R.string.success_today_outfit_icon_desc)
+            iconDescription = stringResource(R.string.success_today_outfit_icon_desc)
         )
     }
 }
@@ -96,7 +96,7 @@ private fun WeatherSummaryCard(
         }
         // FIXME : 옷 추천 진입 부분 필요
         Icon(
-            Icons.Outlined.ArrowForwardIos,
+            imageVector = Icons.Outlined.ArrowForwardIos,
             contentDescription = null,
             modifier = Modifier.size(12.dp),
             tint = Color.LightGray

@@ -75,13 +75,13 @@ private fun DailyHeader() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Filled.CalendarToday,
+            imageVector = Icons.Filled.CalendarToday,
             contentDescription = stringResource(R.string.success_daily_forecast_icon_desc),
             tint = Color.White,
             modifier = Modifier.size(16.dp)
         )
         Text(
-            stringResource(R.string.success_daily_forecast_title),
+            text = stringResource(R.string.success_daily_forecast_title),
             fontSize = 14.sp,
             color = Color.LightGray,
             modifier = Modifier.padding(start = 4.dp)
@@ -124,7 +124,7 @@ private fun DailyItem(forecast: DailyForecast, absoluteMinTemp: Int, absoluteMax
 private fun DayOfWeekText(formattedDate: FormattedDate) {
     when (formattedDate) {
         is FormattedDate.Today -> Text(
-            stringResource(formattedDate.labelRes),
+            text = stringResource(formattedDate.labelRes),
             color = Color.White,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
@@ -139,7 +139,7 @@ private fun DayOfWeekText(formattedDate: FormattedDate) {
                 lineHeight = 1.5.em
             )
             Text(
-                stringResource(
+                text = stringResource(
                     R.string.success_daily_forecast_month_day,
                     formattedDate.month,
                     formattedDate.day
@@ -159,7 +159,7 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, absoluteMinTe
         horizontalArrangement = Arrangement.End
     ) {
         Text(
-            stringResource(R.string.success_temperature, dailyMinTemp),
+            text = stringResource(R.string.success_temperature, dailyMinTemp),
             color = Color.LightGray,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
@@ -173,7 +173,7 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, absoluteMinTe
                 .width(130.dp)
                 .height(10.dp)
                 .background(
-                    TemperatureGraphBackgroundColor,
+                    color = TemperatureGraphBackgroundColor,
                     shape = RoundedCornerShape(30.dp)
                 )
         ) {
@@ -209,7 +209,7 @@ private fun TemperatureGraph(dailyMinTemp: Int, dailyMaxTemp: Int, absoluteMinTe
             )
         }
         Text(
-            stringResource(R.string.success_temperature, dailyMaxTemp),
+            text = stringResource(R.string.success_temperature, dailyMaxTemp),
             color = Color.LightGray,
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
