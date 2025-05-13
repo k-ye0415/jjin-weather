@@ -56,7 +56,8 @@ fun HourlyForecast(modifier: Modifier, backgroundColor: Color, hourlyWeatherList
             ) {
                 items(hourlyWeatherList.size) { index ->
                     val temperatureColor =
-                        mapTemperatureToColor(hourlyWeatherList[index].temperature.toInt())
+                        TemperatureColors[hourlyWeatherList[index].temperature.toInt()]
+                            ?: DefaultTemperatureColor
                     Column(
                         modifier = Modifier.width(56.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
