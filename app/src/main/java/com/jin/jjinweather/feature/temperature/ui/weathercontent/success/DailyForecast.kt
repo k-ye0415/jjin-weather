@@ -55,9 +55,11 @@ fun DailyForecast(modifier: Modifier, backgroundColor: Color, dailyWeatherList: 
             val absoluteMaxTemperature = dailyWeatherList
                 .map { it.temperatureRange.max }
                 .maxOfOrNull { it.toInt() } ?: 30
-            dailyWeatherList.forEachIndexed { index, forecast ->
-                val shouldDrawSeparator = index != dailyWeatherList.lastIndex
-                DailyItem(shouldDrawSeparator, forecast, absoluteMinTemperature, absoluteMaxTemperature)
+            for (i in dailyWeatherList.indices) {
+                DailyItem(dailyWeatherList[i], absoluteMinTemperature, absoluteMaxTemperature)
+                if (i != dailyWeatherList.lastIndex) {
+                    HorizontalDivider(thickness = 1.dp)
+                }
             }
         }
     }
@@ -87,7 +89,7 @@ private fun DailyHeader() {
 }
 
 @Composable
-private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, absoluteMinTemp: Int, absoluteMaxTemp: Int) {
+private fun DailyItem(forecast: DailyForecast, absoluteMinTemp: Int, absoluteMaxTemp: Int) {
     val (dayOfWeek, month, day) = formatDateOrToday(forecast.date)
     val isToday = dayOfWeek == stringResource(R.string.success_daily_forecast_today)
     val dailyMinTemp = forecast.temperatureRange.min.toInt()
@@ -135,9 +137,6 @@ private fun DailyItem(shouldDrawSeparator: Boolean, forecast: DailyForecast, abs
                 contentDescription = stringResource(R.string.success_daily_forecast_temperature_icon_desc)
             )
             TemperatureGraph(dailyMinTemp, dailyMaxTemp, absoluteMinTemp, absoluteMaxTemp)
-        }
-        if (shouldDrawSeparator) {
-            HorizontalDivider(thickness = 1.dp)
         }
     }
 }
