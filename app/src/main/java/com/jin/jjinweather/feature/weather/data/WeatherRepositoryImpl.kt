@@ -57,6 +57,7 @@ class WeatherRepositoryImpl(
         return WeatherEntity(
             iconCode = dayWeather.icon.name,
             currentTemperature = dayWeather.temperature.toDouble(),
+            temperatureDescription = dayWeather.description,
             yesterdayTemperature = yesterdayWeather.temperature.toDouble(),
             minTemperature = dayWeather.temperatureRange.min.toDouble(),
             maxTemperature = dayWeather.temperatureRange.max.toDouble(),
@@ -77,6 +78,7 @@ class WeatherRepositoryImpl(
                 date = Calendar.getInstance(),
                 icon = WeatherIcon.valueOf(iconCode),
                 temperature = currentTemperature,
+                description = temperatureDescription,
                 sunrise = LocalTime.ofSecondOfDay(sunrise),
                 sunset = LocalTime.ofSecondOfDay(sunset),
                 moonPhase = moonPhase,

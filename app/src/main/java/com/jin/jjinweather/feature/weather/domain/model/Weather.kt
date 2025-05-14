@@ -16,6 +16,7 @@ data class DayWeather(
     val date: Calendar,
     val icon: WeatherIcon,
     val temperature: Number,
+    val description: String,
     val sunrise: LocalTime,
     val sunset: LocalTime,
     val moonPhase: Double,
