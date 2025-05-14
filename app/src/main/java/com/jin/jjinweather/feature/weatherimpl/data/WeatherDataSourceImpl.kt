@@ -81,6 +81,7 @@ class WeatherDataSourceImpl(
                 date = Calendar.getInstance(),
                 icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = current.temperature,
+                description = current.weather.firstOrNull()?.description.orEmpty(),
                 sunrise = epochTimestampToLocalTime(current.sunrise),
                 sunset = epochTimestampToLocalTime(current.sunset),
                 moonPhase = daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE,
