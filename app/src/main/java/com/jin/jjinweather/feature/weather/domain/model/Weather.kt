@@ -40,13 +40,20 @@ typealias HourlyForecast = List<TemperatureSnapshot>
 data class DailyForecast(
     val date: Calendar,
     val icon: WeatherIcon,
-    val temperatureRange: TemperatureRange
+    val temperatureRange: TemperatureRange,
+    val feelsLikeTemperatureRange: FeelsLikeTemperatureRange
 )
 
 data class TemperatureRange(
     val min: Number,
     val max: Number
 )
+
+data class FeelsLikeTemperatureRange(
+    val dayTemperature: Number,
+    val nightTemperature: Number
+)
+
 
 enum class WeatherIcon(@DrawableRes val drawableRes: Int) {
     CLEAR_SKY_DAY(R.drawable.ic_main_clear_sky_day),
