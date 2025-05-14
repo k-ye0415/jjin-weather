@@ -21,7 +21,7 @@ import com.jin.jjinweather.ui.theme.SuccessCardBackgroundNightColor
 import java.time.LocalTime
 
 @Composable
-fun WeatherSuccessScreen(weather: CityWeather) {
+fun WeatherSuccessScreen(weather: CityWeather, onNavigate: (Int) -> Unit) {
     val now = LocalTime.now()
     val isNight = now.isBefore(weather.weather.dayWeather.sunrise) || now.isAfter(weather.weather.dayWeather.sunset)
     val backgroundGradientBrush = generateBackgroundColor(isNight)
@@ -50,7 +50,8 @@ fun WeatherSuccessScreen(weather: CityWeather) {
             item {
                 YesterdayWeatherOutfit(
                     backgroundColor = cardBackgroundColor,
-                    yesterdayTemperature = weather.weather.yesterdayWeather.temperature.toInt()
+                    yesterdayTemperature = weather.weather.yesterdayWeather.temperature.toInt(),
+                    onNavigate = { onNavigate(weather.weather.dayWeather.temperature.toInt()) }
                 )
             }
             item {

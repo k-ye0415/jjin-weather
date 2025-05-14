@@ -16,7 +16,7 @@ import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun TemperatureScreen(viewModel: TemperatureViewModel, onNavigate: () -> Unit) {
+fun TemperatureScreen(viewModel: TemperatureViewModel, onNavigate: (Int) -> Unit) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
     )
@@ -27,14 +27,14 @@ fun TemperatureScreen(viewModel: TemperatureViewModel, onNavigate: () -> Unit) {
             viewModel.onLocationPermissionGranted()
         }
     }
-    WeatherContentUI(weather)
+    WeatherContentUI(weather, onNavigate)
 }
 
 @Composable
-private fun WeatherContentUI(weather: UiState<CityWeather>) {
+private fun WeatherContentUI(weather: UiState<CityWeather>, onNavigate: (Int) -> Unit) {
     when (weather) {
         is UiState.Loading -> WeatherLoadingScreen()
-        is UiState.Success -> WeatherSuccessScreen(weather.data)
+        is UiState.Success -> WeatherSuccessScreen(weather.data, onNavigate)
         is UiState.Error -> WeatherErrorScreen(weather.message)
     }
 }
