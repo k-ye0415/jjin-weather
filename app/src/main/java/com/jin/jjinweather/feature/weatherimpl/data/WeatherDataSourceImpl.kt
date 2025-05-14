@@ -9,6 +9,7 @@ import com.jin.jjinweather.feature.weather.domain.model.DayWeather
 import com.jin.jjinweather.feature.weather.domain.model.FeelsLikeTemperatureRange
 import com.jin.jjinweather.feature.weather.domain.model.Forecast
 import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
+import com.jin.jjinweather.feature.weather.domain.model.SunCycle
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.Weather
@@ -75,6 +76,7 @@ class WeatherDataSourceImpl(
                 date = Calendar.getInstance().apply { timeInMillis = daily.dt * 1000 },
                 icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
                 temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max),
+                sunCycle = SunCycle(epochTimestampToLocalTime(daily.sunrise), epochTimestampToLocalTime(daily.sunset)),
                 feelsLikeTemperatureRange = FeelsLikeTemperatureRange(
                     daily.feelsLikeTemperatureRange.day,
                     daily.feelsLikeTemperatureRange.night
@@ -88,8 +90,10 @@ class WeatherDataSourceImpl(
                 icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = current.temperature,
                 description = current.weather.firstOrNull()?.description.orEmpty(),
-                sunrise = epochTimestampToLocalTime(current.sunrise),
-                sunset = epochTimestampToLocalTime(current.sunset),
+                sunCycle = SunCycle(
+                    epochTimestampToLocalTime(current.sunrise),
+                    epochTimestampToLocalTime(current.sunset)
+                ),
                 moonPhase = MoonPhaseType.findByMoonPhase(daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE),
                 feelsLikeTemperature = current.feelsLikeTemperature,
                 temperatureRange = TemperatureRange(

@@ -17,11 +17,15 @@ data class DayWeather(
     val icon: WeatherIcon,
     val temperature: Number,
     val description: String,
-    val sunrise: LocalTime,
-    val sunset: LocalTime,
+    val sunCycle: SunCycle,
     val feelsLikeTemperature: Number,
     val moonPhase: MoonPhaseType,
     val temperatureRange: TemperatureRange
+)
+
+data class SunCycle(
+    val sunrise: LocalTime,
+    val sunset: LocalTime
 )
 
 data class TemperatureSnapshot(
@@ -41,6 +45,7 @@ data class DailyForecast(
     val date: Calendar,
     val icon: WeatherIcon,
     val temperatureRange: TemperatureRange,
+    val sunCycle: SunCycle,
     val feelsLikeTemperatureRange: FeelsLikeTemperatureRange
 )
 
@@ -88,15 +93,15 @@ enum class WeatherIcon(@DrawableRes val drawableRes: Int) {
     }
 }
 
-enum class MoonPhaseType(@DrawableRes val drawableRes: Int, val moonName:String) {
+enum class MoonPhaseType(@DrawableRes val drawableRes: Int, val moonName: String) {
     NEW_MOON(R.drawable.ic_mew_moon, "새로운 달"),
     START_CRESCENT_MOON(R.drawable.ic_start_crescent_moon, "초승달"),
     START_HALF_MOON(R.drawable.ic_start_half_moon, "반달"),
     BEFORE_FULL_MOON(R.drawable.ic_before_full_moon, "보름달 전"),
     FULL_MOON(R.drawable.ic_full_moon, "보름달"),
-    AFTER_FULL_MOON(R.drawable.ic_after_full_moon,"보름달 후"),
-    END_HALF_MOON(R.drawable.ic_end_half_moon,"반달"),
-    END_CRESCENT_MOON(R.drawable.ic_end_crescent_moon,"초승달");
+    AFTER_FULL_MOON(R.drawable.ic_after_full_moon, "보름달 후"),
+    END_HALF_MOON(R.drawable.ic_end_half_moon, "반달"),
+    END_CRESCENT_MOON(R.drawable.ic_end_crescent_moon, "초승달");
 
     companion object {
         fun findByMoonPhase(phase: Double): MoonPhaseType {

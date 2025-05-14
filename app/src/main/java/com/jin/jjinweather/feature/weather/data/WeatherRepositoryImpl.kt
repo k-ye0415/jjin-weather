@@ -4,6 +4,7 @@ import android.database.SQLException
 import com.jin.jjinweather.feature.weather.data.model.WeatherEntity
 import com.jin.jjinweather.feature.weather.domain.model.DayWeather
 import com.jin.jjinweather.feature.weather.domain.model.Forecast
+import com.jin.jjinweather.feature.weather.domain.model.SunCycle
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.Weather
@@ -63,8 +64,8 @@ class WeatherRepositoryImpl(
             maxTemperature = dayWeather.temperatureRange.max.toDouble(),
             hourlyWeatherList = forecast.hourly,
             dailyWeatherList = forecast.daily,
-            sunrise = dayWeather.sunrise.toSecondOfDay().toLong(),
-            sunset = dayWeather.sunset.toSecondOfDay().toLong(),
+            sunrise = dayWeather.sunCycle.sunrise.toSecondOfDay().toLong(),
+            sunset = dayWeather.sunCycle.sunset.toSecondOfDay().toLong(),
             feelsLikeTemperature = dayWeather.feelsLikeTemperature.toDouble(),
             moonPhase = dayWeather.moonPhase
         )
@@ -80,8 +81,7 @@ class WeatherRepositoryImpl(
                 icon = WeatherIcon.valueOf(iconCode),
                 temperature = currentTemperature,
                 description = temperatureDescription,
-                sunrise = LocalTime.ofSecondOfDay(sunrise),
-                sunset = LocalTime.ofSecondOfDay(sunset),
+                sunCycle = SunCycle(LocalTime.ofSecondOfDay(sunrise), LocalTime.ofSecondOfDay(sunset)),
                 feelsLikeTemperature = feelsLikeTemperature,
                 moonPhase = moonPhase,
                 temperatureRange = TemperatureRange(min = minTemperature, max = maxTemperature)
