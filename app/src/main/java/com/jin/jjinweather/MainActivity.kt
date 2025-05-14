@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.room.Room
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
@@ -28,6 +30,7 @@ import com.jin.jjinweather.feature.navigation.Screens
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.ChatGptApi
+import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
@@ -88,24 +91,32 @@ fun AppNavigator(
         GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository)
     )
 
-    NavHost(navController, Screens.ONBOARDING.route) {
-        composable(Screens.ONBOARDING.route) {
+    NavHost(navController, Screens.Onboarding.route) {
+        composable(Screens.Onboarding.route) {
             OnboardingScreen(
                 viewModel = onboardingViewModel,
                 onNavigateToTemperature = {
                     navController.navigateClearingBackStack(
-                        destination = Screens.TEMPERATURE,
-                        clearUpTo = Screens.ONBOARDING,
+                        destination = Screens.Temperature,
+                        clearUpTo = Screens.Onboarding,
                         inclusive = true
                     )
                 }
             )
         }
-        composable(Screens.TEMPERATURE.route) {
+        composable(Screens.Temperature.route) {
             TemperatureScreen(
                 viewModel = temperatureViewModel,
-                onNavigate = {}
+                onNavigate = { temperature ->
+                    navController.navigate(Screens.Outfit.createRoute(temperature))
+                }
             )
+        }
+        composable(
+            route = Screens.Outfit.route,
+            arguments = listOf(navArgument("temperature") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val temperature = backStackEntry.arguments?.getInt("temperature") ?: -1
         }
     }
 }
