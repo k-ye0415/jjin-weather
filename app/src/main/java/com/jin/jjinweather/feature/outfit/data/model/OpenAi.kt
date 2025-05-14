@@ -6,7 +6,7 @@ data class OpenAiChat(
 )
 
 data class OpenAiRequest(
-    val model: String, // 또는 "gpt-3.5-turbo"
+    val model: String,
     val messages: List<OpenAiChat>
 )
 

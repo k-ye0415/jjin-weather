@@ -31,7 +31,7 @@ import com.jin.jjinweather.R
 fun YesterdayWeatherOutfit(
     backgroundColor: Color,
     yesterdayTemperature: Int,
-    onNavigate: () -> Unit
+    onNavigateToOutfit: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -47,12 +47,14 @@ fun YesterdayWeatherOutfit(
             subtitle = stringResource(R.string.success_temperature, yesterdayTemperature),
             iconDescription = stringResource(R.string.success_yesterday_icon_desc)
         )
+
+        // FIXME : Outfit UI 개발 시 수정 필요
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(8.dp))
                 .background(backgroundColor)
                 .padding(4.dp)
-                .clickable(onClick = { onNavigate() }),
+                .clickable(onClick = onNavigateToOutfit),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -81,7 +83,6 @@ fun YesterdayWeatherOutfit(
                     lineHeight = 16.sp
                 )
             }
-            // FIXME : 옷 추천 진입 부분 필요
             Icon(
                 imageVector = Icons.Outlined.ArrowForwardIos,
                 contentDescription = null,
@@ -92,7 +93,7 @@ fun YesterdayWeatherOutfit(
     }
 }
 
-// FIXME : Outfit 개발 시 수정 필요
+// FIXME : Outfit UI 개발 시 수정 필요
 @Composable
 private fun WeatherSummaryCard(
     backgroundColor: Color,
@@ -134,7 +135,6 @@ private fun WeatherSummaryCard(
                 lineHeight = 16.sp
             )
         }
-        // FIXME : 옷 추천 진입 부분 필요
         Icon(
             imageVector = Icons.Outlined.ArrowForwardIos,
             contentDescription = null,

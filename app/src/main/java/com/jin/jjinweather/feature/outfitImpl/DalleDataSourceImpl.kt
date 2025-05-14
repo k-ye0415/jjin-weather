@@ -8,12 +8,13 @@ class DalleDataSourceImpl(
     private val chatGPTApi: ChatGptApi,
     private val gptApiKey: String,
 ) : DalleDataSource {
+
     override suspend fun requestOutfitImageGeneration(prompt: String): Result<String> {
         val dalleRequest = DalleRequest(
-            model = "dall-e-3",
+            model = MODEL,
             prompt = prompt,
-            n = 1,
-            size = "1792x1024"
+            n = IMAGE_COUNT,
+            size = IMAGE_SIZE
         )
         val response = chatGPTApi.queryImageGeneration("Bearer $gptApiKey", dalleRequest)
         val imageUrl = response.data.firstOrNull()?.url
@@ -22,5 +23,11 @@ class DalleDataSourceImpl(
         } else {
             Result.success(imageUrl)
         }
+    }
+
+    private companion object {
+        const val MODEL = "dall-e-3"
+        const val IMAGE_COUNT = 1
+        const val IMAGE_SIZE = "1792x1024"
     }
 }

@@ -125,7 +125,7 @@ fun AppNavigator(
         composable(Screens.Temperature.route) {
             TemperatureScreen(
                 viewModel = temperatureViewModel,
-                onNavigate = { temperature ->
+                onNavigateToOutfit = { temperature ->
                     navController.navigate(Screens.Outfit.createRoute(temperature))
                 }
             )
@@ -134,7 +134,7 @@ fun AppNavigator(
             route = Screens.Outfit.route,
             arguments = listOf(navArgument("temperature") { type = NavType.IntType })
         ) { backStackEntry ->
-            val temperature = backStackEntry.arguments?.getInt("temperature") ?: -1
+            val temperature = backStackEntry.arguments?.getInt("temperature") ?: 0
             OutfitScreen(viewModel = outfitViewModel, temperature = temperature)
         }
     }
