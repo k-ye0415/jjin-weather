@@ -7,6 +7,7 @@ import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.feature.weather.domain.model.DayWeather
 import com.jin.jjinweather.feature.weather.domain.model.Forecast
+import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.Weather
@@ -84,7 +85,7 @@ class WeatherDataSourceImpl(
                 description = current.weather.firstOrNull()?.description.orEmpty(),
                 sunrise = epochTimestampToLocalTime(current.sunrise),
                 sunset = epochTimestampToLocalTime(current.sunset),
-                moonPhase = daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE,
+                moonPhase = MoonPhaseType.findByMoonPhase(daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE),
                 feelsLikeTemperature = current.feelsLikeTemperature,
                 temperatureRange = TemperatureRange(
                     min = daily.firstOrNull()?.temperature?.min ?: DEFAULT_MIN_TEMPERATURE,

@@ -6,6 +6,7 @@ import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.feature.weather.domain.model.DailyWeather
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.HourlyWeather
+import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 
 /**
  * 위치 기반 날씨 정보
@@ -40,5 +41,5 @@ data class WeatherEntity(
     val sunrise: Long,
     val sunset: Long,
     val feelsLikeTemperature: Double,
-    val moonPhase: Double
+    val moonPhase: MoonPhaseType
 )
