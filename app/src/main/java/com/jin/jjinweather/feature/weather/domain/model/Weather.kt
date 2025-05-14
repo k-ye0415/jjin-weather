@@ -19,6 +19,7 @@ data class DayWeather(
     val description: String,
     val sunrise: LocalTime,
     val sunset: LocalTime,
+    val feelsLikeTemperature: Number,
     val moonPhase: Double,
     val temperatureRange: TemperatureRange
 )

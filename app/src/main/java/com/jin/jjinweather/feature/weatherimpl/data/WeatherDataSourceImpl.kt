@@ -85,6 +85,7 @@ class WeatherDataSourceImpl(
                 sunrise = epochTimestampToLocalTime(current.sunrise),
                 sunset = epochTimestampToLocalTime(current.sunset),
                 moonPhase = daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE,
+                feelsLikeTemperature = current.feelsLikeTemperature,
                 temperatureRange = TemperatureRange(
                     min = daily.firstOrNull()?.temperature?.min ?: DEFAULT_MIN_TEMPERATURE,
                     max = daily.firstOrNull()?.temperature?.max ?: DEFAULT_MAX_TEMPERATURE

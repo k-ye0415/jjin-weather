@@ -65,6 +65,7 @@ class WeatherRepositoryImpl(
             dailyWeatherList = forecast.daily,
             sunrise = dayWeather.sunrise.toSecondOfDay().toLong(),
             sunset = dayWeather.sunset.toSecondOfDay().toLong(),
+            feelsLikeTemperature = dayWeather.feelsLikeTemperature.toDouble(),
             moonPhase = dayWeather.moonPhase
         )
     }
@@ -81,6 +82,7 @@ class WeatherRepositoryImpl(
                 description = temperatureDescription,
                 sunrise = LocalTime.ofSecondOfDay(sunrise),
                 sunset = LocalTime.ofSecondOfDay(sunset),
+                feelsLikeTemperature = feelsLikeTemperature,
                 moonPhase = moonPhase,
                 temperatureRange = TemperatureRange(min = minTemperature, max = maxTemperature)
             ),
