@@ -39,5 +39,6 @@ data class WeatherEntity(
     val dailyWeatherList: List<DailyForecast>,
     val sunrise: Long,
     val sunset: Long,
+    val feelsLikeTemperature: Double,
     val moonPhase: Double
 )
