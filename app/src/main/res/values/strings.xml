@@ -35,4 +35,46 @@
     <string name="error_glasses_img_desc">에러 화면 중앙 돋보기 이미지</string>
     <string name="error_title">정보를 불러오지 못했습니다.</string>
     <string name="error_button_retry">다시 시도하기</string>
+
+    <string name="success_more_icon_desc">더보기</string>
+    <string name="success_add_location_icon_secs">위치 추가하기</string>
+
+    <string name="success_current_temperature_icon_desc">현재 날씨 아이콘</string>
+    <string name="success_temperature">%1$d°</string>
+    <string name="success_current_min_temperature">최저: %1$d°</string>
+    <string name="success_current_max_temperature">최고: %1$d°</string>
+    <string name="success_compared_high">어제보다 %1$d° 높아요</string>
+    <string name="success_compared_low">어제보다 %1$d° 낮아요</string>
+    <string name="success_compared_same">어제와 동일해요</string>
+    <string name="success_yesterday">어제 날씨</string>
+    <string name="success_yesterday_icon_desc">어제 날씨 아이콘</string>
+    <string name="success_today_outfit_title">오늘의</string>
+    <string name="success_today_outfit_sub_title">옷 추천</string>
+    <string name="success_today_outfit_icon_desc">옷 추천 아이콘</string>
+
+    <string name="success_hourly_forecast_icon_desc">시간별 예보 아이콘</string>
+    <string name="success_hourly_forecast_title">시간별 예보</string>
+    <string name="success_hourly_forecast_view_vertically">세로로 보기</string>
+    <string name="success_tomorrow">내일</string>
+    <string name="success_day_after_tomorrow">모레</string>
+    <string name="success_hourly_forecast_temperature_icon_desc">시간별 날씨 아이콘</string>
+    <string name="success_hourly_forecast_am">오전</string>
+    <string name="success_hourly_forecast_pm">오후</string>
+    <string name="success_hourly_forecast_hour">%1$d시</string>
+
+    <string name="success_daily_forecast_title">일별 예보</string>
+    <string name="success_daily_forecast_icon_desc">일별 예보 아이콘</string>
+    <string name="success_daily_forecast_today">오늘</string>
+    <string name="success_daily_forecast_month_day">%1$s.%2$s</string>
+    <string name="success_daily_forecast_temperature_icon_desc">일별 날씨 아이콘</string>
+
+    <string name="success_detail_weather_icon_desc">상세 날씨 아이콘</string>
+    <string name="success_detail_weather_title">상세 날씨</string>
+    <string name="success_detail_weather_sunrise">일출</string>
+    <string name="success_detail_weather_sunset">일몰</string>
+    <string name="success_detail_weather_start_sunrise">%1$d시간 %2$d분 후에 일출이 시작됩니다.</string>
+    <string name="success_detail_weather_start_sunset">%1$d시간 %2$d분 후에 일몰이 시작됩니다.</string>
+    <string name="success_detail_weather_weather_icon_desc">상세 날씨 정보 아이콘</string>
+    <string name="success_detail_weather_weather">날씨</string>
+    <string name="success_detail_weather_moon">달 모양</string>
 </resources>
