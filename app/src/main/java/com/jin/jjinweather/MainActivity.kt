@@ -30,7 +30,13 @@ import com.jin.jjinweather.feature.navigation.Screens
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.ChatGptApi
+import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
+import com.jin.jjinweather.feature.outfit.domain.GetOutfitUseCase
+import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
+import com.jin.jjinweather.feature.outfitImpl.DalleDataSourceImpl
+import com.jin.jjinweather.feature.outfitImpl.OpenAiDataSourceImpl
 import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitScreen
+import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitViewModel
 import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
@@ -72,6 +78,16 @@ class MainActivity : ComponentActivity() {
                         db.weatherTrackingDataSource(),
                         WeatherDataSourceImpl(openWeatherApi, BuildConfig.OPEN_WEATHER_API_KEY),
                     ),
+                    outfitRepository = OutfitRepositoryImpl(
+                        openAiDataSource = OpenAiDataSourceImpl(
+                            chatGPTApi = chatGptApi,
+                            gptApiKey = BuildConfig.CHAT_GPT_API_KEY
+                        ),
+                        dalleDataSource = DalleDataSourceImpl(
+                            chatGPTApi = chatGptApi,
+                            gptApiKey = BuildConfig.CHAT_GPT_API_KEY
+                        )
+                    )
                 )
             }
         }
@@ -83,6 +99,7 @@ fun AppNavigator(
     context: Context,
     locationRepository: LocationRepository,
     weatherRepository: WeatherRepository,
+    outfitRepository: OutfitRepository,
 ) {
     val navController = rememberNavController()
 
@@ -90,6 +107,7 @@ fun AppNavigator(
     val temperatureViewModel = TemperatureViewModel(
         GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository)
     )
+    val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
 
     NavHost(navController, Screens.Onboarding.route) {
         composable(Screens.Onboarding.route) {
@@ -117,6 +135,7 @@ fun AppNavigator(
             arguments = listOf(navArgument("temperature") { type = NavType.IntType })
         ) { backStackEntry ->
             val temperature = backStackEntry.arguments?.getInt("temperature") ?: -1
+            OutfitScreen(viewModel = outfitViewModel, temperature = temperature)
         }
     }
 }
