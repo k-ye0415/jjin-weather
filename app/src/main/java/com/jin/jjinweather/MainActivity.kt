@@ -27,6 +27,7 @@ import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeat
 import com.jin.jjinweather.feature.navigation.Screens
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
+import com.jin.jjinweather.feature.outfit.data.ChatGptApi
 import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
@@ -49,6 +50,7 @@ class MainActivity : ComponentActivity() {
 
         val openWeatherApi: OpenWeatherApi =
             RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
+        val chatGptApi: ChatGptApi = RetrofitClient.createService("https://api.openai.com/")
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
 
