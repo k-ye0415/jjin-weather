@@ -80,7 +80,8 @@ class WeatherDataSourceImpl(
                 feelsLikeTemperatureRange = FeelsLikeTemperatureRange(
                     daily.feelsLikeTemperatureRange.day,
                     daily.feelsLikeTemperatureRange.night
-                )
+                ),
+                summary = daily.summary
             )
         }
 
