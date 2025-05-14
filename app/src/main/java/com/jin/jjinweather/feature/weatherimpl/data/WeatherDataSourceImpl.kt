@@ -6,6 +6,7 @@ import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.feature.weather.domain.model.DayWeather
+import com.jin.jjinweather.feature.weather.domain.model.FeelsLikeTemperatureRange
 import com.jin.jjinweather.feature.weather.domain.model.Forecast
 import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
@@ -73,7 +74,11 @@ class WeatherDataSourceImpl(
             DailyForecast(
                 date = Calendar.getInstance().apply { timeInMillis = daily.dt * 1000 },
                 icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
-                temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max)
+                temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max),
+                feelsLikeTemperatureRange = FeelsLikeTemperatureRange(
+                    daily.feelsLikeTemperatureRange.day,
+                    daily.feelsLikeTemperatureRange.night
+                )
             )
         }
 
