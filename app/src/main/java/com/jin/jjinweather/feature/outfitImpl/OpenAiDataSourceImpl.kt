@@ -9,17 +9,17 @@ class OpenAiDataSourceImpl(
     private val chatGPTApi: ChatGptApi,
     private val gptApiKey: String,
 ) : OpenAiDataSource {
+
     override suspend fun generateImagePrompt(temperature: Int): Result<String> {
-        val clothes = shuffleOutfitsByTemperature(temperature)
-        val requestPrompt = buildClothingImagePrompt(temperature, clothes.first(), clothes.last())
+        val requestPrompt = buildClothingImagePrompt(temperature)
         val openAiRequest = OpenAiRequest(
-            model = "gpt-4o",
+            model = MODEL,
             messages = listOf(
                 OpenAiChat(
-                    role = "system",
-                    content = "You're a stylist who describes outfits for icon generation."
+                    role = ROLE_SYSTEM,
+                    content = CONTENT
                 ),
-                OpenAiChat(role = "user", content = requestPrompt)
+                OpenAiChat(role = ROLE_USER, content = requestPrompt)
             )
         )
         val openAiResponse = chatGPTApi.queryOpenAiPrompt("Bearer $gptApiKey", openAiRequest)
@@ -30,25 +30,18 @@ class OpenAiDataSourceImpl(
             Result.success(prompt)
         }
     }
-}
 
-private fun buildClothingImagePrompt(temperature: Int, firstClothes: String, secondClothes: String): String = """
+    private fun buildClothingImagePrompt(temperature: Int): String = """
 I need an English object description for a very simple clothing icon.
-Draw a picture so that $firstClothes and $secondClothes are kept side by side without overlapping.
-The icon should simply represent the $firstClothes and $secondClothes appropriate for ${temperature}°C weather.
-The English object description must have a condition that the background color must be white, contain a very simple style, and do not allow temperature.
+Draw a picture so that the top of the clothes and the bottom of the clothes are kept side by side without overlapping.
+The icon should simply represent the top and bottom of the clothing suitable for ${temperature}°C weather.
+The English object description must have a condition that the background color must be 0xFFFFFFFFFF, contain a very simple style, and not allow letters related to temperature.
 """.trimIndent()
 
-private fun shuffleOutfitsByTemperature(temperature: Int): List<String> {
-    val outfits = when (temperature) {
-        in -30..4 -> listOf("padded jacket", "heavy coat", "knit sweater", "thick pants", "hoodie")
-        in 5..8 -> listOf("coat", "knit sweater", "thick pants", "hoodie")
-        in 9..11 -> listOf("trench coat", "sweatshirt", "jeans", "jacket")
-        in 12..16 -> listOf("cardigan", "hoodie", "cotton pants", "crewneck sweatshirt", "jeans")
-        in 17..19 -> listOf("windbreaker", "light cardigan", "hoodie", "crewneck sweatshirt", "slacks", "long pants")
-        in 20..22 -> listOf("light cardigan", "long-sleeved t-shirt", "shirt", "cotton pants", "slacks")
-        in 23..27 -> listOf("short-sleeved t-shirt", "light shirt", "shorts", "cotton pants")
-        else -> listOf("sleeveless shirt", "short-sleeved t-shirt", "shorts", "short skirt")
+    private companion object {
+        const val MODEL = "gpt-4o"
+        const val ROLE_SYSTEM = "system"
+        const val ROLE_USER = "user"
+        const val CONTENT = "You're a stylist who describes outfits for icon generation."
     }
-    return outfits.shuffled()
 }
