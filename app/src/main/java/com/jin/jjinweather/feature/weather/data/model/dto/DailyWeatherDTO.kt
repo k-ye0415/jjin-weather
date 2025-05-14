@@ -7,6 +7,7 @@ data class DailyWeatherDTO(
     @SerializedName("sunrise") val sunrise: Long,
     @SerializedName("sunset") val sunset: Long,
     @SerializedName("moon_phase") val moonPhase: Double,
+    @SerializedName("summary") val summary:String,
     @SerializedName("temp") val temperature: TemperatureDTO,
     @SerializedName("feels_like") val feelsLikeTemperatureRange: FeelsLikeTemperatureRangeDTO,
     @SerializedName("weather") val weather: List<WeatherConditionDTO>

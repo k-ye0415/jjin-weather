@@ -46,7 +46,8 @@ data class DailyForecast(
     val icon: WeatherIcon,
     val temperatureRange: TemperatureRange,
     val sunCycle: SunCycle,
-    val feelsLikeTemperatureRange: FeelsLikeTemperatureRange
+    val feelsLikeTemperatureRange: FeelsLikeTemperatureRange,
+    val summary: String
 )
 
 data class TemperatureRange(
