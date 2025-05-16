@@ -60,7 +60,6 @@ data class FeelsLikeTemperatureRange(
     val nightTemperature: Number
 )
 
-
 enum class WeatherIcon(@DrawableRes val drawableRes: Int) {
     CLEAR_SKY_DAY(R.drawable.ic_main_clear_sky_day),
     CLEAR_SKY_NIGHT(R.drawable.ic_main_clear_sky_night),
