@@ -1,6 +1,7 @@
 package com.jin.jjinweather.feature.weather.domain.model
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.jin.jjinweather.R
 import java.time.Instant
 import java.time.LocalTime
@@ -93,15 +94,18 @@ enum class WeatherIcon(@DrawableRes val drawableRes: Int) {
     }
 }
 
-enum class MoonPhaseType(@DrawableRes val drawableRes: Int, val moonName: String) {
-    NEW_MOON(R.drawable.ic_mew_moon, "새로운 달"),
-    START_CRESCENT_MOON(R.drawable.ic_start_crescent_moon, "초승달"),
-    START_HALF_MOON(R.drawable.ic_start_half_moon, "반달"),
-    BEFORE_FULL_MOON(R.drawable.ic_before_full_moon, "보름달 전"),
-    FULL_MOON(R.drawable.ic_full_moon, "보름달"),
-    AFTER_FULL_MOON(R.drawable.ic_after_full_moon, "보름달 후"),
-    END_HALF_MOON(R.drawable.ic_end_half_moon, "반달"),
-    END_CRESCENT_MOON(R.drawable.ic_end_crescent_moon, "초승달");
+enum class MoonPhaseType(
+    @DrawableRes val iconDrawableRes: Int,
+    @StringRes val nameStringRes: Int
+) {
+    NEW_MOON(R.drawable.ic_mew_moon, R.string.moon_phase_new_moon),
+    START_CRESCENT_MOON(R.drawable.ic_start_crescent_moon, R.string.moon_phase_crescent_moon),
+    START_HALF_MOON(R.drawable.ic_start_half_moon, R.string.moon_phase_half_moon),
+    BEFORE_FULL_MOON(R.drawable.ic_before_full_moon, R.string.moon_phase_before_full_moon),
+    FULL_MOON(R.drawable.ic_full_moon, R.string.moon_phase_full_moon),
+    AFTER_FULL_MOON(R.drawable.ic_after_full_moon, R.string.moon_phase_after_full_moon),
+    END_HALF_MOON(R.drawable.ic_end_half_moon, R.string.moon_phase_half_moon),
+    END_CRESCENT_MOON(R.drawable.ic_end_crescent_moon, R.string.moon_phase_crescent_moon);
 
     companion object {
         fun findByMoonPhase(phase: Double): MoonPhaseType {
