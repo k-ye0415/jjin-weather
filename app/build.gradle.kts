@@ -20,31 +20,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val localPropertiesFile = rootProject.file("local.properties")
-        var openWeatherApiKey = ""
-        var chatGPTApiKey = ""
-        when {
-            localPropertiesFile.exists() -> {
-                val properties = Properties().apply {
-                    load(localPropertiesFile.inputStream())
-                }
-                openWeatherApiKey = properties.getProperty("OPEN_WEATHER_API_KEY") ?: ""
-                chatGPTApiKey = properties.getProperty("CHAT_GPT_API_KEY") ?: ""
-            }
-
-            System.getenv("OPEN_WEATHER_API_KEY") != null -> {
-                openWeatherApiKey = System.getenv("OPEN_WEATHER_API_KEY") ?: ""
-            }
-
-            System.getenv("CHAT_GPT_API_KEY") != null -> {
-                chatGPTApiKey = System.getenv("CHAT_GPT_API_KEY") ?: ""
-            }
-
-            else -> {
-                openWeatherApiKey = ""
-                chatGPTApiKey = ""
-            }
-        }
+        val openWeatherApiKey: String = findApiKey("OPEN_WEATHER_API_KEY")
+        val chatGPTApiKey: String = findApiKey("CHAT_GPT_API_KEY")
 
         defaultConfig {
             buildConfigField("String", "OPEN_WEATHER_API_KEY", "\"$openWeatherApiKey\"")
@@ -68,6 +45,18 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+private fun findApiKey(keyName: String): String {
+    val localPropertiesFile = rootProject.file("local.properties")
+    return if (localPropertiesFile.exists()) {
+        val properties = Properties().apply {
+            load(localPropertiesFile.inputStream())
+        }
+        properties.getProperty(keyName).orEmpty()
+    } else {
+        System.getenv(keyName).orEmpty()
     }
 }
 
