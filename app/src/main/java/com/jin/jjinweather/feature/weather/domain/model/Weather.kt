@@ -109,15 +109,16 @@ enum class MoonPhaseType(
 
     companion object {
         fun findByMoonPhase(phase: Double): MoonPhaseType {
-            return when {
-                phase <= 0.03 || phase == 1.0 -> NEW_MOON
-                phase in 0.04..0.24 -> START_CRESCENT_MOON
-                phase == 0.25 -> START_HALF_MOON
-                phase in 0.26..0.49 -> BEFORE_FULL_MOON
-                phase == 0.5 -> FULL_MOON
-                phase in 0.51..0.74 -> AFTER_FULL_MOON
-                phase == 0.75 -> END_HALF_MOON
-                phase in 0.76..0.99 -> END_CRESCENT_MOON
+            val phaseInt = (phase * 100).toInt()
+            return when (phaseInt) {
+                in 0..3, 100 -> NEW_MOON
+                in 4..24 -> START_CRESCENT_MOON
+                25 -> START_HALF_MOON
+                in 26..49 -> BEFORE_FULL_MOON
+                50 -> FULL_MOON
+                in 51..74 -> AFTER_FULL_MOON
+                75 -> END_HALF_MOON
+                in 76..99 -> END_CRESCENT_MOON
                 else -> NEW_MOON
             }
         }
