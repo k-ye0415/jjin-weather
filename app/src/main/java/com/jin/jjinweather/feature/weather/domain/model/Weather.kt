@@ -47,7 +47,7 @@ data class DailyForecast(
     val icon: WeatherIcon,
     val temperatureRange: TemperatureRange,
     val sunCycle: SunCycle,
-    val feelsLikeTemperatureRange: FeelsLikeTemperatureRange,
+    val feelsLikeTemperature: FeelsLikeTemperature,
     val summary: String
 )
 
@@ -56,9 +56,9 @@ data class TemperatureRange(
     val max: Number
 )
 
-data class FeelsLikeTemperatureRange(
-    val dayTemperature: Number,
-    val nightTemperature: Number
+data class FeelsLikeTemperature(
+    val dayFeelsLike: Number,
+    val nightFeelsLike: Number
 )
 
 enum class WeatherIcon(@DrawableRes val drawableRes: Int) {
