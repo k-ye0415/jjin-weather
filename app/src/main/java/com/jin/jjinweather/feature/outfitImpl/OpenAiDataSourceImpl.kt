@@ -6,8 +6,7 @@ import com.jin.jjinweather.feature.outfit.data.model.OpenAiChat
 import com.jin.jjinweather.feature.outfit.data.model.OpenAiRequest
 
 class OpenAiDataSourceImpl(
-    private val chatGPTApi: ChatGptApi,
-    private val gptApiKey: String,
+    private val chatGPTApi: ChatGptApi
 ) : OpenAiDataSource {
 
     override suspend fun generateImagePrompt(temperature: Int): Result<String> {
@@ -22,7 +21,7 @@ class OpenAiDataSourceImpl(
                 OpenAiChat(role = ROLE_USER, content = requestPrompt)
             )
         )
-        val openAiResponse = chatGPTApi.queryOpenAiPrompt("Bearer $gptApiKey", openAiRequest)
+        val openAiResponse = chatGPTApi.queryOpenAiPrompt(openAiRequest)
         val prompt = openAiResponse.choices.firstOrNull()?.message?.content
         return if (prompt.isNullOrEmpty()) {
             Result.failure(Exception())

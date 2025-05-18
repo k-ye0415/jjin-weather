@@ -5,8 +5,7 @@ import com.jin.jjinweather.feature.outfit.data.DalleDataSource
 import com.jin.jjinweather.feature.outfit.data.model.DalleRequest
 
 class DalleDataSourceImpl(
-    private val chatGPTApi: ChatGptApi,
-    private val gptApiKey: String,
+    private val chatGPTApi: ChatGptApi
 ) : DalleDataSource {
 
     override suspend fun requestOutfitImageGeneration(prompt: String): Result<String> {
@@ -16,7 +15,7 @@ class DalleDataSourceImpl(
             n = IMAGE_COUNT,
             size = IMAGE_SIZE
         )
-        val response = chatGPTApi.queryImageGeneration("Bearer $gptApiKey", dalleRequest)
+        val response = chatGPTApi.queryImageGeneration(dalleRequest)
         val imageUrl = response.data.firstOrNull()?.url
         return if (imageUrl.isNullOrEmpty()) {
             Result.failure(Exception())

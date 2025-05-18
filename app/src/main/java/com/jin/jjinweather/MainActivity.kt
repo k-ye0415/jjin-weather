@@ -20,16 +20,15 @@ import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
-import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
-import com.jin.jjinweather.feature.network.RetrofitClient
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.feature.navigation.Screens
+import com.jin.jjinweather.feature.network.OpenAiApiClient
+import com.jin.jjinweather.feature.network.OpenWeatherApiClient
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
-import com.jin.jjinweather.feature.outfit.data.ChatGptApi
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
 import com.jin.jjinweather.feature.outfit.domain.GetOutfitUseCase
 import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
@@ -57,9 +56,8 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
 
-        val openWeatherApi: OpenWeatherApi =
-            RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
-        val chatGptApi: ChatGptApi = RetrofitClient.createService("https://api.openai.com/")
+        val openWeatherApi = OpenWeatherApiClient.createService()
+        val chatGptApi = OpenAiApiClient.createService(BuildConfig.CHAT_GPT_API_KEY)
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
 
@@ -80,12 +78,10 @@ class MainActivity : ComponentActivity() {
                     ),
                     outfitRepository = OutfitRepositoryImpl(
                         openAiDataSource = OpenAiDataSourceImpl(
-                            chatGPTApi = chatGptApi,
-                            gptApiKey = BuildConfig.CHAT_GPT_API_KEY
+                            chatGPTApi = chatGptApi
                         ),
                         dalleDataSource = DalleDataSourceImpl(
-                            chatGPTApi = chatGptApi,
-                            gptApiKey = BuildConfig.CHAT_GPT_API_KEY
+                            chatGPTApi = chatGptApi
                         )
                     )
                 )
