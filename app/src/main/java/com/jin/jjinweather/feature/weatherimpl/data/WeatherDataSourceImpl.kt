@@ -6,7 +6,7 @@ import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.feature.weather.domain.model.DayWeather
-import com.jin.jjinweather.feature.weather.domain.model.FeelsLikeTemperatureRange
+import com.jin.jjinweather.feature.weather.domain.model.FeelsLikeTemperature
 import com.jin.jjinweather.feature.weather.domain.model.Forecast
 import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 import com.jin.jjinweather.feature.weather.domain.model.SunCycle
@@ -77,7 +77,7 @@ class WeatherDataSourceImpl(
                 icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
                 temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max),
                 sunCycle = SunCycle(epochTimestampToLocalTime(daily.sunrise), epochTimestampToLocalTime(daily.sunset)),
-                feelsLikeTemperatureRange = FeelsLikeTemperatureRange(
+                feelsLikeTemperature = FeelsLikeTemperature(
                     daily.feelsLikeTemperatureRange.day,
                     daily.feelsLikeTemperatureRange.night
                 ),
