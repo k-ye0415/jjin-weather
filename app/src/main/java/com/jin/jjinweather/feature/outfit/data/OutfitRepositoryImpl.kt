@@ -6,7 +6,7 @@ class OutfitRepositoryImpl(
     private val openAiDataSource: OpenAiDataSource,
     private val dalleDataSource: DalleDataSource
 ) : OutfitRepository {
-    override suspend fun generateOutfitImage(temperature: Int): Result<String> {
+    override suspend fun generateOutfitImageUrl(temperature: Int): Result<String> {
         return openAiDataSource.generateImagePrompt(temperature).fold(
             onSuccess = {
                 dalleDataSource.requestOutfitImageGeneration(it)
