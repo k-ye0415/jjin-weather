@@ -77,6 +77,8 @@
     <string name="success_detail_weather_weather_icon_desc">상세 날씨 정보 아이콘</string>
     <string name="success_detail_weather_weather">날씨</string>
     <string name="success_detail_weather_moon">달 모양</string>
+    <string name="success_detail_weather_feelslike_icon_desc">체감 온도 아이콘</string>
+    <string name="success_detail_weather_feelslike">체감 온도</string>
 
     <string name="moon_phase_new_moon">새로운 달</string>
     <string name="moon_phase_crescent_moon">초승달</string>

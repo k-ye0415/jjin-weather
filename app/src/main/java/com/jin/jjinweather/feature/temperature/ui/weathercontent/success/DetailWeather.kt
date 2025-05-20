@@ -73,7 +73,7 @@ fun DetailWeather(
                 modifier = Modifier.padding(vertical = 20.dp),
                 thickness = 1.dp
             )
-            MoreWeather(moonPhase)
+            MoreWeather(moonPhase, weatherDescription, feelsLikeTemperature)
         }
     }
 }
@@ -262,41 +262,29 @@ private fun formatUntilSunsetLabel(now: LocalTime, sunset: LocalTime): String {
 }
 
 @Composable
-private fun MoreWeather(moonPhase: MoonPhaseType) {
-    Row(
-        modifier = Modifier
-            .padding(bottom = 10.dp)
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .background(DetailWeatherIconBackgroundColor, CircleShape)
-                .size(30.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(R.drawable.ic_main_few_clouds_night),
-                contentDescription = stringResource(R.string.success_detail_weather_weather_icon_desc),
-                tint = Color.Unspecified
-            )
-        }
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(R.string.success_detail_weather_weather),
-            color = Color.White,
-            fontSize = 14.sp
-        )
-        Spacer(Modifier.weight(1f))
-        // FIXME : 날씨에 대한 설명글 필요
-        Text(
-            text = "대체로 맑음",
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
+private fun MoreWeather(moonPhase: MoonPhaseType, weatherDescription: String, feelsLikeTemperature: Int) {
+    MoreWeatherItem(
+        iconDrawableRes = R.drawable.ic_main_few_clouds_night,
+        iconDescRes = R.string.success_detail_weather_weather_icon_desc,
+        titleStringRes = R.string.success_detail_weather_weather,
+        content = weatherDescription
+    )
+    MoreWeatherItem(
+        iconDrawableRes = R.drawable.ic_feelslike_temperature,
+        iconDescRes = R.string.success_detail_weather_feelslike_icon_desc,
+        titleStringRes = R.string.success_detail_weather_feelslike,
+        content = stringResource(R.string.success_temperature, feelsLikeTemperature)
+    )
+    MoreWeatherItem(
+        iconDrawableRes = moonPhase.iconDrawableRes,
+        iconDescRes = R.string.success_detail_weather_weather_icon_desc,
+        titleStringRes = R.string.success_detail_weather_moon,
+        content = stringResource(moonPhase.nameStringRes)
+    )
+}
+
+@Composable
+private fun MoreWeatherItem(iconDrawableRes: Int, iconDescRes: Int, titleStringRes: Int, content: String) {
     Row(
         modifier = Modifier
             .padding(bottom = 10.dp)
@@ -311,20 +299,20 @@ private fun MoreWeather(moonPhase: MoonPhaseType) {
         ) {
             Icon(
                 modifier = Modifier.size(20.dp),
-                painter = painterResource(moonPhase.iconDrawableRes),
-                contentDescription = stringResource(R.string.success_detail_weather_weather_icon_desc),
+                painter = painterResource(iconDrawableRes),
+                contentDescription = stringResource(iconDescRes),
                 tint = Color.Unspecified
             )
         }
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(R.string.success_detail_weather_moon),
+            text = stringResource(titleStringRes),
             color = Color.White,
             fontSize = 14.sp
         )
         Spacer(Modifier.weight(1f))
         Text(
-            text = stringResource(moonPhase.nameStringRes),
+            text = content,
             color = Color.White,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
