@@ -23,14 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 import com.jin.jjinweather.ui.theme.ButtonColor
-import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 
 @Composable
 fun OutfitRecommendScreen(imageUrlState: UiState<String>) {
@@ -59,7 +58,7 @@ private fun OutfitSuccess(imageUrl: String) {
     ) {
         AsyncImage(
             model = imageUrl,
-            contentDescription = ""
+            contentDescription = stringResource(R.string.outfit_success_img_desc)
         )
         Box(
             modifier = Modifier
@@ -73,7 +72,7 @@ private fun OutfitSuccess(imageUrl: String) {
             Icon(
                 modifier = Modifier.fillMaxSize(),
                 imageVector = Icons.Outlined.Repeat,
-                contentDescription = "",
+                contentDescription = stringResource(R.string.outfit_success_switch_icon_desc),
                 tint = Color.White
             )
         }
@@ -92,10 +91,10 @@ private fun OutfitError() {
                 .height(200.dp)
                 .padding(horizontal = 20.dp),
             painter = painterResource(R.drawable.img_outfit_error),
-            contentDescription = ""
+            contentDescription = stringResource(R.string.outfit_error_img_desc)
         )
         Text(
-            "현재 온도에 맞는 옷을 찾지 못했습니다.",
+            text = stringResource(R.string.outfit_error),
             fontSize = 20.sp,
             modifier = Modifier.padding(top = 20.dp)
         )
@@ -108,7 +107,7 @@ private fun OutfitError() {
                 .padding(horizontal = 4.dp),
         ) {
             Text(
-                text = "재요청",
+                text = stringResource(R.string.outfit_error_button_retry),
                 fontSize = 10.sp,
                 color = Color.White
             )
