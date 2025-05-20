@@ -69,12 +69,18 @@ fun WeatherSuccessScreen(weather: CityWeather, onNavigateToOutfit: (Int) -> Unit
                 )
             }
             item {
+                val today = weather.weather.dayWeather.date
+                val tomorrow = weather.weather.forecast.daily.find { it.date.after(today) }
+                val nextSunrise = tomorrow?.sunCycle?.sunrise ?: weather.weather.dayWeather.sunCycle.sunrise
                 DetailWeather(
                     modifier = Modifier.padding(bottom = 20.dp),
                     backgroundColor = cardBackgroundColor,
                     sunrise = weather.weather.dayWeather.sunCycle.sunrise,
                     sunset = weather.weather.dayWeather.sunCycle.sunset,
-                    moonPhase = weather.weather.dayWeather.moonPhase
+                    nextSunrise = nextSunrise,
+                    moonPhase = weather.weather.dayWeather.moonPhase,
+                    weatherDescription = weather.weather.dayWeather.description,
+                    feelsLikeTemperature = weather.weather.dayWeather.feelsLikeTemperature.toInt(),
                 )
             }
         }

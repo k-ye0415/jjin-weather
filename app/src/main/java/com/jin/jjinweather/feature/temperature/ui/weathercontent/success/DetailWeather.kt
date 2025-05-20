@@ -53,7 +53,10 @@ fun DetailWeather(
     backgroundColor: Color,
     sunrise: LocalTime,
     sunset: LocalTime,
-    moonPhase: MoonPhaseType
+    nextSunrise: LocalTime,
+    moonPhase: MoonPhaseType,
+    weatherDescription: String,
+    feelsLikeTemperature: Int,
 ) {
     Box(
         modifier = modifier
