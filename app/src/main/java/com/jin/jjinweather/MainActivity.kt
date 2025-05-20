@@ -9,24 +9,33 @@ import androidx.compose.runtime.Composable
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.room.Room
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
-import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
-import com.jin.jjinweather.feature.network.RetrofitClient
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
 import com.jin.jjinweather.feature.navigation.Screens
+import com.jin.jjinweather.feature.network.OpenAiApiClient
+import com.jin.jjinweather.feature.network.OpenWeatherApiClient
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
+import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
+import com.jin.jjinweather.feature.outfit.domain.GetOutfitUseCase
+import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
+import com.jin.jjinweather.feature.outfitImpl.DalleDataSourceImpl
+import com.jin.jjinweather.feature.outfitImpl.OpenAiDataSourceImpl
+import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitScreen
+import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitViewModel
 import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
@@ -47,8 +56,8 @@ class MainActivity : ComponentActivity() {
             keepSplashScreen = false
         }
 
-        val openWeatherApi: OpenWeatherApi =
-            RetrofitClient.createService("https://api.openweathermap.org/data/3.0/")
+        val openWeatherApi = OpenWeatherApiClient.createService()
+        val chatGptApi = OpenAiApiClient.createService(BuildConfig.CHAT_GPT_API_KEY)
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
 
@@ -67,6 +76,14 @@ class MainActivity : ComponentActivity() {
                         db.weatherTrackingDataSource(),
                         WeatherDataSourceImpl(openWeatherApi, BuildConfig.OPEN_WEATHER_API_KEY),
                     ),
+                    outfitRepository = OutfitRepositoryImpl(
+                        openAiDataSource = OpenAiDataSourceImpl(
+                            chatGPTApi = chatGptApi
+                        ),
+                        dalleDataSource = DalleDataSourceImpl(
+                            chatGPTApi = chatGptApi
+                        )
+                    )
                 )
             }
         }
@@ -78,6 +95,7 @@ fun AppNavigator(
     context: Context,
     locationRepository: LocationRepository,
     weatherRepository: WeatherRepository,
+    outfitRepository: OutfitRepository,
 ) {
     val navController = rememberNavController()
 
@@ -85,25 +103,35 @@ fun AppNavigator(
     val temperatureViewModel = TemperatureViewModel(
         GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository)
     )
+    val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
 
-    NavHost(navController, Screens.ONBOARDING.route) {
-        composable(Screens.ONBOARDING.route) {
+    NavHost(navController, Screens.Onboarding.route) {
+        composable(Screens.Onboarding.route) {
             OnboardingScreen(
                 viewModel = onboardingViewModel,
                 onNavigateToTemperature = {
                     navController.navigateClearingBackStack(
-                        destination = Screens.TEMPERATURE,
-                        clearUpTo = Screens.ONBOARDING,
+                        destination = Screens.Temperature,
+                        clearUpTo = Screens.Onboarding,
                         inclusive = true
                     )
                 }
             )
         }
-        composable(Screens.TEMPERATURE.route) {
+        composable(Screens.Temperature.route) {
             TemperatureScreen(
                 viewModel = temperatureViewModel,
-                onNavigate = {}
+                onNavigateToOutfit = { temperature ->
+                    navController.navigate(Screens.Outfit.createRoute(temperature))
+                }
             )
+        }
+        composable(
+            route = Screens.Outfit.route,
+            arguments = listOf(navArgument("temperature") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val temperature = backStackEntry.arguments?.getInt("temperature") ?: 0
+            OutfitScreen(viewModel = outfitViewModel, temperature = temperature)
         }
     }
 }
