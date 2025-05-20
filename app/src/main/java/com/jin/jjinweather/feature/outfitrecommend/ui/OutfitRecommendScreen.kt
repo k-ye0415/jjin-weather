@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,20 +41,41 @@ fun OutfitRecommendScreen(imageUrlState: UiState<String>) {
             modifier = Modifier.padding(innerPadding)
         ) {
             when (imageUrlState) {
-                is UiState.Success -> {
-                    AsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp),
-                        model = imageUrlState.data,
-                        contentDescription = ""
-                    )
-                }
-
-                else -> {
-                    OutfitError()
-                }
+                is UiState.Success -> OutfitSuccess(imageUrlState.data)
+                else -> OutfitError()
             }
+        }
+    }
+}
+
+@Composable
+private fun OutfitSuccess(imageUrl: String) {
+    Box(
+        contentAlignment = Alignment.BottomEnd,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(horizontal = 20.dp),
+    ) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = ""
+        )
+        Box(
+            modifier = Modifier
+                .clickable { }
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.LightGray)
+                .size(32.dp)
+                .padding(2.dp)
+        ) {
+            // FIXME : 다른 이미지 전환?
+            Icon(
+                modifier = Modifier.fillMaxSize(),
+                imageVector = Icons.Outlined.Repeat,
+                contentDescription = "",
+                tint = Color.White
+            )
         }
     }
 }
@@ -64,6 +89,7 @@ private fun OutfitError() {
         Image(
             modifier = Modifier
                 .fillMaxWidth()
+                .height(200.dp)
                 .padding(horizontal = 20.dp),
             painter = painterResource(R.drawable.img_outfit_error),
             contentDescription = ""
@@ -87,13 +113,5 @@ private fun OutfitError() {
                 color = Color.White
             )
         }
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun ErrorPreview() {
-    JJinWeatherTheme {
-        OutfitError()
     }
 }
