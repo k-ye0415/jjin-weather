@@ -84,4 +84,7 @@
     <string name="moon_phase_before_full_moon">보름달 전</string>
     <string name="moon_phase_full_moon">보름달</string>
     <string name="moon_phase_after_full_moon">보름달 후</string>
+
+    <string name="outfit_loading_img_desc">옷 추천 로딩 화면 중앙 배경 이미지</string>
+    <string name="outfit_loading_title">현재 온도에 딱 맞는 옷 찾는 중</string>
 </resources>

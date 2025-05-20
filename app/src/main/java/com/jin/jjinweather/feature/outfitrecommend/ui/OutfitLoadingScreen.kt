@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -91,14 +92,14 @@ fun OutfitLoadingScreen() {
                     ) {
                         Image(
                             painter = painterResource(clothesImageList[index]),
-                            contentDescription = "옷 추천 로딩 화면 중앙 배경 이미지",
+                            contentDescription = stringResource(R.string.outfit_loading_img_desc),
                             modifier = Modifier.fillMaxSize(0.9f)
                         )
                     }
                 }
             }
             Text(
-                text = "현재 온도에 딱 맞는 옷 찾는 중",
+                text = stringResource(R.string.outfit_loading_title),
                 fontSize = 18.sp,
                 color = Color.White,
                 modifier = Modifier.padding(top = 20.dp)
