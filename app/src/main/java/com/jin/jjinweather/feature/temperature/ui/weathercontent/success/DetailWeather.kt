@@ -43,6 +43,8 @@ import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 import com.jin.jjinweather.ui.theme.DetailWeatherIconBackgroundColor
 import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -66,7 +68,7 @@ fun DetailWeather(
         Column {
             DetailWeatherHeader()
             HorizontalDivider(thickness = 1.dp)
-            SunProgressIndicator(sunrise, sunset, LocalTime.now())
+            SunProgressIndicator(sunrise, sunset, nextSunrise, LocalTime.now())
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 20.dp),
                 thickness = 1.dp
@@ -104,6 +106,7 @@ private fun DetailWeatherHeader() {
 private fun SunProgressIndicator(
     sunrise: LocalTime,
     sunset: LocalTime,
+    nextSunrise: LocalTime,
     now: LocalTime
 ) {
     val percent = calculateSunProgress(sunrise, sunset, now)
@@ -207,8 +210,7 @@ private fun SunProgressIndicator(
             }
         }
         val sunEventLabel = if (now.isAfter(sunset)) {
-            // FIXME : 일몰 이후 다음 날의 일출 시간 정보 필요.
-            formatUntilNextSunriseLabel(now, sunrise)
+            formatUntilNextSunriseLabel(now, nextSunrise)
         } else {
             formatUntilSunsetLabel(now, sunset)
         }
@@ -241,7 +243,11 @@ private fun calculateSunProgress(
 
 @Composable
 private fun formatUntilNextSunriseLabel(now: LocalTime, nextSunrise: LocalTime): String {
-    val duration = Duration.between(now, nextSunrise)
+    // LocalTime 은 날짜에 대한 정보를 모르기 때문에 LocalDateTime으로 변환하여 계산
+    val nowDateTime = LocalDateTime.of(LocalDate.now(), now)
+    val nextSunriseDateTime = LocalDateTime.of(LocalDate.now().plusDays(1), nextSunrise)
+
+    val duration = Duration.between(nowDateTime, nextSunriseDateTime)
     val hours = duration.toHours()
     val minutes = duration.minusHours(hours).toMinutes()
     return stringResource(R.string.success_detail_weather_start_sunrise, hours, minutes)
