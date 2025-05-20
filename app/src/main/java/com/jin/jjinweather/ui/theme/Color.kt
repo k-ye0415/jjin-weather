@@ -40,7 +40,10 @@ val TemperatureColors: Map<Int, Color> = mapOf(
     24 to Color(0xFFf4b53f),
     25 to Color(0xFFf3aa3c),
     26 to Color(0xFFf3a53b),
-    27 to Color(0xFFf19b38)
+    27 to Color(0xFFf19b38),
+    28 to Color(0xFFf08a36),
+    29 to Color(0xFFee7235),
+    30 to Color(0xFFed6b36)
 )
 
 val DefaultTemperatureColor = Color(0xFFcbd060)
