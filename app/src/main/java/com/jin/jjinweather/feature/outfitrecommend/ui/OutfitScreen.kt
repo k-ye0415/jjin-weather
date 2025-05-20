@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import coil.compose.AsyncImage
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
-import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @Composable
@@ -24,7 +23,7 @@ fun OutfitScreen(viewModel: OutfitViewModel, temperature: Int) {
 
     // FIXME : Loading, error 화면 수정 필요.
     when (val state = outfitImageUrl) {
-        is UiState.Loading -> WeatherLoadingScreen()
+        is UiState.Loading -> OutfitLoadingScreen()
         is UiState.Success ->
             Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                 AsyncImage(
