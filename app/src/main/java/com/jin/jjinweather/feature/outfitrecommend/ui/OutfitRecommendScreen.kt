@@ -28,20 +28,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jin.jjinweather.R
-import com.jin.jjinweather.feature.weather.ui.state.UiState
 import com.jin.jjinweather.ui.theme.ButtonColor
 
 @Composable
-fun OutfitRecommendScreen(imageUrlState: UiState<String>) {
+fun OutfitRecommendScreen(imageUrl: String?) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            when (imageUrlState) {
-                is UiState.Success -> OutfitSuccess(imageUrlState.data)
-                else -> OutfitError()
+            if (imageUrl != null) {
+                OutfitSuccess(imageUrl)
+            } else {
+                OutfitError()
             }
         }
     }

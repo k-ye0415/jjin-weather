@@ -18,6 +18,7 @@ fun OutfitScreen(viewModel: OutfitViewModel, temperature: Int) {
     // FIXME : Loading, error 화면 수정 필요.
     when (val state = outfitImageUrl) {
         is UiState.Loading -> WeatherLoadingScreen()
-        else -> OutfitRecommendScreen(state)
+        is UiState.Success -> OutfitRecommendScreen(state.data)
+        else -> OutfitRecommendScreen(null)
     }
 }
