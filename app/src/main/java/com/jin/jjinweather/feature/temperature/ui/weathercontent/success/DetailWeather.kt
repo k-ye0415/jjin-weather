@@ -265,26 +265,26 @@ private fun formatUntilSunsetLabel(now: LocalTime, sunset: LocalTime): String {
 private fun MoreWeather(moonPhase: MoonPhaseType, weatherDescription: String, feelsLikeTemperature: Int) {
     MoreWeatherItem(
         iconDrawableRes = R.drawable.ic_main_few_clouds_night,
-        iconDescRes = R.string.success_detail_weather_weather_icon_desc,
-        titleStringRes = R.string.success_detail_weather_weather,
+        iconDesc = stringResource(R.string.success_detail_weather_weather_icon_desc),
+        title = stringResource(R.string.success_detail_weather_weather),
         content = weatherDescription
     )
     MoreWeatherItem(
         iconDrawableRes = R.drawable.ic_feelslike_temperature,
-        iconDescRes = R.string.success_detail_weather_feelslike_icon_desc,
-        titleStringRes = R.string.success_detail_weather_feelslike,
+        iconDesc = stringResource(R.string.success_detail_weather_feelslike_icon_desc),
+        title = stringResource(R.string.success_detail_weather_feelslike),
         content = stringResource(R.string.success_temperature, feelsLikeTemperature)
     )
     MoreWeatherItem(
         iconDrawableRes = moonPhase.iconDrawableRes,
-        iconDescRes = R.string.success_detail_weather_weather_icon_desc,
-        titleStringRes = R.string.success_detail_weather_moon,
+        iconDesc = stringResource(R.string.success_detail_weather_weather_icon_desc),
+        title = stringResource(R.string.success_detail_weather_moon),
         content = stringResource(moonPhase.nameStringRes)
     )
 }
 
 @Composable
-private fun MoreWeatherItem(iconDrawableRes: Int, iconDescRes: Int, titleStringRes: Int, content: String) {
+private fun MoreWeatherItem(iconDrawableRes: Int, iconDesc: String, title: String, content: String) {
     Row(
         modifier = Modifier
             .padding(bottom = 10.dp)
@@ -300,13 +300,13 @@ private fun MoreWeatherItem(iconDrawableRes: Int, iconDescRes: Int, titleStringR
             Icon(
                 modifier = Modifier.size(20.dp),
                 painter = painterResource(iconDrawableRes),
-                contentDescription = stringResource(iconDescRes),
+                contentDescription = iconDesc,
                 tint = Color.Unspecified
             )
         }
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(titleStringRes),
+            text = title,
             color = Color.White,
             fontSize = 14.sp
         )
