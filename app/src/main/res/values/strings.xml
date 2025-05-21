@@ -87,4 +87,9 @@
 
     <string name="outfit_loading_img_desc">옷 추천 로딩 화면 중앙 배경 이미지</string>
     <string name="outfit_loading_title">현재 온도에 딱 맞는 옷 찾는 중</string>
+    <string name="outfit_success_img_desc">온도에 맞는 옷 추천 이미지</string>
+    <string name="outfit_success_switch_icon_desc">이미지 전환 아이콘</string>
+    <string name="outfit_error_img_desc">추천 옷 에러 이미지</string>
+    <string name="outfit_error">현재 온도에 맞는 옷을 찾지 못했습니다.</string>
+    <string name="outfit_error_button_retry">재요청</string>
 </resources>
