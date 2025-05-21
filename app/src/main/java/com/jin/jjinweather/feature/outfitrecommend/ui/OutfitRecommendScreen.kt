@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Repeat
 import androidx.compose.material3.Icon
@@ -28,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +39,7 @@ import com.jin.jjinweather.ui.theme.ButtonColor
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 
 @Composable
-fun OutfitRecommendScreen(imageUrl: String?) {
+fun OutfitRecommendScreen(imageUrl: String?, cityName: String, summary: String) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -48,6 +47,7 @@ fun OutfitRecommendScreen(imageUrl: String?) {
             modifier = Modifier.padding(innerPadding)
         ) {
             OutfitHeader()
+            CityNameAndSummary(cityName, summary)
             if (imageUrl != null) {
                 OutfitSuccess(imageUrl)
             } else {
@@ -76,6 +76,33 @@ private fun OutfitHeader() {
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
+        )
+    }
+}
+
+@Composable
+private fun CityNameAndSummary(cityName: String, summary: String) {
+    Column(
+        modifier = Modifier.padding(
+            horizontal = 20.dp,
+            vertical = 10.dp
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.NearMe,
+                contentDescription = "현재위치",
+                tint = Color.Black,
+                modifier = Modifier.size(18.dp)
+            )
+            Text(cityName)
+        }
+        Text(
+            text = summary,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp
         )
     }
 }
@@ -152,6 +179,6 @@ private fun OutfitError() {
 @Preview(showBackground = true)
 fun OutfitRecommendScreenPreview() {
     JJinWeatherTheme {
-        OutfitRecommendScreen(null)
+        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.")
     }
 }
