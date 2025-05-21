@@ -121,17 +121,28 @@ fun AppNavigator(
         composable(Screens.Temperature.route) {
             TemperatureScreen(
                 viewModel = temperatureViewModel,
-                onNavigateToOutfit = { temperature ->
-                    navController.navigate(Screens.Outfit.createRoute(temperature))
+                onNavigateToOutfit = { temperature, cityName, summary ->
+                    navController.navigate(Screens.Outfit.createRoute(temperature, cityName, summary))
                 }
             )
         }
         composable(
             route = Screens.Outfit.route,
-            arguments = listOf(navArgument("temperature") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument(Screens.TEMPERATURE) { type = NavType.IntType },
+                navArgument(Screens.CITY_NAME) { type = NavType.StringType },
+                navArgument(Screens.WEATHER_SUMMARY) { type = NavType.StringType },
+            )
         ) { backStackEntry ->
-            val temperature = backStackEntry.arguments?.getInt("temperature") ?: 0
-            OutfitScreen(viewModel = outfitViewModel, temperature = temperature)
+            val temperature = backStackEntry.arguments?.getInt(Screens.TEMPERATURE) ?: 0
+            val cityName = backStackEntry.arguments?.getString(Screens.CITY_NAME).orEmpty()
+            val weatherSummary = backStackEntry.arguments?.getString(Screens.WEATHER_SUMMARY).orEmpty()
+            OutfitScreen(
+                viewModel = outfitViewModel,
+                temperature = temperature,
+                cityName = cityName,
+                summary = weatherSummary,
+            )
         }
     }
 }

@@ -8,7 +8,7 @@ import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingS
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @Composable
-fun OutfitScreen(viewModel: OutfitViewModel, temperature: Int) {
+fun OutfitScreen(viewModel: OutfitViewModel, temperature: Int, cityName: String, summary: String) {
     val outfitImageUrl by viewModel.outfitImageUrl.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -18,7 +18,7 @@ fun OutfitScreen(viewModel: OutfitViewModel, temperature: Int) {
     // FIXME : Loading, error 화면 수정 필요.
     when (val state = outfitImageUrl) {
         is UiState.Loading -> WeatherLoadingScreen()
-        is UiState.Success -> OutfitRecommendScreen(state.data)
-        else -> OutfitRecommendScreen(null)
+        is UiState.Success -> OutfitRecommendScreen(state.data, cityName, summary)
+        else -> OutfitRecommendScreen(null, cityName, summary)
     }
 }
