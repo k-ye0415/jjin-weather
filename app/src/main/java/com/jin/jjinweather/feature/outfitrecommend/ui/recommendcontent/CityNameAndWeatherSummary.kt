@@ -12,9 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jin.jjinweather.R
 
 @Composable
 fun CityNameAndWeatherSummary(cityName: String, summary: String) {
@@ -29,7 +31,7 @@ fun CityNameAndWeatherSummary(cityName: String, summary: String) {
         ) {
             Icon(
                 imageVector = Icons.Filled.NearMe,
-                contentDescription = "현재위치",
+                contentDescription = stringResource(R.string.success_current_temperature_icon_desc),
                 tint = Color.Black,
                 modifier = Modifier.size(18.dp)
             )

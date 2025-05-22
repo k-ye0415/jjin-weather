@@ -7,9 +7,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
 import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
@@ -39,7 +41,7 @@ fun OutfitRecommendScreen(
                 OutfitError()
             }
             Text(
-                "시간별 온도 그래프",
+                text = stringResource(R.string.outfit_hourly_forecast_graph),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(horizontal = 20.dp)

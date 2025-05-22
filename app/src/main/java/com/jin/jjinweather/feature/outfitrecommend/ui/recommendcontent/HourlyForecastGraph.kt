@@ -222,9 +222,9 @@ private fun TemperatureGraphLabelGuide(maxTemperature: Int, minTemperature: Int)
             .padding(top = 4.dp, end = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
-        GuidItem(TemperatureColors[maxTemperature] ?: DefaultTemperatureColor, "최고 온도", RectangleShape)
-        GuidItem(TemperatureColors[minTemperature] ?: DefaultTemperatureColor, "최저 온도", RectangleShape)
-        GuidItem(PointColor, "체감 온도", CircleShape)
+        GuidItem(TemperatureColors[maxTemperature] ?: DefaultTemperatureColor, stringResource(R.string.outfit_max_temperature), RectangleShape)
+        GuidItem(TemperatureColors[minTemperature] ?: DefaultTemperatureColor, stringResource(R.string.outfit_min_temperature), RectangleShape)
+        GuidItem(PointColor, stringResource(R.string.outfit_feels_like_temperature), CircleShape)
     }
 }
 
