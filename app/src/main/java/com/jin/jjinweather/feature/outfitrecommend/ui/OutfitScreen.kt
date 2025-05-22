@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.jin.jjinweather.feature.outfitrecommend.ui.recommendcontent.OutfitRecommendScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.ui.state.UiState
