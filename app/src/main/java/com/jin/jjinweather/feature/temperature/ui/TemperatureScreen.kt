@@ -11,13 +11,14 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.WeatherSuccessScreen
+import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun TemperatureScreen(
     viewModel: TemperatureViewModel,
-    onNavigateToOutfit: (temperature: Int, cityName: String, summary: String) -> Unit
+    onNavigateToOutfit: (temperature: Int, cityName: String, summary: String, forecast: HourlyForecast) -> Unit
 ) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
