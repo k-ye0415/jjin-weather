@@ -16,7 +16,8 @@ fun OutfitScreen(
     cityName: String,
     summary: String,
     forecast: HourlyForecast,
-    feelsLikeTemperature: Int
+    feelsLikeTemperature: Int,
+    onNavigateToTemperature: () -> Unit
 ) {
     val outfitImageUrl by viewModel.outfitImageUrl.collectAsState()
 
@@ -26,7 +27,22 @@ fun OutfitScreen(
 
     when (val state = outfitImageUrl) {
         is UiState.Loading -> WeatherLoadingScreen()
-        is UiState.Success -> OutfitRecommendScreen(state.data, cityName, summary, forecast, feelsLikeTemperature)
-        else -> OutfitRecommendScreen(null, cityName, summary, forecast, feelsLikeTemperature)
+        is UiState.Success -> OutfitRecommendScreen(
+            state.data,
+            cityName,
+            summary,
+            forecast,
+            feelsLikeTemperature,
+            onNavigateToTemperature
+        )
+
+        else -> OutfitRecommendScreen(
+            null,
+            cityName,
+            summary,
+            forecast,
+            feelsLikeTemperature,
+            onNavigateToTemperature
+        )
     }
 }

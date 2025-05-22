@@ -25,7 +25,8 @@ fun OutfitRecommendScreen(
     cityName: String,
     summary: String,
     forecast: HourlyForecast,
-    feelsLikeTemperature: Int
+    feelsLikeTemperature: Int,
+    onNavigateToTemperature: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -33,7 +34,7 @@ fun OutfitRecommendScreen(
         Column(
             modifier = Modifier.padding(innerPadding)
         ) {
-            OutfitHeader()
+            OutfitHeader(onNavigateToTemperature)
             CityNameAndWeatherSummary(cityName, summary)
             if (imageUrl != null) {
                 OutfitSuccess(imageUrl)
@@ -113,6 +114,6 @@ fun OutfitRecommendScreenPreview() {
             TemperatureSnapshot(Instant.ofEpochSecond(1748059200), WeatherIcon.SCATTERED_CLOUDS, 23.29),
             TemperatureSnapshot(Instant.ofEpochSecond(1748062800), WeatherIcon.SCATTERED_CLOUDS, 22.84),
         )
-        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.", hourlyForecast, 21)
+        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.", hourlyForecast, 21, {})
     }
 }
