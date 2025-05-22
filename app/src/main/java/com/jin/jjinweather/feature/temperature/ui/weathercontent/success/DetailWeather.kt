@@ -43,6 +43,8 @@ import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 import com.jin.jjinweather.ui.theme.DetailWeatherIconBackgroundColor
 import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -53,7 +55,10 @@ fun DetailWeather(
     backgroundColor: Color,
     sunrise: LocalTime,
     sunset: LocalTime,
-    moonPhase: MoonPhaseType
+    nextSunrise: LocalTime,
+    moonPhase: MoonPhaseType,
+    weatherDescription: String,
+    feelsLikeTemperature: Int,
 ) {
     Box(
         modifier = modifier
@@ -63,12 +68,12 @@ fun DetailWeather(
         Column {
             DetailWeatherHeader()
             HorizontalDivider(thickness = 1.dp)
-            SunProgressIndicator(sunrise, sunset, LocalTime.now())
+            SunProgressIndicator(sunrise, sunset, nextSunrise, LocalTime.now())
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 20.dp),
                 thickness = 1.dp
             )
-            MoreWeather(moonPhase)
+            MoreWeather(moonPhase, weatherDescription, feelsLikeTemperature)
         }
     }
 }
@@ -101,6 +106,7 @@ private fun DetailWeatherHeader() {
 private fun SunProgressIndicator(
     sunrise: LocalTime,
     sunset: LocalTime,
+    nextSunrise: LocalTime,
     now: LocalTime
 ) {
     val percent = calculateSunProgress(sunrise, sunset, now)
@@ -204,8 +210,7 @@ private fun SunProgressIndicator(
             }
         }
         val sunEventLabel = if (now.isAfter(sunset)) {
-            // FIXME : 일몰 이후 다음 날의 일출 시간 정보 필요.
-            formatUntilNextSunriseLabel(now, sunrise)
+            formatUntilNextSunriseLabel(now, nextSunrise)
         } else {
             formatUntilSunsetLabel(now, sunset)
         }
@@ -238,7 +243,11 @@ private fun calculateSunProgress(
 
 @Composable
 private fun formatUntilNextSunriseLabel(now: LocalTime, nextSunrise: LocalTime): String {
-    val duration = Duration.between(now, nextSunrise)
+    // LocalTime 은 날짜에 대한 정보를 모르기 때문에 LocalDateTime으로 변환하여 계산
+    val nowDateTime = LocalDateTime.of(LocalDate.now(), now)
+    val nextSunriseDateTime = LocalDateTime.of(LocalDate.now().plusDays(1), nextSunrise)
+
+    val duration = Duration.between(nowDateTime, nextSunriseDateTime)
     val hours = duration.toHours()
     val minutes = duration.minusHours(hours).toMinutes()
     return stringResource(R.string.success_detail_weather_start_sunrise, hours, minutes)
@@ -253,41 +262,29 @@ private fun formatUntilSunsetLabel(now: LocalTime, sunset: LocalTime): String {
 }
 
 @Composable
-private fun MoreWeather(moonPhase: MoonPhaseType) {
-    Row(
-        modifier = Modifier
-            .padding(bottom = 10.dp)
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .background(DetailWeatherIconBackgroundColor, CircleShape)
-                .size(30.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(R.drawable.ic_main_few_clouds_night),
-                contentDescription = stringResource(R.string.success_detail_weather_weather_icon_desc),
-                tint = Color.Unspecified
-            )
-        }
-        Text(
-            modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(R.string.success_detail_weather_weather),
-            color = Color.White,
-            fontSize = 14.sp
-        )
-        Spacer(Modifier.weight(1f))
-        // FIXME : 날씨에 대한 설명글 필요
-        Text(
-            text = "대체로 맑음",
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
+private fun MoreWeather(moonPhase: MoonPhaseType, weatherDescription: String, feelsLikeTemperature: Int) {
+    MoreWeatherItem(
+        iconDrawableRes = R.drawable.ic_main_few_clouds_night,
+        iconDesc = stringResource(R.string.success_detail_weather_weather_icon_desc),
+        title = stringResource(R.string.success_detail_weather_weather),
+        content = weatherDescription
+    )
+    MoreWeatherItem(
+        iconDrawableRes = R.drawable.ic_feelslike_temperature,
+        iconDesc = stringResource(R.string.success_detail_weather_feelslike_icon_desc),
+        title = stringResource(R.string.success_detail_weather_feelslike),
+        content = stringResource(R.string.success_temperature, feelsLikeTemperature)
+    )
+    MoreWeatherItem(
+        iconDrawableRes = moonPhase.iconDrawableRes,
+        iconDesc = stringResource(R.string.success_detail_weather_weather_icon_desc),
+        title = stringResource(R.string.success_detail_weather_moon),
+        content = stringResource(moonPhase.nameStringRes)
+    )
+}
+
+@Composable
+private fun MoreWeatherItem(iconDrawableRes: Int, iconDesc: String, title: String, content: String) {
     Row(
         modifier = Modifier
             .padding(bottom = 10.dp)
@@ -302,20 +299,20 @@ private fun MoreWeather(moonPhase: MoonPhaseType) {
         ) {
             Icon(
                 modifier = Modifier.size(20.dp),
-                painter = painterResource(moonPhase.iconDrawableRes),
-                contentDescription = stringResource(R.string.success_detail_weather_weather_icon_desc),
+                painter = painterResource(iconDrawableRes),
+                contentDescription = iconDesc,
                 tint = Color.Unspecified
             )
         }
         Text(
             modifier = Modifier.padding(start = 8.dp),
-            text = stringResource(R.string.success_detail_weather_moon),
+            text = title,
             color = Color.White,
             fontSize = 14.sp
         )
         Spacer(Modifier.weight(1f))
         Text(
-            text = stringResource(moonPhase.nameStringRes),
+            text = content,
             color = Color.White,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
