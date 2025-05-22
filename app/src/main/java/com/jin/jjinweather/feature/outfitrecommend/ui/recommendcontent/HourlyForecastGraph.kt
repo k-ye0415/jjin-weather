@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -52,11 +51,13 @@ fun HourlyForecastGraph(
 ) {
     val lowestTemperature = temperatureList.minOfOrNull { it } ?: 0
     val highestTemperature = temperatureList.maxOfOrNull { it } ?: 0
-    val graphMinTemperature = findGraphMinMaxTemperature(lowestTemperature)
-    val graphMaxTemperature = findGraphMinMaxTemperature(highestTemperature)
+    val yAxisStep = 5
+    val graphMinTemperature = alignTemperatureToStep(yAxisStep, lowestTemperature)
+    val graphMaxTemperature = alignTemperatureToStep(yAxisStep, highestTemperature)
 
-    val temperatureLabels = findGraphTemperatureLabels(lowestTemperature, graphMinTemperature, graphMaxTemperature)
-    val hourLabels = findHourLabels(hourlyList)
+    val temperatureLabels = generateYAxisTemperatureLabels(lowestTemperature, graphMinTemperature, graphMaxTemperature)
+    val hourLabels = generateXAxisHourLabels(hourlyList)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -81,8 +82,14 @@ fun HourlyForecastGraph(
 
         // 시간별 최저/최고 막대 그래프 표시
         Box {
-            HourXAxisLabels(hourLabels, temperatureList, graphMinTemperature, graphMaxTemperature, feelsLikeTemperature)
-            TemperatureGraphDescription(graphMaxTemperature, lowestTemperature)
+            TemperatureBarXAxisGraphBar(
+                hourLabels,
+                temperatureList,
+                graphMinTemperature,
+                graphMaxTemperature,
+                feelsLikeTemperature
+            )
+            TemperatureGraphLabelGuide(graphMaxTemperature, lowestTemperature)
         }
     }
 }
@@ -111,8 +118,9 @@ private fun TemperatureYAxisLabels(temperatureLabels: List<Int>) {
         }
     }
 }
+
 @Composable
-private fun HourXAxisLabels(
+private fun TemperatureBarXAxisGraphBar(
     hourLabels: List<ForecastTime.Hour>,
     temperatureList: List<Int>,
     absoluteMinTemperature: Int,
@@ -124,88 +132,104 @@ private fun HourXAxisLabels(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(hourLabels.size) { i ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom,
-                modifier = Modifier
-                    .width(32.dp)
-                    .fillMaxHeight()
-            ) {
-                // 막대 그래프
-                Canvas(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                ) {
-                    val temp = temperatureList[i]
-
-                    // 아이템의 위치 계산
-                    val barCenterX = size.width / 2f
-                    val graphMinHeight = 8.dp.toPx() // 최소 높이 설정(최고와 최저의 차이가 작으면 UI 에러 발생)
-                    val tempRange = (absoluteMaxTemperature - absoluteMinTemperature).takeIf { it != 0 } ?: 1
-                    val graphHeight = ((temp - absoluteMinTemperature).toFloat() / tempRange) * size.height
-                    val barHeight = maxOf(graphMinHeight, graphHeight)
-
-                    // 체감온도의 위치 계산
-                    val feelsLikeHeight =
-                        ((feelsLikeTemperature - absoluteMinTemperature).toFloat() / tempRange) * size.height
-
-                    // 그래프 색상
-                    val topColor = TemperatureColors[temp] ?: DefaultTemperatureColor
-                    val bottomColor = TemperatureColors[absoluteMinTemperature] ?: DefaultTemperatureColor
-                    val brush = Brush.verticalGradient(
-                        colors = listOf(topColor, bottomColor),
-                        startY = size.height - barHeight,
-                        endY = size.height
-                    )
-
-                    drawLine(
-                        brush = brush,
-                        start = Offset(barCenterX, size.height),
-                        end = Offset(barCenterX, size.height - barHeight),
-                        strokeWidth = 8.dp.toPx()
-                    )
-
-                    // 현재 시각의 체감 온도를 표시.
-                    // FIXME : 모든 시간의 체감온도 표시?
-                    if (i == 0) {
-                        drawCircle(
-                            color = PointColor,
-                            radius = 6.dp.toPx(),
-                            center = Offset(barCenterX, size.height - feelsLikeHeight)
-                        )
-                    }
-                }
-                HorizontalDivider()
-                // 시간 라벨
-                Box(modifier = Modifier.height(32.dp)) {
-                    Text(
-                        text = stringResource(R.string.success_hourly_forecast_hour, hourLabels[i].hour),
-                        fontSize = 12.sp,
-                        color = Color.DarkGray,
-                    )
-                }
-            }
+            GraphItem(
+                temperature = temperatureList[i],
+                absoluteMinTemperature = absoluteMinTemperature,
+                absoluteMaxTemperature = absoluteMaxTemperature,
+                feelsLikeTemperature = feelsLikeTemperature,
+                isFirstItem = i == 0,
+                hour = hourLabels[i]
+            )
         }
     }
 }
 
 @Composable
-private fun TemperatureGraphDescription(maxTemperature: Int, minTemperature: Int) {
+private fun GraphItem(
+    temperature: Int,
+    absoluteMinTemperature: Int,
+    absoluteMaxTemperature: Int,
+    feelsLikeTemperature: Int,
+    isFirstItem: Boolean,
+    hour: ForecastTime.Hour
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom,
+        modifier = Modifier
+            .width(32.dp)
+            .fillMaxHeight()
+    ) {
+        // 막대 그래프
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            // 아이템의 위치 계산
+            val barCenterX = size.width / 2f
+            val graphMinHeight = 8.dp.toPx() // 최소 높이 설정(최고와 최저의 차이가 작으면 UI 에러 발생)
+            val tempRange = (absoluteMaxTemperature - absoluteMinTemperature).takeIf { it != 0 } ?: 1
+            val graphHeight = ((temperature - absoluteMinTemperature).toFloat() / tempRange) * size.height
+            val barHeight = maxOf(graphMinHeight, graphHeight)
+
+            // 체감온도의 위치 계산
+            val feelsLikeHeight =
+                ((feelsLikeTemperature - absoluteMinTemperature).toFloat() / tempRange) * size.height
+
+            // 그래프 색상
+            val topColor = TemperatureColors[temperature] ?: DefaultTemperatureColor
+            val bottomColor = TemperatureColors[absoluteMinTemperature] ?: DefaultTemperatureColor
+            val brush = Brush.verticalGradient(
+                colors = listOf(topColor, bottomColor),
+                startY = size.height - barHeight,
+                endY = size.height
+            )
+
+            drawLine(
+                brush = brush,
+                start = Offset(barCenterX, size.height),
+                end = Offset(barCenterX, size.height - barHeight),
+                strokeWidth = 8.dp.toPx()
+            )
+
+            // 현재 시각의 체감 온도를 표시.
+            // FIXME : 모든 시간의 체감온도 표시?
+            if (isFirstItem) {
+                drawCircle(
+                    color = PointColor,
+                    radius = 6.dp.toPx(),
+                    center = Offset(barCenterX, size.height - feelsLikeHeight)
+                )
+            }
+        }
+        // 시간 라벨
+        Box(modifier = Modifier.height(32.dp)) {
+            Text(
+                text = stringResource(R.string.success_hourly_forecast_hour, hour),
+                fontSize = 12.sp,
+                color = Color.DarkGray,
+            )
+        }
+    }
+}
+
+@Composable
+private fun TemperatureGraphLabelGuide(maxTemperature: Int, minTemperature: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, end = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
-        DescriptionItem(TemperatureColors[maxTemperature] ?: DefaultTemperatureColor, "최고 온도", RectangleShape)
-        DescriptionItem(TemperatureColors[minTemperature] ?: DefaultTemperatureColor, "최저 온도", RectangleShape)
-        DescriptionItem(PointColor, "체감 온도", CircleShape)
+        GuidItem(TemperatureColors[maxTemperature] ?: DefaultTemperatureColor, "최고 온도", RectangleShape)
+        GuidItem(TemperatureColors[minTemperature] ?: DefaultTemperatureColor, "최저 온도", RectangleShape)
+        GuidItem(PointColor, "체감 온도", CircleShape)
     }
 }
 
 @Composable
-private fun DescriptionItem(color: Color, title: String, shape: Shape) {
+private fun GuidItem(color: Color, title: String, shape: Shape) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
@@ -222,15 +246,15 @@ private fun DescriptionItem(color: Color, title: String, shape: Shape) {
     }
 }
 
-private fun findGraphMinMaxTemperature(temperature: Int): Int {
+private fun alignTemperatureToStep(step: Int, temperature: Int): Int {
     return if (temperature < 0) {
-        floor(temperature / 5.0).toInt() * 5
+        floor(temperature / step.toDouble()).toInt() * step
     } else {
-        ceil(temperature / 5.0).toInt() * 5
+        ceil(temperature / step.toDouble()).toInt() * step
     }
 }
 
-private fun findGraphTemperatureLabels(
+private fun generateYAxisTemperatureLabels(
     lowestTemperature: Int,
     graphMinTemperature: Int,
     graphMaxTemperature: Int
@@ -240,7 +264,7 @@ private fun findGraphTemperatureLabels(
     return temperatureLabelSet.sortedDescending()
 }
 
-private fun findHourLabels(hourlyList: List<Int>): List<ForecastTime.Hour> {
+private fun generateXAxisHourLabels(hourlyList: List<Int>): List<ForecastTime.Hour> {
     val hours = hourlyList.indices.map { hourlyList[it] }
     return hours.map { hour24 ->
         val hour12 = if (hour24 > 12) hour24 - 12 else hour24

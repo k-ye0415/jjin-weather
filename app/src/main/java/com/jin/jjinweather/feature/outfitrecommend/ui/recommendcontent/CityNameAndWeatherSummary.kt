@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CityNameAndSummary(cityName: String, summary: String) {
+fun CityNameAndWeatherSummary(cityName: String, summary: String) {
     Column(
         modifier = Modifier.padding(
             horizontal = 20.dp,

@@ -32,7 +32,7 @@ fun OutfitRecommendScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             OutfitHeader()
-            CityNameAndSummary(cityName, summary)
+            CityNameAndWeatherSummary(cityName, summary)
             if (imageUrl != null) {
                 OutfitSuccess(imageUrl)
             } else {
