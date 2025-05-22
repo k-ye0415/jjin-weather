@@ -145,6 +145,7 @@ fun AppNavigator(
                 navArgument(Screens.FEELS_LIKE_TEMPERATURE) { type = NavType.IntType },
             )
         ) { backStackEntry ->
+            // FIXME : key 값으로 DB 조회하는 방향으로 수정 예정
            val args = backStackEntry.parseOutfitArguments()
             OutfitScreen(
                 viewModel = outfitViewModel,
