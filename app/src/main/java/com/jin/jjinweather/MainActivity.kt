@@ -153,7 +153,9 @@ fun AppNavigator(
                 summary = args.weatherSummary,
                 forecast = args.hourlyForecast,
                 feelsLikeTemperature = args.feelsLikeTemperature
-            )
+            ) {
+                navController.navigate(Screens.Temperature.route)
+            }
         }
     }
 }

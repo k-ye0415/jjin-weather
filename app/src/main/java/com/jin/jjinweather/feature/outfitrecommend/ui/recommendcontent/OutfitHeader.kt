@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 
 @Composable
-fun OutfitHeader() {
+fun OutfitHeader(onNavigateToTemperature: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
-        IconButton({}) {
+        IconButton(onNavigateToTemperature) {
             Icon(
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = stringResource(R.string.outfit_back_icon_desc),
