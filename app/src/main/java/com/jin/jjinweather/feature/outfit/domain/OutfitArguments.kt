@@ -6,5 +6,6 @@ data class OutfitArguments(
     val temperature: Int,
     val cityName: String,
     val weatherSummary: String,
-    val hourlyForecast: HourlyForecast
+    val hourlyForecast: HourlyForecast,
+    val feelsLikeTemperature: Int
 )

@@ -5,10 +5,18 @@ import android.net.Uri
 sealed class Screens(val route: String) {
     object Onboarding : Screens("onboardingScreen")
     object Temperature : Screens("temperatureScreen")
-    object Outfit : Screens("outfitScreen/{$TEMPERATURE}/{$CITY_NAME}/{$WEATHER_SUMMARY}/{$HOURLY_FORECAST}") {
-        fun createRoute(temperature: Int, cityName: String, weatherSummary: String, forecastJson: String): String {
+    object Outfit : Screens(
+        "outfitScreen/{$TEMPERATURE}/{$CITY_NAME}/{$WEATHER_SUMMARY}/{$HOURLY_FORECAST}/{$FEELS_LIKE_TEMPERATURE}"
+    ) {
+        fun createRoute(
+            temperature: Int,
+            cityName: String,
+            weatherSummary: String,
+            forecastJson: String,
+            feelsLikeTemperature: Int
+        ): String {
             val forecastEncoded = Uri.encode(forecastJson)
-            return "outfitScreen/$temperature/$cityName/$weatherSummary/$forecastEncoded"
+            return "outfitScreen/$temperature/$cityName/$weatherSummary/$forecastEncoded/$feelsLikeTemperature"
         }
     }
 
@@ -17,5 +25,6 @@ sealed class Screens(val route: String) {
         const val CITY_NAME = "cityName"
         const val WEATHER_SUMMARY = "weatherSummary"
         const val HOURLY_FORECAST = "hourlyForecast"
+        const val FEELS_LIKE_TEMPERATURE = "feelsLikeTemperature"
     }
 }

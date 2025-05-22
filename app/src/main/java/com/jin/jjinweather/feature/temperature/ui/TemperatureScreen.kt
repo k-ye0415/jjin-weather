@@ -18,7 +18,13 @@ import com.jin.jjinweather.feature.weather.ui.state.UiState
 @Composable
 fun TemperatureScreen(
     viewModel: TemperatureViewModel,
-    onNavigateToOutfit: (temperature: Int, cityName: String, summary: String, forecast: HourlyForecast) -> Unit
+    onNavigateToOutfit: (
+        temperature: Int,
+        cityName: String,
+        summary: String,
+        forecast: HourlyForecast,
+        feelsLikeTemperature: Int,
+    ) -> Unit
 ) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION

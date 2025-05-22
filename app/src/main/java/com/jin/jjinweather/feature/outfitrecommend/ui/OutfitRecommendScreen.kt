@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NearMe
@@ -37,6 +38,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jin.jjinweather.R
@@ -54,6 +58,7 @@ import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
 import com.jin.jjinweather.ui.theme.ButtonColor
 import com.jin.jjinweather.ui.theme.DefaultTemperatureColor
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
+import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.TemperatureColors
 import java.time.Instant
 import java.time.ZoneId
@@ -65,7 +70,8 @@ fun OutfitRecommendScreen(
     imageUrl: String?,
     cityName: String,
     summary: String,
-    forecast: HourlyForecast
+    forecast: HourlyForecast,
+    feelsLikeTemperature: Int
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -90,6 +96,7 @@ fun OutfitRecommendScreen(
             HourlyForecastGraph(
                 forecast.map { it.temperature.toInt() },
                 forecast.map { it.timeStamp.atZone(ZoneId.systemDefault()).hour },
+                feelsLikeTemperature,
                 Modifier
                     .padding(horizontal = 20.dp)
                     .padding(bottom = 10.dp)
@@ -152,6 +159,7 @@ private fun CityNameAndSummary(cityName: String, summary: String) {
 private fun HourlyForecastGraph(
     temperatureList: List<Int>,
     hourlyList: List<Int>,
+    feelsLikeTemperature: Int,
     modifier: Modifier
 ) {
     val lowestTemperature = temperatureList.minOfOrNull { it } ?: 0
@@ -181,7 +189,42 @@ private fun HourlyForecastGraph(
     ) {
         TemperatureYAxisLabels(temperatureLabels)
         VerticalDivider(thickness = 1.dp, modifier = Modifier.padding(bottom = 32.dp))
-        HourXAxisLabels(hourLabels, temperatureList, graphMinTemperature, graphMaxTemperature)
+        Box {
+            HourXAxisLabels(hourLabels, temperatureList, graphMinTemperature, graphMaxTemperature, feelsLikeTemperature)
+            TemperatureGraphDescription(graphMaxTemperature, lowestTemperature)
+        }
+    }
+}
+
+@Composable
+private fun TemperatureGraphDescription(maxTemperature: Int, minTemperature: Int) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 4.dp, end = 8.dp),
+        horizontalAlignment = Alignment.End
+    ) {
+        DescriptionItem(TemperatureColors[maxTemperature] ?: DefaultTemperatureColor, "최고 온도", RectangleShape)
+        DescriptionItem(TemperatureColors[minTemperature] ?: DefaultTemperatureColor, "최저 온도", RectangleShape)
+        DescriptionItem(PointColor, "체감 온도", CircleShape)
+    }
+}
+
+@Composable
+private fun DescriptionItem(color: Color, title: String, shape: Shape) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .clip(shape)
+                .size(12.dp)
+                .background(color)
+        )
+        Text(
+            text = title,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 2.dp),
+            lineHeight = 1.5.em
+        )
     }
 }
 
@@ -216,6 +259,7 @@ private fun HourXAxisLabels(
     temperatureList: List<Int>,
     absoluteMinTemperature: Int,
     absoluteMaxTemperature: Int,
+    feelsLikeTemperature: Int
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
@@ -235,13 +279,20 @@ private fun HourXAxisLabels(
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    val barCenterX = size.width / 2f
                     val temp = temperatureList[i]
+
+                    // 아이템의 위치 계산
+                    val barCenterX = size.width / 2f
                     val graphMinHeight = 8.dp.toPx() // 최소 높이 설정(최고와 최저의 차이가 작으면 UI 에러 발생)
                     val tempRange = (absoluteMaxTemperature - absoluteMinTemperature).takeIf { it != 0 } ?: 1
                     val graphHeight = ((temp - absoluteMinTemperature).toFloat() / tempRange) * size.height
                     val barHeight = maxOf(graphMinHeight, graphHeight)
 
+                    // 체감온도의 위치 계산
+                    val feelsLikeHeight =
+                        ((feelsLikeTemperature - absoluteMinTemperature).toFloat() / tempRange) * size.height
+
+                    // 그래프 색상
                     val topColor = TemperatureColors[temp] ?: DefaultTemperatureColor
                     val bottomColor = TemperatureColors[absoluteMinTemperature] ?: DefaultTemperatureColor
                     val brush = Brush.verticalGradient(
@@ -256,6 +307,16 @@ private fun HourXAxisLabels(
                         end = Offset(barCenterX, size.height - barHeight),
                         strokeWidth = 8.dp.toPx()
                     )
+
+                    // 현재 시각의 체감 온도를 표시.
+                    // FIXME : 모든 시간의 체감온도 표시?
+                    if (i == 0) {
+                        drawCircle(
+                            color = PointColor,
+                            radius = 6.dp.toPx(),
+                            center = Offset(barCenterX, size.height - feelsLikeHeight)
+                        )
+                    }
                 }
                 HorizontalDivider()
                 // 시간 라벨
@@ -264,7 +325,6 @@ private fun HourXAxisLabels(
                         text = stringResource(R.string.success_hourly_forecast_hour, hourLabels[i].hour),
                         fontSize = 12.sp,
                         color = Color.DarkGray,
-                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             }
@@ -421,6 +481,6 @@ fun OutfitRecommendScreenPreview() {
             TemperatureSnapshot(Instant.ofEpochSecond(1748059200), WeatherIcon.SCATTERED_CLOUDS, 23.29),
             TemperatureSnapshot(Instant.ofEpochSecond(1748062800), WeatherIcon.SCATTERED_CLOUDS, 22.84),
         )
-        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.", hourlyForecast)
+        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.", hourlyForecast, 21)
     }
 }
