@@ -24,7 +24,13 @@ import java.time.LocalTime
 @Composable
 fun WeatherSuccessScreen(
     weather: CityWeather,
-    onNavigateToOutfit: (temperature: Int, cityName: String, summary: String, forecast: HourlyForecast) -> Unit
+    onNavigateToOutfit: (
+        temperature: Int,
+        cityName: String,
+        summary: String,
+        forecast: HourlyForecast,
+        feelsLikeTemperature: Int,
+    ) -> Unit
 ) {
     val now = LocalTime.now()
     val isNight =
@@ -61,7 +67,8 @@ fun WeatherSuccessScreen(
                             weather.weather.dayWeather.temperature.toInt(),
                             weather.cityName,
                             weather.weather.forecast.daily.firstOrNull()?.summary.orEmpty(),
-                            weather.weather.forecast.hourly
+                            weather.weather.forecast.hourly,
+                            weather.weather.dayWeather.feelsLikeTemperature.toInt()
                         )
                     }
                 )

@@ -128,9 +128,9 @@ fun AppNavigator(
         composable(Screens.Temperature.route) {
             TemperatureScreen(
                 viewModel = temperatureViewModel,
-                onNavigateToOutfit = { temperature, cityName, summary, hourlyForecast ->
+                onNavigateToOutfit = { temperature, cityName, summary, hourlyForecast, feelsLikeTemperature ->
                     val forecastJson = Gson().toJson(hourlyForecast.map { it.toHourlyForecastGraph() })
-                    val route = Screens.Outfit.createRoute(temperature, cityName, summary, forecastJson)
+                    val route = Screens.Outfit.createRoute(temperature, cityName, summary, forecastJson, feelsLikeTemperature)
                     navController.navigate(route)
                 }
             )
@@ -142,6 +142,7 @@ fun AppNavigator(
                 navArgument(Screens.CITY_NAME) { type = NavType.StringType },
                 navArgument(Screens.WEATHER_SUMMARY) { type = NavType.StringType },
                 navArgument(Screens.HOURLY_FORECAST) { type = NavType.StringType },
+                navArgument(Screens.FEELS_LIKE_TEMPERATURE) { type = NavType.IntType },
             )
         ) { backStackEntry ->
            val args = backStackEntry.parseOutfitArguments()
@@ -151,6 +152,7 @@ fun AppNavigator(
                 cityName = args.cityName,
                 summary = args.weatherSummary,
                 forecast = args.hourlyForecast,
+                feelsLikeTemperature = args.feelsLikeTemperature
             )
         }
     }
@@ -169,15 +171,16 @@ fun NavController.navigateClearingBackStack(
 }
 
 fun NavBackStackEntry.parseOutfitArguments(): OutfitArguments {
-    val args = arguments ?: return OutfitArguments(0, "", "", listOf())
+    val args = arguments ?: return OutfitArguments(0, "", "", listOf(), 0)
     val temp = args.getInt(Screens.TEMPERATURE)
     val city = args.getString(Screens.CITY_NAME).orEmpty()
     val summary = args.getString(Screens.WEATHER_SUMMARY).orEmpty()
-    val json = args.getString(Screens.HOURLY_FORECAST).orEmpty()
+    val forecastJson = args.getString(Screens.HOURLY_FORECAST).orEmpty()
+    val feelsLikeTemperature = args.getInt(Screens.FEELS_LIKE_TEMPERATURE)
 
     val listType = object : TypeToken<List<HourlyForecastGraph>>() {}.type
-    val parsed = Gson().fromJson<List<HourlyForecastGraph>>(json, listType)
+    val parsed = Gson().fromJson<List<HourlyForecastGraph>>(forecastJson, listType)
     val forecast = parsed.map { it.toHourlyForecast() }
 
-    return OutfitArguments(temp, city, summary, forecast)
+    return OutfitArguments(temp, city, summary, forecast, feelsLikeTemperature)
 }
