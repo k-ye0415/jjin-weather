@@ -25,7 +25,6 @@ import com.jin.jjinweather.R
 @Composable
 fun OutfitSuccess(imageUrl: String) {
     Box(
-        contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
@@ -33,10 +32,12 @@ fun OutfitSuccess(imageUrl: String) {
     ) {
         AsyncImage(
             model = imageUrl,
-            contentDescription = stringResource(R.string.outfit_success_img_desc)
+            contentDescription = stringResource(R.string.outfit_success_img_desc),
+            modifier = Modifier.align(Alignment.Center)
         )
         Box(
             modifier = Modifier
+                .align(Alignment.BottomEnd)
                 .clickable { }
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color.LightGray)

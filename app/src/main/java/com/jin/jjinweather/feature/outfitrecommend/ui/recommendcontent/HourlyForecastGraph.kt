@@ -206,7 +206,7 @@ private fun GraphItem(
         // 시간 라벨
         Box(modifier = Modifier.height(32.dp)) {
             Text(
-                text = stringResource(R.string.success_hourly_forecast_hour, hour),
+                text = stringResource(R.string.success_hourly_forecast_hour, hour.hour),
                 fontSize = 12.sp,
                 color = Color.DarkGray,
             )
