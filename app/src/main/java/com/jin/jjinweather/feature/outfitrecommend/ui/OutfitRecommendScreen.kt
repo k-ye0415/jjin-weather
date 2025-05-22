@@ -1,5 +1,6 @@
 package com.jin.jjinweather.feature.outfitrecommend.ui
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,25 +8,36 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Repeat
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,11 +47,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jin.jjinweather.R
+import com.jin.jjinweather.feature.temperature.ui.ForecastTime
+import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
+import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
 import com.jin.jjinweather.ui.theme.ButtonColor
+import com.jin.jjinweather.ui.theme.DefaultTemperatureColor
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
+import com.jin.jjinweather.ui.theme.TemperatureColors
+import java.time.Instant
+import java.time.ZoneId
+import kotlin.math.ceil
+import kotlin.math.floor
 
 @Composable
-fun OutfitRecommendScreen(imageUrl: String?, cityName: String, summary: String) {
+fun OutfitRecommendScreen(
+    imageUrl: String?,
+    cityName: String,
+    summary: String,
+    forecast: HourlyForecast
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -53,6 +80,20 @@ fun OutfitRecommendScreen(imageUrl: String?, cityName: String, summary: String) 
             } else {
                 OutfitError()
             }
+            Text(
+                "시간별 온도 그래프",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 10.dp)
+            )
+            HourlyForecastGraph(
+                forecast.map { it.temperature.toInt() },
+                forecast.map { it.timeStamp.atZone(ZoneId.systemDefault()).hour },
+                Modifier
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 10.dp)
+            )
         }
     }
 }
@@ -106,6 +147,157 @@ private fun CityNameAndSummary(cityName: String, summary: String) {
         )
     }
 }
+
+@Composable
+private fun HourlyForecastGraph(
+    temperatureList: List<Int>,
+    hourlyList: List<Int>,
+    modifier: Modifier
+) {
+    val lowestTemperature = temperatureList.minOfOrNull { it } ?: 0
+    val highestTemperature = temperatureList.maxOfOrNull { it } ?: 0
+    val graphMinTemperature = findGraphMinMaxTemperature(lowestTemperature)
+    val graphMaxTemperature = findGraphMinMaxTemperature(highestTemperature)
+
+    val temperatureLabels = findGraphTemperatureLabels(lowestTemperature, graphMinTemperature, graphMaxTemperature)
+    val hourLabels = findHourLabels(hourlyList)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White)
+            .drawBehind {
+                val strokeWidth = 2.dp.toPx()
+                val cornerRadius = 8.dp.toPx()
+                drawRoundRect(
+                    color = Color.DarkGray, // 또는 brush로 그라데이션
+                    style = Stroke(
+                        width = strokeWidth,
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f)) // 점선 패턴
+                    ),
+                    cornerRadius = CornerRadius(cornerRadius, cornerRadius)
+                )
+            }
+    ) {
+        TemperatureYAxisLabels(temperatureLabels)
+        VerticalDivider(thickness = 1.dp, modifier = Modifier.padding(bottom = 32.dp))
+        HourXAxisLabels(hourLabels, temperatureList, graphMinTemperature, graphMaxTemperature)
+    }
+}
+
+@Composable
+private fun TemperatureYAxisLabels(temperatureLabels: List<Int>) {
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(
+                top = 20.dp,
+                start = 10.dp, end = 4.dp
+            ),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.End
+    ) {
+        for (temp in temperatureLabels) {
+            Text(
+                text = stringResource(R.string.success_temperature, temp),
+                fontSize = 12.sp,
+                color = Color.DarkGray,
+                modifier = Modifier.padding(
+                    bottom = if (temp == temperatureLabels.last()) 32.dp else 0.dp
+                )
+            )
+        }
+    }
+}
+
+@Composable
+private fun HourXAxisLabels(
+    hourLabels: List<ForecastTime.Hour>,
+    temperatureList: List<Int>,
+    absoluteMinTemperature: Int,
+    absoluteMaxTemperature: Int,
+) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        items(hourLabels.size) { i ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom,
+                modifier = Modifier
+                    .width(32.dp)
+                    .fillMaxHeight()
+            ) {
+                // 막대 그래프
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    val barCenterX = size.width / 2f
+                    val temp = temperatureList[i]
+                    val graphMinHeight = 8.dp.toPx() // 최소 높이 설정(최고와 최저의 차이가 작으면 UI 에러 발생)
+                    val tempRange = (absoluteMaxTemperature - absoluteMinTemperature).takeIf { it != 0 } ?: 1
+                    val graphHeight = ((temp - absoluteMinTemperature).toFloat() / tempRange) * size.height
+                    val barHeight = maxOf(graphMinHeight, graphHeight)
+
+                    val topColor = TemperatureColors[temp] ?: DefaultTemperatureColor
+                    val bottomColor = TemperatureColors[absoluteMinTemperature] ?: DefaultTemperatureColor
+                    val brush = Brush.verticalGradient(
+                        colors = listOf(topColor, bottomColor),
+                        startY = size.height - barHeight,
+                        endY = size.height
+                    )
+
+                    drawLine(
+                        brush = brush,
+                        start = Offset(barCenterX, size.height),
+                        end = Offset(barCenterX, size.height - barHeight),
+                        strokeWidth = 8.dp.toPx()
+                    )
+                }
+                HorizontalDivider()
+                // 시간 라벨
+                Box(modifier = Modifier.height(32.dp)) {
+                    Text(
+                        text = stringResource(R.string.success_hourly_forecast_hour, hourLabels[i].hour),
+                        fontSize = 12.sp,
+                        color = Color.DarkGray,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun findGraphMinMaxTemperature(temperature: Int): Int {
+    return if (temperature < 0) {
+        floor(temperature / 5.0).toInt() * 5
+    } else {
+        ceil(temperature / 5.0).toInt() * 5
+    }
+}
+
+private fun findGraphTemperatureLabels(
+    lowestTemperature: Int,
+    graphMinTemperature: Int,
+    graphMaxTemperature: Int
+): List<Int> {
+    val temperatureLabelSet = (graphMinTemperature..graphMaxTemperature step 5).toMutableSet()
+    temperatureLabelSet.add(lowestTemperature)
+    return temperatureLabelSet.sortedDescending()
+}
+
+private fun findHourLabels(hourlyList: List<Int>): List<ForecastTime.Hour> {
+    val hours = hourlyList.indices.map { hourlyList[it] }
+    return hours.map { hour24 ->
+        val hour12 = if (hour24 > 12) hour24 - 12 else hour24
+        ForecastTime.Hour(hour12)
+    }
+}
+
 
 @Composable
 private fun OutfitSuccess(imageUrl: String) {
@@ -179,6 +371,56 @@ private fun OutfitError() {
 @Preview(showBackground = true)
 fun OutfitRecommendScreenPreview() {
     JJinWeatherTheme {
-        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.")
+        val hourlyForecast: HourlyForecast = listOf(
+            TemperatureSnapshot(Instant.ofEpochSecond(1747893600), WeatherIcon.SCATTERED_CLOUDS, 28.87),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747897200), WeatherIcon.SCATTERED_CLOUDS, 28.31),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747900800), WeatherIcon.SCATTERED_CLOUDS, 27.83),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747904400), WeatherIcon.SCATTERED_CLOUDS, 26.55),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747908000), WeatherIcon.SCATTERED_CLOUDS, 24.57),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747911600), WeatherIcon.RAIN_NIGHT, 22.25),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747915200), WeatherIcon.RAIN_NIGHT, 19.89),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747918800), WeatherIcon.RAIN_NIGHT, 20.37),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747922400), WeatherIcon.RAIN_NIGHT, 19.61),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747926000), WeatherIcon.SCATTERED_CLOUDS, 18.92),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747929600), WeatherIcon.SCATTERED_CLOUDS, 18.48),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747933200), WeatherIcon.SCATTERED_CLOUDS, 18.35),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747936800), WeatherIcon.SCATTERED_CLOUDS, 18.79),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747940400), WeatherIcon.SCATTERED_CLOUDS, 18.78),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747944000), WeatherIcon.SCATTERED_CLOUDS, 18.45),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747947600), WeatherIcon.SCATTERED_CLOUDS, 18.63),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747951200), WeatherIcon.SCATTERED_CLOUDS, 18.27),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747954800), WeatherIcon.SCATTERED_CLOUDS, 18.21),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747958400), WeatherIcon.SCATTERED_CLOUDS, 19.03),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747962000), WeatherIcon.SCATTERED_CLOUDS, 17.01),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747965600), WeatherIcon.SCATTERED_CLOUDS, 17.18),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747969200), WeatherIcon.SCATTERED_CLOUDS, 18.07),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747972800), WeatherIcon.SCATTERED_CLOUDS, 17.92),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747976400), WeatherIcon.SCATTERED_CLOUDS, 17.78),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747980000), WeatherIcon.SCATTERED_CLOUDS, 18.54),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747983600), WeatherIcon.SCATTERED_CLOUDS, 18.04),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747987200), WeatherIcon.SCATTERED_CLOUDS, 17.59),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747990800), WeatherIcon.RAIN_DAY, 15.87),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747994400), WeatherIcon.SCATTERED_CLOUDS, 15.45),
+            TemperatureSnapshot(Instant.ofEpochSecond(1747998000), WeatherIcon.SCATTERED_CLOUDS, 15.76),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748001600), WeatherIcon.RAIN_NIGHT, 14.91),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748005200), WeatherIcon.RAIN_NIGHT, 14.12),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748008800), WeatherIcon.RAIN_NIGHT, 13.93),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748012400), WeatherIcon.SCATTERED_CLOUDS, 14.16),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748016000), WeatherIcon.RAIN_NIGHT, 13.86),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748019600), WeatherIcon.SCATTERED_CLOUDS, 13.90),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748023200), WeatherIcon.SCATTERED_CLOUDS, 13.91),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748026800), WeatherIcon.SCATTERED_CLOUDS, 13.68),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748030400), WeatherIcon.SCATTERED_CLOUDS, 13.75),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748034000), WeatherIcon.SCATTERED_CLOUDS, 13.99),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748037600), WeatherIcon.SCATTERED_CLOUDS, 14.60),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748041200), WeatherIcon.SCATTERED_CLOUDS, 15.93),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748044800), WeatherIcon.SCATTERED_CLOUDS, 16.69),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748048400), WeatherIcon.SCATTERED_CLOUDS, 18.61),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748052000), WeatherIcon.SCATTERED_CLOUDS, 20.46),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748055600), WeatherIcon.SCATTERED_CLOUDS, 22.13),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748059200), WeatherIcon.SCATTERED_CLOUDS, 23.29),
+            TemperatureSnapshot(Instant.ofEpochSecond(1748062800), WeatherIcon.SCATTERED_CLOUDS, 22.84),
+        )
+        OutfitRecommendScreen(null, "서초구 방배동", "바람이 약간 부는 날이에요.", hourlyForecast)
     }
 }

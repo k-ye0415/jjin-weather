@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
+import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.ui.theme.SuccessBackgroundBottomDayColor
 import com.jin.jjinweather.ui.theme.SuccessBackgroundBottomNightColor
 import com.jin.jjinweather.ui.theme.SuccessBackgroundTopDayColor
@@ -23,7 +24,7 @@ import java.time.LocalTime
 @Composable
 fun WeatherSuccessScreen(
     weather: CityWeather,
-    onNavigateToOutfit: (temperature: Int, cityName: String, summary: String) -> Unit
+    onNavigateToOutfit: (temperature: Int, cityName: String, summary: String, forecast: HourlyForecast) -> Unit
 ) {
     val now = LocalTime.now()
     val isNight =
@@ -60,6 +61,7 @@ fun WeatherSuccessScreen(
                             weather.weather.dayWeather.temperature.toInt(),
                             weather.cityName,
                             weather.weather.forecast.daily.firstOrNull()?.summary.orEmpty(),
+                            weather.weather.forecast.hourly
                         )
                     }
                 )

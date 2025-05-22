@@ -5,20 +5,26 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
+import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @Composable
-fun OutfitScreen(viewModel: OutfitViewModel, temperature: Int, cityName: String, summary: String) {
+fun OutfitScreen(
+    viewModel: OutfitViewModel,
+    temperature: Int,
+    cityName: String,
+    summary: String,
+    forecast: HourlyForecast
+) {
     val outfitImageUrl by viewModel.outfitImageUrl.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadOutfitImageForTemperature(temperature)
     }
 
-    // FIXME : Loading, error 화면 수정 필요.
     when (val state = outfitImageUrl) {
         is UiState.Loading -> WeatherLoadingScreen()
-        is UiState.Success -> OutfitRecommendScreen(state.data, cityName, summary)
-        else -> OutfitRecommendScreen(null, cityName, summary)
+        is UiState.Success -> OutfitRecommendScreen(state.data, cityName, summary, forecast)
+        else -> OutfitRecommendScreen(null, cityName, summary, forecast)
     }
 }
