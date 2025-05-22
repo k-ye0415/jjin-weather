@@ -26,7 +26,7 @@ fun OutfitScreen(
     }
 
     when (val state = outfitImageUrl) {
-        is UiState.Loading -> WeatherLoadingScreen()
+        is UiState.Loading -> OutfitLoadingScreen()
         is UiState.Success -> OutfitRecommendScreen(
             state.data,
             cityName,
