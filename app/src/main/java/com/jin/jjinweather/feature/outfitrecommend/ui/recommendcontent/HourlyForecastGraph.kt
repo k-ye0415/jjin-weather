@@ -254,7 +254,7 @@ private fun GuidItem(color: Color, title: String, shape: Shape) {
     }
 }
 
-private fun adjustTemperatureToStep(step: Int, temperature: Int): Int {
+private fun alignTemperatureToStep(step: Int, temperature: Int): Int {
     return if (temperature < 0) {
         floor(temperature / step.toDouble()).toInt() * step
     } else {
