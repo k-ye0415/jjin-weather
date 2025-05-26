@@ -27,7 +27,7 @@ object OpenAiApiClient {
         return Retrofit.Builder()
             .baseUrl("https://api.openai.com/")
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(OkHttpClientProvider.gson))
             .build()
             .create(ChatGptApi::class.java)
     }
