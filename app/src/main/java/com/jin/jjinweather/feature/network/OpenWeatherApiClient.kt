@@ -6,11 +6,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object OpenWeatherApiClient {
     fun createService(): OpenWeatherApi {
-        val client = OkHttpClientProvider.baseHttpClient
+        val client = NetworkProvider.baseOkHttpClient
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/data/3.0/")
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create(OkHttpClientProvider.gson))
+            .addConverterFactory(GsonConverterFactory.create(NetworkProvider.gson))
             .build()
             .create(OpenWeatherApi::class.java)
     }

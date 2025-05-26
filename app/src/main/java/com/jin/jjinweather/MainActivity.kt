@@ -16,7 +16,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.location.LocationRepository
@@ -24,6 +23,7 @@ import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.navigation.Screens
+import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
@@ -129,7 +129,7 @@ fun AppNavigator(
             TemperatureScreen(
                 viewModel = temperatureViewModel,
                 onNavigateToOutfit = { temperature, cityName, summary, hourlyForecast, feelsLikeTemperature ->
-                    val forecastJson = Gson().toJson(hourlyForecast.map { it.toHourlyForecastGraph() })
+                    val forecastJson = NetworkProvider.gson.toJson(hourlyForecast.map { it.toHourlyForecastGraph() })
                     val route = Screens.Outfit.createRoute(temperature, cityName, summary, forecastJson, feelsLikeTemperature)
                     navController.navigate(route)
                 }
@@ -182,7 +182,7 @@ fun NavBackStackEntry.parseOutfitArguments(): OutfitArguments {
     val feelsLikeTemperature = args.getInt(Screens.FEELS_LIKE_TEMPERATURE)
 
     val listType = object : TypeToken<List<HourlyForecastGraph>>() {}.type
-    val parsed = Gson().fromJson<List<HourlyForecastGraph>>(forecastJson, listType)
+    val parsed = NetworkProvider.gson.fromJson<List<HourlyForecastGraph>>(forecastJson, listType)
     val forecast = parsed.map { it.toHourlyForecast() }
 
     return OutfitArguments(temp, city, summary, forecast, feelsLikeTemperature)
