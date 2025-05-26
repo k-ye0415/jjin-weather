@@ -16,6 +16,7 @@
 
     <string name="highlight_feature_title">어제보다 추운지 더운지\n확인할 수 있어요!</string>
     <string name="highlight_feature_content">어제보다 2° 높아요</string>
+    <string name="highlight_feature_background_img_desc">특별 기능 중앙 배경 이미지</string>
     <string name="highlight_feature_top_background_img_desc">특별 기능 화면 상단 배경 이미지</string>
     <string name="highlight_feature_content_weather_icon_desc">특별 기능 화면 중앙 날씨 아이콘</string>
     <string name="highlight_feature_content_arrow_icon_desc">특별 기능 화면 중앙 화살표 아이콘</string>
