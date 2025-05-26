@@ -49,8 +49,8 @@ fun HourlyForecastGraph(
     feelsLikeTemperature: Int,
     modifier: Modifier
 ) {
-    val lowestTemperature = temperatureList.minOfOrNull { it } ?: 0
-    val highestTemperature = temperatureList.maxOfOrNull { it } ?: 0
+    val lowestTemperature = temperatureList.minOrNull() ?: 0
+    val highestTemperature = temperatureList.maxOrNull() ?: 0
     val yAxisStep = 5
     val graphMinTemperature = alignTemperatureToStep(yAxisStep, lowestTemperature)
     val graphMaxTemperature = alignTemperatureToStep(yAxisStep, highestTemperature)
@@ -89,13 +89,13 @@ fun HourlyForecastGraph(
                 graphMaxTemperature,
                 feelsLikeTemperature
             )
-            TemperatureGraphLabelGuide(graphMaxTemperature, lowestTemperature)
+            TemperatureGraphLabelLegend(graphMaxTemperature, lowestTemperature)
         }
     }
 }
 
 @Composable
-private fun TemperatureYAxisLabels(temperatureLabels: List<Int>) {
+private fun TemperatureYAxisLabels(temperatureLabels: List<String>) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -121,7 +121,7 @@ private fun TemperatureYAxisLabels(temperatureLabels: List<Int>) {
 
 @Composable
 private fun TemperatureBarXAxisGraphBar(
-    hourLabels: List<ForecastTime.Hour>,
+    hourLabels: List<String>,
     temperatureList: List<Int>,
     absoluteMinTemperature: Int,
     absoluteMaxTemperature: Int,
@@ -151,7 +151,7 @@ private fun GraphItem(
     absoluteMaxTemperature: Int,
     feelsLikeTemperature: Int,
     isFirstItem: Boolean,
-    hour: ForecastTime.Hour
+    hour: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,7 +206,7 @@ private fun GraphItem(
         // 시간 라벨
         Box(modifier = Modifier.height(32.dp)) {
             Text(
-                text = stringResource(R.string.success_hourly_forecast_hour, hour.hour),
+                text = stringResource(R.string.success_hourly_forecast_hour, hour),
                 fontSize = 12.sp,
                 color = Color.DarkGray,
             )
@@ -215,15 +215,23 @@ private fun GraphItem(
 }
 
 @Composable
-private fun TemperatureGraphLabelGuide(maxTemperature: Int, minTemperature: Int) {
+private fun TemperatureGraphLabelLegend(maxTemperature: Int, minTemperature: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, end = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
-        GuidItem(TemperatureColors[maxTemperature] ?: DefaultTemperatureColor, stringResource(R.string.outfit_max_temperature), RectangleShape)
-        GuidItem(TemperatureColors[minTemperature] ?: DefaultTemperatureColor, stringResource(R.string.outfit_min_temperature), RectangleShape)
+        GuidItem(
+            TemperatureColors[maxTemperature] ?: DefaultTemperatureColor,
+            stringResource(R.string.outfit_max_temperature),
+            RectangleShape
+        )
+        GuidItem(
+            TemperatureColors[minTemperature] ?: DefaultTemperatureColor,
+            stringResource(R.string.outfit_min_temperature),
+            RectangleShape
+        )
         GuidItem(PointColor, stringResource(R.string.outfit_feels_like_temperature), CircleShape)
     }
 }
@@ -246,7 +254,7 @@ private fun GuidItem(color: Color, title: String, shape: Shape) {
     }
 }
 
-private fun alignTemperatureToStep(step: Int, temperature: Int): Int {
+private fun adjustTemperatureToStep(step: Int, temperature: Int): Int {
     return if (temperature < 0) {
         floor(temperature / step.toDouble()).toInt() * step
     } else {
@@ -258,16 +266,18 @@ private fun generateYAxisTemperatureLabels(
     lowestTemperature: Int,
     graphMinTemperature: Int,
     graphMaxTemperature: Int
-): List<Int> {
+): List<String> {
     val temperatureLabelSet = (graphMinTemperature..graphMaxTemperature step 5).toMutableSet()
     temperatureLabelSet.add(lowestTemperature)
-    return temperatureLabelSet.sortedDescending()
+    return temperatureLabelSet
+        .sortedDescending()
+        .map { it.toString() }
 }
 
-private fun generateXAxisHourLabels(hourlyList: List<Int>): List<ForecastTime.Hour> {
-    val hours = hourlyList.indices.map { hourlyList[it] }
-    return hours.map { hour24 ->
+private fun generateXAxisHourLabels(hourlyList: List<Int>): List<String> {
+    return hourlyList.map { hour24 ->
         val hour12 = if (hour24 > 12) hour24 - 12 else hour24
-        ForecastTime.Hour(hour12)
+        val forecastHour = ForecastTime.Hour(hour12).hour
+        forecastHour.toString()
     }
 }
