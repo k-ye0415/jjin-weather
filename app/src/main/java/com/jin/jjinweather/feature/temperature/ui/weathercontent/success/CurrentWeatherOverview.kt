@@ -115,7 +115,7 @@ private fun WeatherPagerIndicator(pagerState: PagerState) {
             if (index == 0) {
                 Icon(
                     imageVector = Icons.Filled.NearMe,
-                    contentDescription = "",
+                    contentDescription = stringResource(R.string.success_current_location_icon_desc),
                     tint = color,
                     modifier = Modifier.size(12.dp)
                 )
