@@ -44,6 +44,7 @@
     <string name="success_temperature">%1$d°</string>
     <string name="success_current_min_temperature">최저: %1$d°</string>
     <string name="success_current_max_temperature">최고: %1$d°</string>
+    <string name="success_current_location_icon_desc">현재 위치 아이콘</string>
     <string name="success_compared_high">어제보다 %1$d° 높아요</string>
     <string name="success_compared_low">어제보다 %1$d° 낮아요</string>
     <string name="success_compared_same">어제와 동일해요</string>
