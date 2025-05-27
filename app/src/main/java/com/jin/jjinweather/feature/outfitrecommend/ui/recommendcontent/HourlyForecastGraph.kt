@@ -52,8 +52,8 @@ fun HourlyForecastGraph(
     val lowestTemperature = temperatureList.minOrNull() ?: 0
     val highestTemperature = temperatureList.maxOrNull() ?: 0
     val yAxisStep = 5
-    val graphMinTemperature = alignTemperatureToStep(yAxisStep, lowestTemperature)
-    val graphMaxTemperature = alignTemperatureToStep(yAxisStep, highestTemperature)
+    val graphMinTemperature = roundTemperatureToNearestStep(yAxisStep, lowestTemperature)
+    val graphMaxTemperature = roundTemperatureToNearestStep(yAxisStep, highestTemperature)
 
     val temperatureLabels = generateYAxisTemperatureLabels(lowestTemperature, graphMinTemperature, graphMaxTemperature)
     val hourLabels = generateXAxisHourLabels(hourlyList)
@@ -89,7 +89,7 @@ fun HourlyForecastGraph(
                 graphMaxTemperature,
                 feelsLikeTemperature
             )
-            TemperatureGraphLabelLegend(graphMaxTemperature, lowestTemperature)
+            TemperatureGraphLegend(graphMaxTemperature, lowestTemperature)
         }
     }
 }
@@ -215,29 +215,29 @@ private fun GraphItem(
 }
 
 @Composable
-private fun TemperatureGraphLabelLegend(maxTemperature: Int, minTemperature: Int) {
+private fun TemperatureGraphLegend(maxTemperature: Int, minTemperature: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 4.dp, end = 8.dp),
         horizontalAlignment = Alignment.End
     ) {
-        GuidItem(
+        LegendItem(
             TemperatureColors[maxTemperature] ?: DefaultTemperatureColor,
             stringResource(R.string.outfit_max_temperature),
             RectangleShape
         )
-        GuidItem(
+        LegendItem(
             TemperatureColors[minTemperature] ?: DefaultTemperatureColor,
             stringResource(R.string.outfit_min_temperature),
             RectangleShape
         )
-        GuidItem(PointColor, stringResource(R.string.outfit_feels_like_temperature), CircleShape)
+        LegendItem(PointColor, stringResource(R.string.outfit_feels_like_temperature), CircleShape)
     }
 }
 
 @Composable
-private fun GuidItem(color: Color, title: String, shape: Shape) {
+private fun LegendItem(color: Color, title: String, shape: Shape) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
@@ -254,7 +254,7 @@ private fun GuidItem(color: Color, title: String, shape: Shape) {
     }
 }
 
-private fun alignTemperatureToStep(step: Int, temperature: Int): Int {
+private fun roundTemperatureToNearestStep(step: Int, temperature: Int): Int {
     return if (temperature < 0) {
         floor(temperature / step.toDouble()).toInt() * step
     } else {
