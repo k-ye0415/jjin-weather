@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +22,11 @@ import com.jin.jjinweather.ui.theme.SuccessCardBackgroundNightColor
 import java.time.LocalTime
 
 @Composable
-fun WeatherSuccessScreen(weather: CityWeather, onNavigateToOutfit: (Int) -> Unit) {
+fun WeatherSuccessScreen(
+    weather: CityWeather,
+    pagerState: PagerState,
+    onNavigateToOutfit: (Int) -> Unit
+) {
     val now = LocalTime.now()
     val isNight = now.isBefore(weather.weather.dayWeather.sunCycle.sunrise) || now.isAfter(weather.weather.dayWeather.sunCycle.sunset)
     val backgroundGradientBrush = generateBackgroundColor(isNight)
@@ -39,6 +44,7 @@ fun WeatherSuccessScreen(weather: CityWeather, onNavigateToOutfit: (Int) -> Unit
             item { TopMenuAction() }
             item {
                 CurrentWeatherOverview(
+                    pagerState = pagerState,
                     cityName = weather.cityName,
                     currentTemperature = weather.weather.dayWeather.temperature.toInt(),
                     currentWeatherIconRes = weather.weather.dayWeather.icon.drawableRes,
