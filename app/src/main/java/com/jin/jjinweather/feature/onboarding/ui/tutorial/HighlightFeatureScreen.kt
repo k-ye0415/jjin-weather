@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -65,12 +66,12 @@ fun HighlightFeatureScreen() {
         )
 
         Text(
-            stringResource(R.string.highlight_feature_title),
+            text = stringResource(R.string.highlight_feature_title),
             color = Color.White,
             fontSize = 24.sp,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, bottom = 140.dp, end = 20.dp),
+                .padding(start = 20.dp, bottom = 80.dp, end = 20.dp),
             style = LocalTextStyle.current.merge(
                 TextStyle(
                     lineHeight = 1.5.em,
@@ -85,31 +86,43 @@ fun HighlightFeatureScreen() {
             )
         )
 
-        // FIXME : App Icon 이 필요함으로 App icon 정의 후 조금 더 다듬어질 예정
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 28.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .clip(RoundedCornerShape(10.dp))
-            .background(Color.White)
-            .padding(vertical = 18.dp, horizontal = 20.dp)) {
-            Row {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_main_clear_sky_day),
-                    contentDescription = stringResource(R.string.highlight_feature_content_weather_icon_desc),
-                    modifier = Modifier
-                        .padding(end = 10.dp)
+        Box {
+            Image(
+                painter = painterResource(R.drawable.bg_highlight_feature),
+                contentDescription = stringResource(R.string.highlight_feature_background_img_desc),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(400.dp)
+            )
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 28.dp, end = 28.dp,
+                    top = 60.dp
                 )
-                Text(stringResource(R.string.highlight_feature_content))
-                Spacer(Modifier.weight(1f))
-                Icon(
-                    painter = painterResource(R.drawable.ic_baseline_arrow_upward_24),
-                    contentDescription = stringResource(R.string.highlight_feature_content_arrow_icon_desc),
-                    tint = HighlightFeatureBackgroundColor
-                )
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
+                .padding(vertical = 18.dp, horizontal = 20.dp)
+            ) {
+                Row {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_main_clear_sky_day),
+                        contentDescription = stringResource(R.string.highlight_feature_content_weather_icon_desc),
+                        modifier = Modifier
+                            .padding(end = 10.dp)
+                    )
+                    Text(stringResource(R.string.highlight_feature_content))
+                    Spacer(Modifier.weight(1f))
+                    Icon(
+                        painter = painterResource(R.drawable.ic_baseline_arrow_upward_24),
+                        contentDescription = stringResource(R.string.highlight_feature_content_arrow_icon_desc),
+                        tint = HighlightFeatureBackgroundColor
+                    )
+                }
             }
         }
         Spacer(Modifier.weight(1f))
