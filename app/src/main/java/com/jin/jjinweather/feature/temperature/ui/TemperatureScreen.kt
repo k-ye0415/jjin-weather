@@ -46,7 +46,7 @@ fun TemperatureScreen(
         is UiState.Loading -> WeatherLoadingScreen()
         is UiState.Success -> {
             // FIXME : Weather page 마다 weather 정보 필요(잠시 동일 데이터 적용)
-            val weatherList = listOf(weather.data, weather.data)
+            val weatherList = listOf(state.data, state.data)
             val pagerState = rememberPagerState { weatherList.size }
             Box(modifier = Modifier.fillMaxSize()) {
                 HorizontalPager(
@@ -61,6 +61,6 @@ fun TemperatureScreen(
                 }
             }
         }
-        is UiState.Error -> WeatherErrorScreen(weather.message)
+        is UiState.Error -> WeatherErrorScreen(state.message)
     }
 }
