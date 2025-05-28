@@ -16,12 +16,21 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherLoadingScreen
 import com.jin.jjinweather.feature.temperature.ui.weathercontent.success.WeatherSuccessScreen
-import com.jin.jjinweather.feature.weather.domain.model.CityWeather
+import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun TemperatureScreen(viewModel: TemperatureViewModel, onNavigateToOutfit: (Int) -> Unit) {
+fun TemperatureScreen(
+    viewModel: TemperatureViewModel,
+    onNavigateToOutfit: (
+        temperature: Int,
+        cityName: String,
+        summary: String,
+        forecast: HourlyForecast,
+        feelsLikeTemperature: Int,
+    ) -> Unit
+) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
     )
@@ -32,13 +41,8 @@ fun TemperatureScreen(viewModel: TemperatureViewModel, onNavigateToOutfit: (Int)
             viewModel.onLocationPermissionGranted()
         }
     }
-    // FIXME : 불필요한 함수 분리로 판단되어 OutfitScreen UI 수정 시 수정 예정
-    WeatherContentUI(weather, onNavigateToOutfit)
-}
 
-@Composable
-private fun WeatherContentUI(weather: UiState<CityWeather>, onNavigateToOutfit: (Int) -> Unit) {
-    when (weather) {
+    when (val state = weather) {
         is UiState.Loading -> WeatherLoadingScreen()
         is UiState.Success -> {
             // FIXME : Weather page 마다 weather 정보 필요(잠시 동일 데이터 적용)
