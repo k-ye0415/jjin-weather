@@ -50,7 +50,8 @@ private fun WeatherContentUI(weather: UiState<CityWeather>, onNavigateToOutfit: 
                 ) { page ->
                     WeatherSuccessScreen(
                         weather = weatherList[page],
-                        pagerState = pagerState,
+                        pageCount = pagerState.pageCount,
+                        currentPage = pagerState.currentPage,
                         onNavigateToOutfit = onNavigateToOutfit,
                     )
                 }

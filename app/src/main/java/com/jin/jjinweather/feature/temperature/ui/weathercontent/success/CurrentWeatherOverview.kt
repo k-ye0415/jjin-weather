@@ -36,7 +36,8 @@ import com.jin.jjinweather.R
 
 @Composable
 fun CurrentWeatherOverview(
-    pagerState: PagerState,
+    pageCount: Int,
+    currentPage: Int,
     cityName: String,
     currentTemperature: Int,
     currentWeatherIconRes: Int,
@@ -99,18 +100,21 @@ fun CurrentWeatherOverview(
                 color = Color.LightGray
             )
         }
-        WeatherPagerIndicator(pagerState)
+        WeatherPagerIndicator(currentPage, pageCount)
     }
 }
 
 @Composable
-private fun WeatherPagerIndicator(pagerState: PagerState) {
+private fun WeatherPagerIndicator(
+    pageCount: Int,
+    currentPage: Int,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        repeat(pagerState.pageCount) { index ->
-            val isSelected = pagerState.currentPage == index
+        repeat(pageCount) { index ->
+            val isSelected = currentPage == index
             val color = if (isSelected) Color.White else Color.White.copy(alpha = 0.3f)
             if (index == 0) {
                 Icon(
