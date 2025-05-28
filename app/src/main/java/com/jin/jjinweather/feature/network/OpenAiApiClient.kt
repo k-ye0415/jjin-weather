@@ -16,7 +16,7 @@ object OpenAiApiClient {
             chain.proceed(authorizedRequest)
         }
 
-        val client = OkHttpClientProvider.baseHttpClient
+        val client = NetworkProvider.baseOkHttpClient
             .newBuilder()
             .addInterceptor(authInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -27,7 +27,7 @@ object OpenAiApiClient {
         return Retrofit.Builder()
             .baseUrl("https://api.openai.com/")
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(NetworkProvider.gson))
             .build()
             .create(ChatGptApi::class.java)
     }
