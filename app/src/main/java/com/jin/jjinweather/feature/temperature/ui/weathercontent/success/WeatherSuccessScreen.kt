@@ -24,11 +24,13 @@ import java.time.LocalTime
 @Composable
 fun WeatherSuccessScreen(
     weather: CityWeather,
-    pagerState: PagerState,
+    pageCount: Int,
+    currentPage: Int,
     onNavigateToOutfit: (Int) -> Unit
 ) {
     val now = LocalTime.now()
-    val isNight = now.isBefore(weather.weather.dayWeather.sunCycle.sunrise) || now.isAfter(weather.weather.dayWeather.sunCycle.sunset)
+    val isNight =
+        now.isBefore(weather.weather.dayWeather.sunCycle.sunrise) || now.isAfter(weather.weather.dayWeather.sunCycle.sunset)
     val backgroundGradientBrush = generateBackgroundColor(isNight)
     val cardBackgroundColor = generatedCardBackgroundColor(isNight)
 
@@ -44,7 +46,8 @@ fun WeatherSuccessScreen(
             item { TopMenuAction() }
             item {
                 CurrentWeatherOverview(
-                    pagerState = pagerState,
+                    pageCount = pageCount,
+                    currentPage = currentPage,
                     cityName = weather.cityName,
                     currentTemperature = weather.weather.dayWeather.temperature.toInt(),
                     currentWeatherIconRes = weather.weather.dayWeather.icon.drawableRes,
