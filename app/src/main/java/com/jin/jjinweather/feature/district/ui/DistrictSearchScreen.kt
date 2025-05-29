@@ -1,4 +1,4 @@
-package com.jin.jjinweather.feature.newarea.ui
+package com.jin.jjinweather.feature.district.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.ui.theme.PointColor
+import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
 import kotlinx.coroutines.launch
 
 @Composable
@@ -73,7 +74,7 @@ fun DistrictSearchScreen(onNavigateToTemperature: () -> Unit) {
                     )
                 }
                 Text(
-                    text = "위치",
+                    text = stringResource(R.string.district_title),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp
@@ -104,7 +105,7 @@ fun DistrictSearchBottomSheet() {
         scaffoldState = scaffoldState,
         sheetPeekHeight = 120.dp,
         sheetShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        sheetDragHandle = null,
+        sheetDragHandle = null, // 커스텀 핸들 사용
         sheetShadowElevation = 30.dp,
         sheetContent = {
             Column(
@@ -173,7 +174,7 @@ fun DistrictSearchBottomSheet() {
                 }
                 Column(modifier = Modifier.padding(start = 4.dp)) {
                     Text(
-                        text = "현재 위치",
+                        text = stringResource(R.string.district_current_location),
                         color = Color.White,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -195,7 +196,7 @@ fun DistrictSearchBottomSheet() {
                 )
             }
             Text(
-                text = "추가한 위치",
+                text = stringResource(R.string.district_added_location),
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .padding(top = 20.dp)
@@ -249,13 +250,13 @@ fun SearchDistrictBox(
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(Color(0xFFF3F8FC), RoundedCornerShape(16.dp))
+            .background(SearchBoxBackgroundColor, RoundedCornerShape(16.dp))
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.Search,
-            contentDescription = "검색 아이콘",
+            contentDescription = stringResource(R.string.district_search_icon_desc),
             tint = Color.Gray,
             modifier = Modifier.padding(end = 8.dp)
         )
@@ -272,7 +273,7 @@ fun SearchDistrictBox(
             decorationBox = { innerTextField ->
                 if (query.isEmpty()) {
                     Text(
-                        text = "위치 검색 및 추가",
+                        text = stringResource(R.string.district_search_hint),
                         color = Color.Gray,
                         fontSize = 16.sp
                     )

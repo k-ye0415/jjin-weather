@@ -26,7 +26,7 @@ import com.jin.jjinweather.feature.navigation.Screens
 import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
-import com.jin.jjinweather.feature.newarea.ui.DistrictSearchScreen
+import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
