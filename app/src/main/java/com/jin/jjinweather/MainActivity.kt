@@ -136,7 +136,7 @@ fun AppNavigator(
                     )
                     navController.navigate(route)
                 },
-                onNavigateToNewArea = {
+                onNavigateToDistrict = {
                     navController.navigate(Screens.DistrictSearch.route)
                 }
             )

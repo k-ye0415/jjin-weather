@@ -8,7 +8,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -30,7 +33,7 @@ fun TemperatureScreen(
         forecast: HourlyForecast,
         feelsLikeTemperature: Int,
     ) -> Unit,
-    onNavigateToNewArea: () -> Unit
+    onNavigateToDistrict: () -> Unit
 ) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
@@ -49,6 +52,7 @@ fun TemperatureScreen(
             // FIXME : Weather page 마다 weather 정보 필요(잠시 동일 데이터 적용)
             val weatherList = listOf(state.data, state.data)
             val pagerState = rememberPagerState { weatherList.size }
+            val currentPage by remember { derivedStateOf { pagerState.currentPage } }
             Box(modifier = Modifier.fillMaxSize()) {
                 HorizontalPager(
                     state = pagerState
@@ -56,13 +60,14 @@ fun TemperatureScreen(
                     WeatherSuccessScreen(
                         weather = weatherList[page],
                         pageCount = pagerState.pageCount,
-                        currentPage = pagerState.currentPage,
+                        currentPage = currentPage,
                         onNavigateToOutfit = onNavigateToOutfit,
-                        onNavigateToNewArea = onNavigateToNewArea
+                        onNavigateToDistrict = onNavigateToDistrict
                     )
                 }
             }
         }
+
         is UiState.Error -> WeatherErrorScreen(state.message)
     }
 }
