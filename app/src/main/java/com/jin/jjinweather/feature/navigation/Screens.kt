@@ -20,6 +20,7 @@ sealed class Screens(val route: String) {
             return "outfitScreen/$temperature/$cityName/$weatherSummary/$forecastEncoded/$feelsLikeTemperature"
         }
     }
+    object NewAreaSearch: Screens("newAreaSearch")
 
     companion object {
         const val TEMPERATURE = "temperature"

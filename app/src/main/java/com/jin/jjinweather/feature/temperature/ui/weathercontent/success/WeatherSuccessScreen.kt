@@ -33,7 +33,8 @@ fun WeatherSuccessScreen(
         summary: String,
         forecast: HourlyForecast,
         feelsLikeTemperature: Int,
-    ) -> Unit
+    ) -> Unit,
+    onNavigateToNewArea: () -> Unit
 ) {
     val now = LocalTime.now()
     val isNight =
@@ -50,7 +51,7 @@ fun WeatherSuccessScreen(
                 .padding(horizontal = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            item { TopMenuAction() }
+            item { TopMenuAction(onNavigateToNewArea) }
             item {
                 CurrentWeatherOverview(
                     pageCount = pageCount,
