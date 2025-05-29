@@ -29,7 +29,8 @@ fun TemperatureScreen(
         summary: String,
         forecast: HourlyForecast,
         feelsLikeTemperature: Int,
-    ) -> Unit
+    ) -> Unit,
+    onNavigateToNewArea: () -> Unit
 ) {
     val composePermissionState = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
@@ -57,6 +58,7 @@ fun TemperatureScreen(
                         pageCount = pagerState.pageCount,
                         currentPage = pagerState.currentPage,
                         onNavigateToOutfit = onNavigateToOutfit,
+                        onNavigateToNewArea = onNavigateToNewArea
                     )
                 }
             }
