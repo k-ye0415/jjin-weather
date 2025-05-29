@@ -53,7 +53,7 @@ import com.jin.jjinweather.ui.theme.PointColor
 import kotlinx.coroutines.launch
 
 @Composable
-fun DistrictSearchScreen() {
+fun DistrictSearchScreen(onNavigateToTemperature: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -65,7 +65,7 @@ fun DistrictSearchScreen() {
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
-                IconButton({}) {
+                IconButton(onNavigateToTemperature) {
                     Icon(
                         imageVector = Icons.Outlined.ArrowBackIosNew,
                         contentDescription = "",

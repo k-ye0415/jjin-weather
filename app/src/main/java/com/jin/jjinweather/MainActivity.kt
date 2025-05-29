@@ -165,7 +165,9 @@ fun AppNavigator(
             }
         }
         composable(Screens.DistrictSearch.route) {
-            DistrictSearchScreen()
+            DistrictSearchScreen() {
+                navController.navigate(Screens.Temperature.route)
+            }
         }
     }
 }
