@@ -69,7 +69,7 @@ fun DistrictSearchScreen(onNavigateToTemperature: () -> Unit) {
                 IconButton(onNavigateToTemperature) {
                     Icon(
                         imageVector = Icons.Outlined.ArrowBackIosNew,
-                        contentDescription = "",
+                        contentDescription = stringResource(R.string.tutorial_back_arrow_icon_desc),
                         tint = Color.Black
                     )
                 }
