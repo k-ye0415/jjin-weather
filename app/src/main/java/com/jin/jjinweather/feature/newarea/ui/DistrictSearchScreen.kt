@@ -53,7 +53,7 @@ import com.jin.jjinweather.ui.theme.PointColor
 import kotlinx.coroutines.launch
 
 @Composable
-fun NewAreaSearchScreen() {
+fun DistrictSearchScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -79,14 +79,14 @@ fun NewAreaSearchScreen() {
                     fontSize = 20.sp
                 )
             }
-            LocationSearchBottomSheet()
+            DistrictSearchBottomSheet()
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocationSearchBottomSheet() {
+fun DistrictSearchBottomSheet() {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
@@ -124,7 +124,7 @@ fun LocationSearchBottomSheet() {
 
                 // 검색 박스
                 // FIXME : 위치 검색 API 연동 필요
-                SearchLocationBox(
+                SearchDistrictBox(
                     query = keyword,
                     focusRequester = focusRequester,
                     onQueryChange = { keyword = it },
@@ -143,7 +143,7 @@ fun LocationSearchBottomSheet() {
         }
     ) {
         // Weather 영역 리스트
-        // FIXME : DB 데이터로 그려줄 예정
+        // FIXME : DB 데이터로 그려줄 예정(임시 작성)
         Column {
             Row(
                 modifier = Modifier
@@ -239,7 +239,7 @@ fun LocationSearchBottomSheet() {
 }
 
 @Composable
-fun SearchLocationBox(
+fun SearchDistrictBox(
     query: String,
     focusRequester: FocusRequester,
     onQueryChange: (String) -> Unit,
