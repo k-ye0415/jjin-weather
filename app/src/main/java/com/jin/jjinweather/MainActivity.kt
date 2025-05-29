@@ -26,7 +26,7 @@ import com.jin.jjinweather.feature.navigation.Screens
 import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
-import com.jin.jjinweather.feature.newarea.ui.NewAreaSearchScreen
+import com.jin.jjinweather.feature.newarea.ui.DistrictSearchScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
@@ -137,7 +137,7 @@ fun AppNavigator(
                     navController.navigate(route)
                 },
                 onNavigateToNewArea = {
-                    navController.navigate(Screens.NewAreaSearch.route)
+                    navController.navigate(Screens.DistrictSearch.route)
                 }
             )
         }
@@ -164,8 +164,8 @@ fun AppNavigator(
                 navController.navigate(Screens.Temperature.route)
             }
         }
-        composable(Screens.NewAreaSearch.route) {
-            NewAreaSearchScreen()
+        composable(Screens.DistrictSearch.route) {
+            DistrictSearchScreen()
         }
     }
 }
