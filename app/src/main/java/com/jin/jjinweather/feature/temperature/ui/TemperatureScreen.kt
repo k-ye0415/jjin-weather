@@ -1,10 +1,15 @@
 package com.jin.jjinweather.feature.temperature.ui
 
 import android.Manifest
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
@@ -39,7 +44,23 @@ fun TemperatureScreen(
 
     when (val state = weather) {
         is UiState.Loading -> WeatherLoadingScreen()
-        is UiState.Success -> WeatherSuccessScreen(state.data, onNavigateToOutfit)
+        is UiState.Success -> {
+            // FIXME : Weather page 마다 weather 정보 필요(잠시 동일 데이터 적용)
+            val weatherList = listOf(state.data, state.data)
+            val pagerState = rememberPagerState { weatherList.size }
+            Box(modifier = Modifier.fillMaxSize()) {
+                HorizontalPager(
+                    state = pagerState
+                ) { page ->
+                    WeatherSuccessScreen(
+                        weather = weatherList[page],
+                        pageCount = pagerState.pageCount,
+                        currentPage = pagerState.currentPage,
+                        onNavigateToOutfit = onNavigateToOutfit,
+                    )
+                }
+            }
+        }
         is UiState.Error -> WeatherErrorScreen(state.message)
     }
 }

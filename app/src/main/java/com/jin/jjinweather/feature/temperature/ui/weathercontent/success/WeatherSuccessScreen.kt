@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +25,8 @@ import java.time.LocalTime
 @Composable
 fun WeatherSuccessScreen(
     weather: CityWeather,
+    pageCount: Int,
+    currentPage: Int,
     onNavigateToOutfit: (
         temperature: Int,
         cityName: String,
@@ -50,6 +53,8 @@ fun WeatherSuccessScreen(
             item { TopMenuAction() }
             item {
                 CurrentWeatherOverview(
+                    pageCount = pageCount,
+                    currentPage = currentPage,
                     cityName = weather.cityName,
                     currentTemperature = weather.weather.dayWeather.temperature.toInt(),
                     currentWeatherIconRes = weather.weather.dayWeather.icon.drawableRes,
