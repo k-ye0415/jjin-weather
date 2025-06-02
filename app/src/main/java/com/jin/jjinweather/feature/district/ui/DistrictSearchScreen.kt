@@ -54,7 +54,7 @@ import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
 import kotlinx.coroutines.launch
 
 @Composable
-fun DistrictSearchScreen(onNavigateToTemperature: () -> Unit) {
+fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTemperature: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
