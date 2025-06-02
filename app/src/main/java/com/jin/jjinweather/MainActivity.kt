@@ -27,6 +27,7 @@ import com.jin.jjinweather.feature.network.GooglePlacesApiClient
 import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
+import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
@@ -132,8 +133,13 @@ fun AppNavigator(
                 viewModel = temperatureViewModel,
                 onNavigateToOutfit = { temperature, cityName, summary, hourlyForecast, feelsLikeTemperature ->
                     val forecastJson = NetworkProvider.gson.toJson(hourlyForecast.map { it.toHourlyForecastGraph() })
-                    val route = Screens.Outfit.createRoute(temperature, cityName, summary, forecastJson, feelsLikeTemperature)
+                    val route = Screens.Outfit.createRoute(
+                        temperature, cityName, summary, forecastJson, feelsLikeTemperature
+                    )
                     navController.navigate(route)
+                },
+                onNavigateToDistrict = {
+                    navController.navigate(Screens.DistrictSearch.route)
                 }
             )
         }
@@ -148,7 +154,7 @@ fun AppNavigator(
             )
         ) { backStackEntry ->
             // FIXME : key 값으로 DB 조회하는 방향으로 수정 예정
-           val args = backStackEntry.parseOutfitArguments()
+            val args = backStackEntry.parseOutfitArguments()
             OutfitScreen(
                 viewModel = outfitViewModel,
                 temperature = args.temperature,
@@ -157,6 +163,11 @@ fun AppNavigator(
                 forecast = args.hourlyForecast,
                 feelsLikeTemperature = args.feelsLikeTemperature
             ) {
+                navController.navigate(Screens.Temperature.route)
+            }
+        }
+        composable(Screens.DistrictSearch.route) {
+            DistrictSearchScreen() {
                 navController.navigate(Screens.Temperature.route)
             }
         }
