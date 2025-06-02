@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.googleplaces.domain.model.District
+import com.jin.jjinweather.feature.weather.ui.state.UiState
 import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
 import kotlinx.coroutines.launch
@@ -59,7 +61,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTemperature: () -> Unit) {
     var keyword by remember { mutableStateOf("") }
-    val districtList by viewModel.districtList.collectAsState()
+    val districtListState by viewModel.districtList.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -87,11 +89,11 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                 )
             }
             DistrictSearchBottomSheet(
-                districtList = districtList,
+                districtListState = districtListState,
                 keyword = keyword,
                 onDistrictQueryChanged = {
                     keyword = it
-                    viewModel.searchDistrict(it)
+                    viewModel.searchDistrictAt(it)
                 }
             )
         }
@@ -101,7 +103,7 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistrictSearchBottomSheet(
-    districtList: List<District>,
+    districtListState: UiState<List<District>>,
     keyword: String,
     onDistrictQueryChanged: (keyword: String) -> Unit
 ) {
@@ -156,10 +158,18 @@ fun DistrictSearchBottomSheet(
                         }
                     }
                 )
-                LazyColumn {
-                    items(districtList.size) { index ->
-                        Text(districtList[index].address)
+                when (districtListState) {
+                    is UiState.Loading -> CircularProgressIndicator()
+                    is UiState.Success -> {
+                        val districtList = districtListState.data
+                        LazyColumn {
+                            items(districtList.size) { index ->
+                                Text(districtList[index].address)
+                            }
+                        }
                     }
+
+                    is UiState.Error -> CircularProgressIndicator()
                 }
             }
         }
