@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -28,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -80,19 +82,20 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                     fontSize = 20.sp
                 )
             }
-            DistrictSearchBottomSheet()
+            DistrictSearchBottomSheet(viewModel)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DistrictSearchBottomSheet() {
+fun DistrictSearchBottomSheet(viewModel: DistrictSearchViewModel) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var keyword by remember { mutableStateOf("") }
+    val districtList by viewModel.districtList.collectAsState()
 
     LaunchedEffect(scaffoldState.bottomSheetState.currentValue) {
         when (scaffoldState.bottomSheetState.currentValue) {
@@ -128,7 +131,10 @@ fun DistrictSearchBottomSheet() {
                 SearchDistrictBox(
                     query = keyword,
                     focusRequester = focusRequester,
-                    onQueryChange = { keyword = it },
+                    onQueryChange = {
+                        keyword = it
+                        viewModel.searchDistrict(keyword)
+                    },
                     onFocusChanged = { isFocused ->
                         coroutineScope.launch {
                             if (isFocused) {
@@ -140,6 +146,11 @@ fun DistrictSearchBottomSheet() {
                         }
                     }
                 )
+                LazyColumn {
+                    items(districtList.size) {index ->
+                        Text(districtList[index].address)
+                    }
+                }
             }
         }
     ) {
