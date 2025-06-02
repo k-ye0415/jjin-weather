@@ -95,4 +95,6 @@ dependencies {
     implementation(libs.androidx.datastore)
     implementation(libs.compose.foundation.pager)
     implementation(libs.androidx.compose.material)
+
+    implementation(libs.places)
 }
