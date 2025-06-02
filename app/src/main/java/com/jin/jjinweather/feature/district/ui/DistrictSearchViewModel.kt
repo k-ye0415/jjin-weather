@@ -14,6 +14,10 @@ class DistrictSearchViewModel(private val searchDistrictUseCase: SearchDistrictU
     val districtList: StateFlow<DistrictState<List<District>>> = _districtList
 
     fun searchDistrictAt(keyword: String) {
+        if (keyword.isBlank()) {
+            _districtList.value = DistrictState.Idle
+            return
+        }
         viewModelScope.launch {
             _districtList.value = DistrictState.Loading
             _districtList.value = searchDistrictUseCase(keyword).fold(
