@@ -22,10 +22,12 @@ android {
 
         val openWeatherApiKey: String = findApiKey("OPEN_WEATHER_API_KEY")
         val chatGPTApiKey: String = findApiKey("CHAT_GPT_API_KEY")
+        val googlePlacesApiKey: String = findApiKey("GOOGLE_PLACES_API_KEY")
 
         defaultConfig {
             buildConfigField("String", "OPEN_WEATHER_API_KEY", "\"$openWeatherApiKey\"")
             buildConfigField("String", "CHAT_GPT_API_KEY", "\"$chatGPTApiKey\"")
+            buildConfigField("String", "GOOGLE_PLACES_API_KEY", "\"$googlePlacesApiKey\"")
         }
     }
 
