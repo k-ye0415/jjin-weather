@@ -23,6 +23,7 @@ import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.navigation.Screens
+import com.jin.jjinweather.feature.network.GooglePlacesApiClient
 import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
@@ -65,6 +66,7 @@ class MainActivity : ComponentActivity() {
 
         val openWeatherApi = OpenWeatherApiClient.createService()
         val chatGptApi = OpenAiApiClient.createService(BuildConfig.CHAT_GPT_API_KEY)
+        val googlePlacesApi = GooglePlacesApiClient.createService()
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
 
