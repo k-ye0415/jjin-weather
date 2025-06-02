@@ -51,12 +51,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.feature.googleplaces.domain.model.District
 import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
 import kotlinx.coroutines.launch
 
 @Composable
 fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTemperature: () -> Unit) {
+    var keyword by remember { mutableStateOf("") }
+    val districtList by viewModel.districtList.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -82,20 +86,29 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                     fontSize = 20.sp
                 )
             }
-            DistrictSearchBottomSheet(viewModel)
+            DistrictSearchBottomSheet(
+                districtList = districtList,
+                keyword = keyword,
+                onDistrictQueryChanged = {
+                    keyword = it
+                    viewModel.searchDistrict(it)
+                }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DistrictSearchBottomSheet(viewModel: DistrictSearchViewModel) {
+fun DistrictSearchBottomSheet(
+    districtList: List<District>,
+    keyword: String,
+    onDistrictQueryChanged: (keyword: String) -> Unit
+) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    var keyword by remember { mutableStateOf("") }
-    val districtList by viewModel.districtList.collectAsState()
 
     LaunchedEffect(scaffoldState.bottomSheetState.currentValue) {
         when (scaffoldState.bottomSheetState.currentValue) {
@@ -131,10 +144,7 @@ fun DistrictSearchBottomSheet(viewModel: DistrictSearchViewModel) {
                 SearchDistrictBox(
                     query = keyword,
                     focusRequester = focusRequester,
-                    onQueryChange = {
-                        keyword = it
-                        viewModel.searchDistrict(keyword)
-                    },
+                    onQueryChange = { onDistrictQueryChanged(it) },
                     onFocusChanged = { isFocused ->
                         coroutineScope.launch {
                             if (isFocused) {
@@ -147,7 +157,7 @@ fun DistrictSearchBottomSheet(viewModel: DistrictSearchViewModel) {
                     }
                 )
                 LazyColumn {
-                    items(districtList.size) {index ->
+                    items(districtList.size) { index ->
                         Text(districtList[index].address)
                     }
                 }
@@ -257,6 +267,7 @@ fun SearchDistrictBox(
     onQueryChange: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
 ) {
+    // FIXME : focus 되거나 텍스트 입력 시 (X) 아이콘 노출 필요.
     Row(
         modifier = Modifier
             .fillMaxWidth()
