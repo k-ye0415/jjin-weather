@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.googleplaces.domain.model.District
-import com.jin.jjinweather.feature.weather.ui.state.UiState
+import com.jin.jjinweather.feature.weather.ui.state.DistrictState
 import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
 import kotlinx.coroutines.launch
@@ -103,7 +103,7 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistrictSearchBottomSheet(
-    districtListState: UiState<List<District>>,
+    districtListState: DistrictState<List<District>>,
     keyword: String,
     onDistrictQueryChanged: (keyword: String) -> Unit
 ) {
@@ -159,8 +159,9 @@ fun DistrictSearchBottomSheet(
                     }
                 )
                 when (districtListState) {
-                    is UiState.Loading -> CircularProgressIndicator()
-                    is UiState.Success -> {
+                    is DistrictState.Idle -> {}
+                    is DistrictState.Loading -> CircularProgressIndicator()
+                    is DistrictState.Success -> {
                         val districtList = districtListState.data
                         LazyColumn {
                             items(districtList.size) { index ->
@@ -169,7 +170,7 @@ fun DistrictSearchBottomSheet(
                         }
                     }
 
-                    is UiState.Error -> CircularProgressIndicator()
+                    is DistrictState.Error -> CircularProgressIndicator()
                 }
             }
         }
