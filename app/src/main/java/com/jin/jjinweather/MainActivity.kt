@@ -28,6 +28,11 @@ import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
 import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
+import com.jin.jjinweather.feature.district.ui.DistrictSearchViewModel
+import com.jin.jjinweather.feature.googleplaces.data.PlacesRepositoryImpl
+import com.jin.jjinweather.feature.googleplaces.domain.PlacesRepository
+import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
+import com.jin.jjinweather.feature.googleplacesimpl.data.PlacesDataSourceImpl
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
@@ -93,6 +98,9 @@ class MainActivity : ComponentActivity() {
                         dalleDataSource = DalleDataSourceImpl(
                             chatGPTApi = chatGptApi
                         )
+                    ),
+                    placesRepository = PlacesRepositoryImpl(
+                        placesDataSource = PlacesDataSourceImpl(googlePlacesApi)
                     )
                 )
             }
@@ -106,6 +114,7 @@ fun AppNavigator(
     locationRepository: LocationRepository,
     weatherRepository: WeatherRepository,
     outfitRepository: OutfitRepository,
+    placesRepository: PlacesRepository
 ) {
     val navController = rememberNavController()
 
@@ -114,6 +123,7 @@ fun AppNavigator(
         GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository)
     )
     val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
+    val districtSearchViewModel = DistrictSearchViewModel(SearchDistrictUseCase(placesRepository))
 
     NavHost(navController, Screens.Onboarding.route) {
         composable(Screens.Onboarding.route) {
@@ -167,7 +177,7 @@ fun AppNavigator(
             }
         }
         composable(Screens.DistrictSearch.route) {
-            DistrictSearchScreen() {
+            DistrictSearchScreen(districtSearchViewModel) {
                 navController.navigate(Screens.Temperature.route)
             }
         }
