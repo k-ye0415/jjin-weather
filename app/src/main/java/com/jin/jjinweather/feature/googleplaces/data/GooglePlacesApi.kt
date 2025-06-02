@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface GooglePlacesApi {
     @GET("place/autocomplete/json")
-    suspend fun queryPlace(
+    suspend fun queryPlaces(
         @Query("input") input: String,
         @Query("types") types: String,
         @Query("language") language: String,
@@ -15,7 +15,7 @@ interface GooglePlacesApi {
     ): PlaceResponse
 
     @GET("place/details/json")
-    suspend fun queryPlaceDetail(
+    suspend fun queryPlaceDetails(
         @Query("place_id") placeId: String,
         @Query("fields") types: String,
         @Query("language") language: String,
