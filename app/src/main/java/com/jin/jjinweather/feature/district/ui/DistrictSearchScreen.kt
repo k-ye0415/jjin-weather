@@ -146,7 +146,7 @@ fun DistrictSearchBottomSheet(
                 SearchDistrictBox(
                     query = keyword,
                     focusRequester = focusRequester,
-                    onQueryChange = { onDistrictQueryChanged(it) },
+                    onQueryChange = onDistrictQueryChanged,
                     onFocusChanged = { isFocused ->
                         coroutineScope.launch {
                             if (isFocused) {
@@ -159,7 +159,7 @@ fun DistrictSearchBottomSheet(
                     }
                 )
                 when (districtListState) {
-                    is DistrictState.Idle -> {}
+                    is DistrictState.Idle -> Unit
                     is DistrictState.Loading -> CircularProgressIndicator()
                     is DistrictState.Success -> {
                         val districtList = districtListState.data
