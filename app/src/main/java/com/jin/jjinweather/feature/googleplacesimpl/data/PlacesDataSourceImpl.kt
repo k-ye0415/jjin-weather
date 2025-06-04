@@ -5,51 +5,59 @@ import com.jin.jjinweather.feature.googleplaces.data.GooglePlacesApi
 import com.jin.jjinweather.feature.googleplaces.data.PlacesDataSource
 import com.jin.jjinweather.feature.googleplaces.domain.model.District
 import com.jin.jjinweather.feature.location.GeoPoint
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class PlacesDataSourceImpl(private val googlePlacesApi: GooglePlacesApi) : PlacesDataSource {
     override suspend fun searchDistrictsByKeyword(keyword: String): Result<List<District>> {
-        return try {
-            // 자동검색 후 응답받은 결과의 place Id 만 추림
-            val placeIds = googlePlacesApi.queryPlaces(
+        // 자동검색 후 응답받은 결과의 place Id 만 추림
+        val placeIds = try {
+            googlePlacesApi.queryPlaces(
                 input = keyword,
                 types = PLACE_TYPE,
                 language = LANGUAGE,
                 apiKey = API_KYE
             ).predictions.map { it.placeId }
-
-            // place id 로 정확한 위치 행정이름과 위도/경도 요청
-            val districts = placeIds.map { fetchDistrictByPlaceId(it) }
-
-            val success = districts
-                .filter { it.isSuccess }
-                .map { it.getOrNull() ?: District(DEFAULT_ADDRESS, GeoPoint(DEFAULT_LAT, DEFAULT_LNG)) }
-
-            if (success.isNotEmpty()) Result.success(success)
-            else Result.failure(Exception("No district found"))
         } catch (e: Exception) {
-            Result.failure(e)
+            return Result.failure(e)
         }
+
+        // place id 로 정확한 위치 행정이름과 위도/경도 요청
+        val districts = mutableListOf<Result<District>>()
+        for (placeId in placeIds) {
+            val result = fetchDistrictByPlaceId(placeId)
+            districts.add(result)
+        }
+
+        val success = districts
+            .filter { it.isSuccess }
+            .map { it.getOrNull() ?: District(DEFAULT_ADDRESS, GeoPoint(DEFAULT_LAT, DEFAULT_LNG)) }
+
+        return if (success.isNotEmpty()) Result.success(success)
+        else Result.failure(Exception("No district found"))
     }
 
     private suspend fun fetchDistrictByPlaceId(placeId: String): Result<District> {
-        return try {
-            val response = googlePlacesApi.queryPlaceDetails(
+        val response = try {
+            googlePlacesApi.queryPlaceDetails(
                 placeId = placeId,
                 types = PLACE_DETAIL_TYPE,
                 language = LANGUAGE,
                 apiKey = API_KYE
             )
-            val district = District(
-                address = response.result.formattedAddress,
-                geoPoint = GeoPoint(
-                    latitude = response.result.geometry.location.lat,
-                    longitude = response.result.geometry.location.lng
-                )
-            )
-            Result.success(district)
         } catch (e: Exception) {
-            Result.failure(e)
+            return Result.failure(e)
         }
+
+        val district = District(
+            address = response.result.formattedAddress,
+            geoPoint = GeoPoint(
+                latitude = response.result.geometry.location.lat,
+                longitude = response.result.geometry.location.lng
+            )
+        )
+        return Result.success(district)
     }
 
     private companion object {
