@@ -5,6 +5,6 @@ import com.jin.jjinweather.feature.googleplaces.domain.model.District
 
 class SearchDistrictUseCase(private val repository: PlacesRepository) {
     suspend operator fun invoke(keyword: String): Result<List<District>> {
-        return repository.searchDistrictAt(keyword)
+        return repository.searchDistrictsByKeyword(keyword)
     }
 }
