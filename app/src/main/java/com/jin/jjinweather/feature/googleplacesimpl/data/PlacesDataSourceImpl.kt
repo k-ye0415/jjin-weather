@@ -18,7 +18,7 @@ class PlacesDataSourceImpl(private val googlePlacesApi: GooglePlacesApi) : Place
             ).predictions.map { it.placeId }
 
             // place id 로 정확한 위치 행정이름과 위도/경도 요청
-            val districts = placeIds.map { fetchDistrictDetailByPlaceId(it) }
+            val districts = placeIds.map { fetchDistrictByPlaceId(it) }
 
             val success = districts
                 .filter { it.isSuccess }
@@ -31,7 +31,7 @@ class PlacesDataSourceImpl(private val googlePlacesApi: GooglePlacesApi) : Place
         }
     }
 
-    override suspend fun fetchDistrictDetailByPlaceId(placeId: String): Result<District> {
+    private suspend fun fetchDistrictByPlaceId(placeId: String): Result<District> {
         return try {
             val response = googlePlacesApi.queryPlaceDetails(
                 placeId = placeId,
