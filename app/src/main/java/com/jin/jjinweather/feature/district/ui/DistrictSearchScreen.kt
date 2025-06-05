@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,12 +52,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
+import com.jin.jjinweather.feature.googleplaces.domain.model.District
+import com.jin.jjinweather.feature.weather.ui.state.DistrictState
 import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
 import kotlinx.coroutines.launch
 
 @Composable
-fun DistrictSearchScreen(onNavigateToTemperature: () -> Unit) {
+fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTemperature: () -> Unit) {
+    var keyword by remember { mutableStateOf("") }
+    val districtListState by viewModel.districtList.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -80,19 +88,29 @@ fun DistrictSearchScreen(onNavigateToTemperature: () -> Unit) {
                     fontSize = 20.sp
                 )
             }
-            DistrictSearchBottomSheet()
+            DistrictSearchBottomSheet(
+                districtListState = districtListState,
+                keyword = keyword,
+                onDistrictQueryChanged = {
+                    keyword = it
+                    viewModel.searchDistrictAt(it)
+                }
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DistrictSearchBottomSheet() {
+fun DistrictSearchBottomSheet(
+    districtListState: DistrictState<List<District>>,
+    keyword: String,
+    onDistrictQueryChanged: (keyword: String) -> Unit
+) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    var keyword by remember { mutableStateOf("") }
 
     LaunchedEffect(scaffoldState.bottomSheetState.currentValue) {
         when (scaffoldState.bottomSheetState.currentValue) {
@@ -128,7 +146,7 @@ fun DistrictSearchBottomSheet() {
                 SearchDistrictBox(
                     query = keyword,
                     focusRequester = focusRequester,
-                    onQueryChange = { keyword = it },
+                    onQueryChange = onDistrictQueryChanged,
                     onFocusChanged = { isFocused ->
                         coroutineScope.launch {
                             if (isFocused) {
@@ -140,6 +158,20 @@ fun DistrictSearchBottomSheet() {
                         }
                     }
                 )
+                when (districtListState) {
+                    is DistrictState.Idle -> Unit
+                    is DistrictState.Loading -> CircularProgressIndicator()
+                    is DistrictState.Success -> {
+                        val districtList = districtListState.data
+                        LazyColumn {
+                            items(districtList.size) { index ->
+                                Text(districtList[index].address)
+                            }
+                        }
+                    }
+
+                    is DistrictState.Error -> CircularProgressIndicator()
+                }
             }
         }
     ) {
@@ -246,6 +278,7 @@ fun SearchDistrictBox(
     onQueryChange: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
 ) {
+    // FIXME : focus 되거나 텍스트 입력 시 (X) 아이콘 노출 필요.
     Row(
         modifier = Modifier
             .fillMaxWidth()
