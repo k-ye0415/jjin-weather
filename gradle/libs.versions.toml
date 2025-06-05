@@ -19,6 +19,8 @@ kspVersion = "2.0.21-1.0.27"
 dataStore = "1.1.4"
 composeFoundation = "1.5.3"
 materialIcons = "1.6.2"
+googlePlaces = "3.5.0"
+secretsPlugin = "2.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,9 +50,11 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "dataStore" }
 compose-foundation-pager = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation" }
 androidx-compose-material = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIcons" }
+places = { module = "com.google.android.libraries.places:places", version.ref = "googlePlaces" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsPlugin" }
