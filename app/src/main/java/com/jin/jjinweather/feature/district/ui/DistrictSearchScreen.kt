@@ -100,6 +100,9 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                 onDistrictQueryChanged = {
                     keyword = it
                     viewModel.searchDistrictAt(it)
+                },
+                onSelectedDistrict = {
+                    viewModel.saveDistrict(it)
                 }
             )
         }
@@ -111,7 +114,8 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
 fun DistrictSearchBottomSheet(
     districtListState: DistrictState<List<District>>,
     keyword: String,
-    onDistrictQueryChanged: (keyword: String) -> Unit
+    onDistrictQueryChanged: (keyword: String) -> Unit,
+    onSelectedDistrict: (district: District) -> Unit
 ) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -186,7 +190,7 @@ fun DistrictSearchBottomSheet(
                                     modifier = Modifier
                                         .padding(vertical = 4.dp)
                                         .fillMaxWidth()
-                                        .clickable { }
+                                        .clickable { onSelectedDistrict(districtList[index]) }
                                 )
                             }
                         }
