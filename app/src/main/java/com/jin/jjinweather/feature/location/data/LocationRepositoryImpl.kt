@@ -24,16 +24,16 @@ class LocationRepositoryImpl(
                 return GeoPoint(pageNum, latitude, longitude)
             }
 
-    override suspend fun findCityNameAt(location: GeoPoint): String =
+    override suspend fun findCityNameAt(pageNumber: Int, location: GeoPoint): String =
         geoCodeDataSource.findCityNameAt(location.latitude, location.longitude)
-            .onSuccess { keepTrackCityNameChanges(it) }
+            .onSuccess { keepTrackCityNameChanges(pageNumber, it) }
             .map { it }
             .getOrElse { it.message.orEmpty() }
 
-    override suspend fun insertCityName(cityName: String) {
+    override suspend fun insertCityName(pageNumber: Int, cityName: String) {
         try {
             withContext(Dispatchers.IO) {
-                keepTrackCityNameChanges(cityName)
+                keepTrackCityNameChanges(pageNumber, cityName)
             }
         } catch (e: Exception) {
             //
@@ -74,11 +74,11 @@ class LocationRepositoryImpl(
         }
     }
 
-    private suspend fun keepTrackCityNameChanges(cityName: String) {
+    private suspend fun keepTrackCityNameChanges(pageNumber: Int, cityName: String) {
         try {
             withContext(Dispatchers.IO) {
                 cityNameTrackingDataSource.markAsLatestCityName(
-                    CityNameEntity(cityName = cityName)
+                    CityNameEntity(pageNumber, cityName)
                 )
             }
         } catch (_: SQLException) {
