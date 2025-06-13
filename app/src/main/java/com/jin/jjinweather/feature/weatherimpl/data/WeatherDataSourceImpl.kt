@@ -24,7 +24,7 @@ class WeatherDataSourceImpl(
     private val apiKey: String,
 ) : WeatherDataSource {
 
-    override suspend fun requestWeatherAt(latitude: Double, longitude: Double): Result<Weather> {
+    override suspend fun requestWeatherAt(pageNumber: Int, latitude: Double, longitude: Double): Result<Weather> {
         return try {
             val response = openWeatherApi.queryWeather(
                 latitude = latitude,
@@ -36,7 +36,7 @@ class WeatherDataSourceImpl(
             )
             val yesterdayResponse = requestYesterdayWeatherAt(latitude, longitude)
 
-            val weather = response.toWeather(yesterdayResponse)
+            val weather = response.toWeather(pageNumber, yesterdayResponse)
             Result.success(weather)
         } catch (e: Exception) {
             Log.e(TAG, "requestWeather error :${e.printStackTrace()}")
@@ -63,7 +63,7 @@ class WeatherDataSourceImpl(
         }
     }
 
-    private fun WeatherDTO.toWeather(yesterdayTemp: Double?): Weather {
+    private fun WeatherDTO.toWeather(pageNumber: Int, yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
             TemperatureSnapshot(
                 timeStamp = Instant.ofEpochSecond(hourly.dt),
@@ -86,6 +86,7 @@ class WeatherDataSourceImpl(
         }
 
         return Weather(
+            pageNumber = pageNumber,
             dayWeather = DayWeather(
                 date = Calendar.getInstance(),
                 icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
