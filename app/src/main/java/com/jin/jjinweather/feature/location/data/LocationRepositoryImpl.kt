@@ -30,6 +30,26 @@ class LocationRepositoryImpl(
             .map { it }
             .getOrElse { it.message.orEmpty() }
 
+    override suspend fun insertCityName(cityName: String) {
+        try {
+            withContext(Dispatchers.IO) {
+                keepTrackCityNameChanges(cityName)
+            }
+        } catch (e: Exception) {
+            //
+        }
+    }
+
+    override suspend fun insertGeoPoint(geoPoint: GeoPoint) {
+        try {
+            withContext(Dispatchers.IO) {
+                keepTrackLocationChanges(geoPoint)
+            }
+        } catch (e: Exception) {
+            //
+        }
+    }
+
     private suspend fun queryLatestLocation(): GeoPointEntity? =
         try {
             withContext(Dispatchers.IO) {
