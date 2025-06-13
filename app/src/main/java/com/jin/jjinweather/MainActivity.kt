@@ -126,7 +126,7 @@ fun AppNavigator(
     val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
     val districtSearchViewModel = DistrictSearchViewModel(
         SearchDistrictUseCase(placesRepository),
-        SaveDistrictAndRequestWeatherUseCase(locationRepository)
+        SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository)
     )
 
     NavHost(navController, Screens.Onboarding.route) {
