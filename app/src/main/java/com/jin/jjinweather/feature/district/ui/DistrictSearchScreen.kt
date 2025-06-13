@@ -2,8 +2,10 @@ package com.jin.jjinweather.feature.district.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,8 +48,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
@@ -160,17 +166,41 @@ fun DistrictSearchBottomSheet(
                 )
                 when (districtListState) {
                     is DistrictState.Idle -> Unit
-                    is DistrictState.Loading -> CircularProgressIndicator()
+                    is DistrictState.Loading -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
                     is DistrictState.Success -> {
                         val districtList = districtListState.data
-                        LazyColumn {
+                        LazyColumn(contentPadding = PaddingValues(vertical = 4.dp)) {
                             items(districtList.size) { index ->
-                                Text(districtList[index].address)
+                                Text(
+                                    text = highlightText(districtList[index].address, keyword),
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
+                                        .fillMaxWidth()
+                                        .clickable { })
                             }
                         }
                     }
 
-                    is DistrictState.Error -> CircularProgressIndicator()
+                    is DistrictState.Error -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }
@@ -314,5 +344,28 @@ fun SearchDistrictBox(
                 innerTextField()
             }
         )
+    }
+}
+
+@Composable
+private fun highlightText(source: String, keyword: String): AnnotatedString {
+    if (keyword.isBlank()) return AnnotatedString(source)
+    return buildAnnotatedString {
+        val keywordRegex = Regex(keyword)
+        var lastIndex = 0
+        keywordRegex.findAll(source).forEach { matchResult ->
+            val start = matchResult.range.first
+            val end = matchResult.range.last + 1
+
+            append(source.substring(lastIndex, start))
+            withStyle(style = SpanStyle(color = PointColor, fontWeight = FontWeight.Bold)) {
+                append(source.substring(start, end))
+            }
+            lastIndex = end
+        }
+
+        if (lastIndex < source.length) {
+            append(source.substring(lastIndex))
+        }
     }
 }
