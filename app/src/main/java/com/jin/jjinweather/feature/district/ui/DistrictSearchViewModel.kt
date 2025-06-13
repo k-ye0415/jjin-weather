@@ -4,12 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jin.jjinweather.feature.googleplaces.domain.model.District
 import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
+import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.weather.ui.state.DistrictState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class DistrictSearchViewModel(private val searchDistrictUseCase: SearchDistrictUseCase) : ViewModel() {
+class DistrictSearchViewModel(
+    private val searchDistrictUseCase: SearchDistrictUseCase,
+    private val saveDistrictAndRequestWeatherUseCase: SaveDistrictAndRequestWeatherUseCase
+) : ViewModel() {
     private val _districtList = MutableStateFlow<DistrictState<List<District>>>(DistrictState.Idle)
     val districtList: StateFlow<DistrictState<List<District>>> = _districtList
 
@@ -24,6 +28,12 @@ class DistrictSearchViewModel(private val searchDistrictUseCase: SearchDistrictU
                 onSuccess = { DistrictState.Success(it) },
                 onFailure = { DistrictState.Error(it.message.orEmpty()) }
             )
+        }
+    }
+
+    fun saveDistrict(district: District) {
+        viewModelScope.launch {
+            saveDistrictAndRequestWeatherUseCase(district)
         }
     }
 }
