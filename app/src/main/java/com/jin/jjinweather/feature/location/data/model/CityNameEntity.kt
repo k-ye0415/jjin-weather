@@ -13,9 +13,8 @@ import androidx.room.PrimaryKey
  * - 예: 현재 위치(서울): weatherPage = 0, 지정 위치(도쿄): weatherPage = 1 ...
  * @property cityName 도시 이름
  */
-@Entity(tableName = "cityName")
+@Entity(tableName = "cityName", primaryKeys = ["pageNumber"])
 data class CityNameEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val pageNumber: Int,
     val cityName: String
 )

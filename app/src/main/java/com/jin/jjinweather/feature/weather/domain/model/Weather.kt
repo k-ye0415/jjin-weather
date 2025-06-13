@@ -8,6 +8,7 @@ import java.time.LocalTime
 import java.util.Calendar
 
 data class Weather(
+    val pageNumber: Int,
     val dayWeather: DayWeather,
     val yesterdayWeather: TemperatureSnapshot,
     val forecast: Forecast

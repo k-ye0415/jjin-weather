@@ -42,7 +42,8 @@ fun TemperatureScreen(
 
     LaunchedEffect(composePermissionState.status) {
         if (composePermissionState.status is PermissionStatus.Granted) {
-            viewModel.onLocationPermissionGranted()
+            // FIXME pagerState 에서 받아와야하지만, 디폴트로 일단 0 으로 지정.
+            viewModel.onLocationPermissionGranted(0)
         }
     }
 

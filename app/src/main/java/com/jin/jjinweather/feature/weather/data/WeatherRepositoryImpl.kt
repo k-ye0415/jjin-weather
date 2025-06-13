@@ -21,20 +21,20 @@ class WeatherRepositoryImpl(
     private val weatherDataSource: WeatherDataSource
 ) : WeatherRepository {
 
-    override suspend fun weatherAt(latitude: Double, longitude: Double): Result<Weather> =
-        weatherDataSource.requestWeatherAt(latitude, longitude)
+    override suspend fun weatherAt(pageNumber: Int, latitude: Double, longitude: Double): Result<Weather> =
+        weatherDataSource.requestWeatherAt(pageNumber, latitude, longitude)
             .onSuccess { keepTrackWeatherChanges(it) }
             .map { Result.success(it) }
             .getOrElse {
-                val weather = queryLatestWeather() ?: return Result.failure(it)
+                val weather = queryLatestWeather(pageNumber) ?: return Result.failure(it)
                 return Result.success(weather.toDomainModel())
             }
 
 
-    private suspend fun queryLatestWeather(): WeatherEntity? {
+    private suspend fun queryLatestWeather(pageNumber: Int): WeatherEntity? {
         return try {
             withContext(Dispatchers.IO) {
-                weatherTrackingDataSource.latestWeatherOrNull()
+                weatherTrackingDataSource.latestWeatherOrNull(pageNumber)
             }
         } catch (_: SQLException) {
             null
@@ -56,6 +56,7 @@ class WeatherRepositoryImpl(
      * */
     private fun Weather.toEntityModel(): WeatherEntity {
         return WeatherEntity(
+            pageNumber = pageNumber,
             iconCode = dayWeather.icon.name,
             currentTemperature = dayWeather.temperature.toDouble(),
             temperatureDescription = dayWeather.description,
@@ -76,6 +77,7 @@ class WeatherRepositoryImpl(
      * */
     private fun WeatherEntity.toDomainModel(): Weather {
         return Weather(
+            pageNumber = pageNumber,
             dayWeather = DayWeather(
                 date = Calendar.getInstance(),
                 icon = WeatherIcon.valueOf(iconCode),
