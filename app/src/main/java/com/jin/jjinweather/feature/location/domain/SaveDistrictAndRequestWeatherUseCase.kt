@@ -8,9 +8,9 @@ class SaveDistrictAndRequestWeatherUseCase(
     private val locationRepository: LocationRepository,
     private val weatherRepository: WeatherRepository
 ) {
-    suspend operator fun invoke(district: District) {
+    suspend operator fun invoke(pageNumber: Int, district: District) {
         locationRepository.insertGeoPoint(district.geoPoint)
         locationRepository.insertCityName(district.address)
-        weatherRepository.weatherAt(district.geoPoint.latitude, district.geoPoint.longitude)
+        weatherRepository.weatherAt(pageNumber, district.geoPoint.latitude, district.geoPoint.longitude)
     }
 }

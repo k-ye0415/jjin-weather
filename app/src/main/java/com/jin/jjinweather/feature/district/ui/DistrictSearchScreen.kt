@@ -102,7 +102,7 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                     viewModel.searchDistrictAt(it)
                 },
                 onSelectedDistrict = {
-                    viewModel.saveDistrict(it)
+                    viewModel.saveDistrict(0, it)
                 }
             )
         }

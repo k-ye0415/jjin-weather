@@ -32,7 +32,7 @@ class PlacesDataSourceImpl(private val googlePlacesApi: GooglePlacesApi) : Place
 
         val success = districts
             .filter { it.isSuccess }
-            .map { it.getOrNull() ?: District(DEFAULT_ADDRESS, GeoPoint(DEFAULT_LAT, DEFAULT_LNG)) }
+            .map { it.getOrNull() ?: District(DEFAULT_ADDRESS, GeoPoint(0, DEFAULT_LAT, DEFAULT_LNG)) } //FIXME
 
         return if (success.isNotEmpty()) Result.success(success)
         else Result.failure(Exception("No district found"))
@@ -53,6 +53,7 @@ class PlacesDataSourceImpl(private val googlePlacesApi: GooglePlacesApi) : Place
         val district = District(
             address = response.result.formattedAddress,
             geoPoint = GeoPoint(
+                pageNumber = null,
                 latitude = response.result.geometry.location.lat,
                 longitude = response.result.geometry.location.lng
             )

@@ -1,3 +1,3 @@
 package com.jin.jjinweather.feature.location
 
-data class GeoPoint(val latitude: Double, val longitude: Double)
+data class GeoPoint(val pageNumber: Int?, val latitude: Double, val longitude: Double)

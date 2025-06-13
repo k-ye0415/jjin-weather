@@ -14,13 +14,13 @@ class GeoPointDataSourceImpl(context: Context) : GeoPointDataSource {
     private val context = context.applicationContext
 
     @RequiresPermission(anyOf = [ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION])
-    override fun currentGeoPoint(): Result<GeoPoint> {
+    override fun currentGeoPoint(pageNumber: Int): Result<GeoPoint> {
         val locationManager = ContextCompat.getSystemService(context, LocationManager::class.java)
             ?: return Result.failure(Exception(context.getString(R.string.error_location_not_found)))
         val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
         return if (location != null) {
-            Result.success(GeoPoint(location.latitude, location.longitude))
+            Result.success(GeoPoint(pageNumber, location.latitude, location.longitude))
         } else {
             Result.failure(Exception(context.getString(R.string.error_location_not_found)))
         }
