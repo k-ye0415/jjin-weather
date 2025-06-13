@@ -10,7 +10,7 @@ class SaveDistrictAndRequestWeatherUseCase(
 ) {
     suspend operator fun invoke(pageNumber: Int, district: District) {
         locationRepository.insertGeoPoint(district.geoPoint)
-        locationRepository.insertCityName(district.address)
+        locationRepository.insertCityName(pageNumber, district.address)
         weatherRepository.weatherAt(pageNumber, district.geoPoint.latitude, district.geoPoint.longitude)
     }
 }
