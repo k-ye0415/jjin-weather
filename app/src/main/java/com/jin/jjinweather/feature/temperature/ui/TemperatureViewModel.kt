@@ -14,13 +14,13 @@ class TemperatureViewModel(private val getCurrentLocationWeatherUseCase: GetCurr
     private val _weatherState = MutableStateFlow<UiState<CityWeather>>(UiState.Loading)
     val weatherState: StateFlow<UiState<CityWeather>> = _weatherState
 
-    fun onLocationPermissionGranted() {
-        fetchWeather()
+    fun onLocationPermissionGranted(pageNumber: Int) {
+        fetchWeather(pageNumber)
     }
 
-    private fun fetchWeather() {
+    private fun fetchWeather(pageNumber: Int) {
         viewModelScope.launch {
-            _weatherState.value = getCurrentLocationWeatherUseCase().fold(
+            _weatherState.value = getCurrentLocationWeatherUseCase(pageNumber).fold(
                 onSuccess = { UiState.Success(it) },
                 onFailure = { UiState.Error(it.message.orEmpty()) }
             )
