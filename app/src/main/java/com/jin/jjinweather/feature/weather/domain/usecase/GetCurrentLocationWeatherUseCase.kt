@@ -8,9 +8,9 @@ class GetCurrentLocationWeatherUseCase(
     private val locationRepository: LocationRepository,
     private val weatherRepository: WeatherRepository
 ) {
-    suspend operator fun invoke(): Result<CityWeather> {
+    suspend operator fun invoke(pageNumber: Int): Result<CityWeather> {
         val geoPoint = locationRepository.currentGeoPoint()
-        val weather = weatherRepository.weatherAt(geoPoint.latitude, geoPoint.longitude)
+        val weather = weatherRepository.weatherAt(pageNumber, geoPoint.latitude, geoPoint.longitude)
         return weather.map {
             val cityName = locationRepository.findCityNameAt(geoPoint)
             CityWeather(cityName, it)

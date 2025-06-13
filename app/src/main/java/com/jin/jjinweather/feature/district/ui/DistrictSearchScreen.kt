@@ -186,7 +186,8 @@ fun DistrictSearchBottomSheet(
                                     modifier = Modifier
                                         .padding(vertical = 4.dp)
                                         .fillMaxWidth()
-                                        .clickable { })
+                                        .clickable { }
+                                )
                             }
                         }
                     }
