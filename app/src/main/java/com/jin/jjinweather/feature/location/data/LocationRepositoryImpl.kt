@@ -14,14 +14,14 @@ class LocationRepositoryImpl(
     private val geoPointDataSource: GeoPointDataSource,
     private val geoCodeDataSource: GeoCodeDataSource,
 ) : LocationRepository {
-    override suspend fun currentGeoPoint(): GeoPoint =
-        geoPointDataSource.currentGeoPoint()
+    override suspend fun currentGeoPoint(pageNumber: Int): GeoPoint =
+        geoPointDataSource.currentGeoPoint(pageNumber)
             .onSuccess { keepTrackLocationChanges(it) }
-            .map { GeoPoint(it.latitude, it.longitude) }
+            .map { GeoPoint(pageNumber, it.latitude, it.longitude) }
             .getOrElse {
-                val (_, latitude, longitude) = queryLatestLocation()
-                    ?: return GeoPoint(DEFAULT_LAT, DEFAULT_LNG)
-                return GeoPoint(latitude, longitude)
+                val (pageNum, latitude, longitude) = queryLatestLocation(pageNumber)
+                    ?: return GeoPoint(pageNumber, DEFAULT_LAT, DEFAULT_LNG)
+                return GeoPoint(pageNum, latitude, longitude)
             }
 
     override suspend fun findCityNameAt(location: GeoPoint): String =
@@ -50,10 +50,10 @@ class LocationRepositoryImpl(
         }
     }
 
-    private suspend fun queryLatestLocation(): GeoPointEntity? =
+    private suspend fun queryLatestLocation(pageNumber: Int): GeoPointEntity? =
         try {
             withContext(Dispatchers.IO) {
-                geoPointTrackingDataSource.latestGeoPointOrNull()
+                geoPointTrackingDataSource.latestGeoPointOrNull(pageNumber)
             }
         } catch (_: SQLException) {
             null
@@ -64,6 +64,7 @@ class LocationRepositoryImpl(
             withContext(Dispatchers.IO) {
                 geoPointTrackingDataSource.markAsLatestLocation(
                     GeoPointEntity(
+                        pageNumber = latestLocation.pageNumber ?: 0,
                         latitude = latestLocation.latitude, longitude = latestLocation.longitude
                     )
                 )

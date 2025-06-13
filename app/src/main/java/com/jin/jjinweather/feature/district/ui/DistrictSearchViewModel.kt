@@ -31,9 +31,9 @@ class DistrictSearchViewModel(
         }
     }
 
-    fun saveDistrict(district: District) {
+    fun saveDistrict(pageNumber: Int, district: District) {
         viewModelScope.launch {
-            saveDistrictAndRequestWeatherUseCase(district)
+            saveDistrictAndRequestWeatherUseCase(pageNumber, district)
         }
     }
 }

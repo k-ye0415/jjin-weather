@@ -10,6 +10,6 @@ interface GeoPointTrackingDataSource {
     @Insert
     suspend fun markAsLatestLocation(geoPointEntity: GeoPointEntity)
 
-    @Query("SELECT * FROM geoPoint ORDER BY id DESC LIMIT 1")
-    suspend fun latestGeoPointOrNull(): GeoPointEntity?
+    @Query("SELECT * FROM geoPoint WHERE pageNumber = :pageNumber")
+    suspend fun latestGeoPointOrNull(pageNumber:Int): GeoPointEntity?
 }
