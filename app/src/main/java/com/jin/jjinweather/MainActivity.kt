@@ -33,6 +33,7 @@ import com.jin.jjinweather.feature.googleplaces.data.PlacesRepositoryImpl
 import com.jin.jjinweather.feature.googleplaces.domain.PlacesRepository
 import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
 import com.jin.jjinweather.feature.googleplacesimpl.data.PlacesDataSourceImpl
+import com.jin.jjinweather.feature.location.domain.GetDistrictWithWeatherUseCase
 import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
@@ -126,7 +127,8 @@ fun AppNavigator(
     val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
     val districtSearchViewModel = DistrictSearchViewModel(
         SearchDistrictUseCase(placesRepository),
-        SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository)
+        SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository),
+        GetDistrictWithWeatherUseCase(locationRepository, weatherRepository)
     )
 
     NavHost(navController, Screens.Onboarding.route) {

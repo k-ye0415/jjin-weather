@@ -13,7 +13,7 @@ class GetCurrentLocationWeatherUseCase(
         val weather = weatherRepository.weatherAt(pageNumber, geoPoint.latitude, geoPoint.longitude)
         return weather.map {
             val cityName = locationRepository.findCityNameAt(pageNumber, geoPoint)
-            CityWeather(cityName, it)
+            CityWeather(pageNumber, cityName, it)
         }
     }
 }

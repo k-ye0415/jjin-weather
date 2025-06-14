@@ -1,6 +1,7 @@
 package com.jin.jjinweather.feature.location.data
 
 import android.database.SQLException
+import com.jin.jjinweather.feature.location.City
 import com.jin.jjinweather.feature.location.GeoPoint
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.model.CityNameEntity
@@ -48,6 +49,24 @@ class LocationRepositoryImpl(
         } catch (e: Exception) {
             //
         }
+    }
+
+    override suspend fun fetchGeoPoints(): List<GeoPoint> = try {
+        withContext(Dispatchers.IO) {
+            geoPointTrackingDataSource.allGeoPoints()
+                .map { GeoPoint(it.pageNumber, it.latitude, it.longitude) }
+        }
+    } catch (e: Exception) {
+        emptyList()
+    }
+
+    override suspend fun fetchCityNames(): List<City> = try {
+        withContext(Dispatchers.IO) {
+            cityNameTrackingDataSource.allCityNames()
+                .map { City(it.pageNumber, it.cityName) }
+        }
+    } catch (e: Exception) {
+        emptyList()
     }
 
     private suspend fun queryLatestLocation(pageNumber: Int): GeoPointEntity? =
