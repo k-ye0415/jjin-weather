@@ -105,7 +105,8 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                     viewModel.searchDistrictAt(it)
                 },
                 onSelectedDistrict = {
-                    viewModel.saveDistrict(0, it)
+                    viewModel.saveDistrict(weatherListState.size, it)
+                    // FIXME 저장 후 bottomSheet 닫기처리
                 }
             )
         }
@@ -121,6 +122,7 @@ fun DistrictSearchBottomSheet(
     onDistrictQueryChanged: (keyword: String) -> Unit,
     onSelectedDistrict: (district: District) -> Unit
 ) {
+    // FIXME BottomSheet 변경 필요
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
