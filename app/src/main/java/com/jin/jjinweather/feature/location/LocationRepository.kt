@@ -5,4 +5,6 @@ interface LocationRepository {
     suspend fun findCityNameAt(pageNumber: Int, location: GeoPoint): String
     suspend fun insertGeoPoint(geoPoint: GeoPoint)
     suspend fun insertCityName(pageNumber: Int, cityName: String)
+    suspend fun fetchGeoPoints(): List<GeoPoint>
+    suspend fun fetchCityNames(): List<City>
 }

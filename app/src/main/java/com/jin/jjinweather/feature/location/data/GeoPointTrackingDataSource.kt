@@ -11,5 +11,8 @@ interface GeoPointTrackingDataSource {
     suspend fun markAsLatestLocation(geoPointEntity: GeoPointEntity)
 
     @Query("SELECT * FROM geoPoint WHERE pageNumber = :pageNumber")
-    suspend fun latestGeoPointOrNull(pageNumber:Int): GeoPointEntity?
+    suspend fun latestGeoPointOrNull(pageNumber: Int): GeoPointEntity?
+
+    @Query("SELECT * FROM geoPoint")
+    suspend fun allGeoPoints(): List<GeoPointEntity>
 }
