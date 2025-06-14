@@ -39,6 +39,7 @@ fun TemperatureScreen(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
     )
     val weather by viewModel.weatherState.collectAsState()
+    val weatherListState by viewModel.weatherListState.collectAsState()
 
     LaunchedEffect(composePermissionState.status) {
         if (composePermissionState.status is PermissionStatus.Granted) {
@@ -52,13 +53,13 @@ fun TemperatureScreen(
         is UiState.Success -> {
             // FIXME : Weather page 마다 weather 정보 필요(잠시 동일 데이터 적용)
             val weatherList = listOf(state.data, state.data)
-            val pagerState = rememberPagerState { weatherList.size }
+            val pagerState = rememberPagerState { weatherListState.size }
             Box(modifier = Modifier.fillMaxSize()) {
                 HorizontalPager(
                     state = pagerState
                 ) { page ->
                     WeatherSuccessScreen(
-                        weather = weatherList[page],
+                        weather = weatherListState[page],
                         pageCount = pagerState.pageCount,
                         currentPage = pagerState.currentPage,
                         onNavigateToOutfit = onNavigateToOutfit,
