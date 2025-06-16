@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.googleplaces.domain.model.District
+import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 import com.jin.jjinweather.feature.weather.ui.state.DistrictState
 import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
@@ -67,7 +68,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTemperature: () -> Unit) {
     var keyword by remember { mutableStateOf("") }
-    val districtListState by viewModel.districtList.collectAsState()
+    val districtSearchListState by viewModel.districtSearchListState.collectAsState()
+    val weatherListState by viewModel.weatherListState.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -95,14 +97,16 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                 )
             }
             DistrictSearchBottomSheet(
-                districtListState = districtListState,
+                weatherListState = weatherListState,
+                districtSearchListState = districtSearchListState,
                 keyword = keyword,
                 onDistrictQueryChanged = {
                     keyword = it
                     viewModel.searchDistrictAt(it)
                 },
                 onSelectedDistrict = {
-                    viewModel.saveDistrict(0, it)
+                    viewModel.saveDistrict(weatherListState.size, it)
+                    // FIXME 저장 후 bottomSheet 닫기처리
                 }
             )
         }
@@ -112,11 +116,13 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistrictSearchBottomSheet(
-    districtListState: DistrictState<List<District>>,
+    weatherListState: List<CityWeather>,
+    districtSearchListState: DistrictState<List<District>>,
     keyword: String,
     onDistrictQueryChanged: (keyword: String) -> Unit,
     onSelectedDistrict: (district: District) -> Unit
 ) {
+    // FIXME BottomSheet 변경 필요
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
@@ -168,7 +174,7 @@ fun DistrictSearchBottomSheet(
                         }
                     }
                 )
-                when (districtListState) {
+                when (districtSearchListState) {
                     is DistrictState.Idle -> Unit
                     is DistrictState.Loading -> {
                         Box(
@@ -182,15 +188,15 @@ fun DistrictSearchBottomSheet(
                     }
 
                     is DistrictState.Success -> {
-                        val districtList = districtListState.data
+                        val districtSearchList = districtSearchListState.data
                         LazyColumn(contentPadding = PaddingValues(vertical = 4.dp)) {
-                            items(districtList.size) { index ->
+                            items(districtSearchList.size) { index ->
                                 Text(
-                                    text = highlightText(districtList[index].address, keyword),
+                                    text = highlightText(districtSearchList[index].address, keyword),
                                     modifier = Modifier
                                         .padding(vertical = 4.dp)
                                         .fillMaxWidth()
-                                        .clickable { onSelectedDistrict(districtList[index]) }
+                                        .clickable { onSelectedDistrict(districtSearchList[index]) }
                                 )
                             }
                         }
@@ -211,103 +217,118 @@ fun DistrictSearchBottomSheet(
         }
     ) {
         // Weather 영역 리스트
-        // FIXME : DB 데이터로 그려줄 예정(임시 작성)
-        Column {
-            Row(
+        if (weatherListState.isEmpty()) {
+            Column(
                 modifier = Modifier
-                    .padding(horizontal = 10.dp)
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(PointColor)
-                    .padding(
-                        start = 12.dp, end = 12.dp,
-                        top = 8.dp, bottom = 8.dp
-                    ),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 40.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(30.dp)
-                        .background(Color.White.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.NearMe,
-                        contentDescription = stringResource(R.string.success_current_location_icon_desc),
-                        tint = Color.White.copy(alpha = 0.7f),
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-                Column(modifier = Modifier.padding(start = 4.dp)) {
-                    Text(
-                        text = stringResource(R.string.district_current_location),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 1.5.em
-                    )
-                    Text(text = "서울시 서초구", color = Color.White, fontSize = 12.sp, lineHeight = 1.5.em)
-                }
-                Spacer(Modifier.weight(1f))
-                Image(
-                    painter = painterResource(R.drawable.ic_main_clear_sky_day),
-                    contentDescription = stringResource(R.string.success_current_temperature_icon_desc),
-                    modifier = Modifier.size(24.dp)
-                )
-                Text(
-                    text = "27",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
+                CircularProgressIndicator()
             }
-            Text(
-                text = stringResource(R.string.district_added_location),
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-                    .padding(top = 20.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 10.dp)
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(PointColor)
-                    .padding(
-                        start = 12.dp, end = 12.dp,
-                        top = 12.dp, bottom = 12.dp
-                    ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.padding(start = 4.dp)) {
+        } else {
+            LazyColumn {
+                val defaultWeather = weatherListState.firstOrNull()
+                item {
+                    if (defaultWeather == null) {
+                        CircularProgressIndicator()
+                    } else {
+                        DistrictItem(
+                            isDefault = true,
+                            cityName = defaultWeather.cityName,
+                            weatherIconRes = defaultWeather.weather.dayWeather.icon.drawableRes,
+                            temperature = defaultWeather.weather.dayWeather.temperature.toInt()
+                        )
+                    }
+                }
+                item {
                     Text(
-                        text = "도쿄 도",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 1.5.em
+                        text = stringResource(R.string.district_added_location),
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .padding(top = 20.dp)
                     )
                 }
-                Spacer(Modifier.weight(1f))
-                Image(
-                    painter = painterResource(R.drawable.ic_main_clear_sky_day),
-                    contentDescription = stringResource(R.string.success_current_temperature_icon_desc),
-                    modifier = Modifier.size(24.dp)
-                )
-                Text(
-                    text = "27",
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(start = 4.dp)
-                )
+                val anotherWeathers = weatherListState.filterNot { it == defaultWeather }
+                items(anotherWeathers.size) {
+                    val item = anotherWeathers[it]
+                    DistrictItem(
+                        isDefault = false,
+                        cityName = item.cityName,
+                        weatherIconRes = item.weather.dayWeather.icon.drawableRes,
+                        temperature = item.weather.dayWeather.temperature.toInt()
+                    )
+                }
+
             }
         }
     }
 }
 
 @Composable
-fun SearchDistrictBox(
+private fun DistrictItem(isDefault: Boolean, cityName: String, weatherIconRes: Int, temperature: Int) {
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(PointColor)
+            .padding(
+                start = 12.dp, end = 12.dp,
+                top = 12.dp, bottom = 12.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (isDefault) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(30.dp)
+                    .background(Color.White.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.NearMe,
+                    contentDescription = stringResource(R.string.success_current_location_icon_desc),
+                    tint = Color.White.copy(alpha = 0.7f),
+                    modifier = Modifier.size(18.dp)
+                )
+            }
+        }
+        Column(modifier = Modifier.padding(start = 4.dp)) {
+            if (isDefault) {
+                Text(
+                    text = stringResource(R.string.district_current_location),
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 1.5.em
+                )
+            }
+            Text(
+                text = cityName,
+                color = Color.White,
+                fontSize = if (isDefault) 12.sp else 16.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 1.5.em
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        Image(
+            painter = painterResource(weatherIconRes),
+            contentDescription = stringResource(R.string.success_current_temperature_icon_desc),
+            modifier = Modifier.size(24.dp)
+        )
+        Text(
+            text = "$temperature",
+            color = Color.White,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(start = 4.dp)
+        )
+    }
+}
+
+@Composable
+private fun SearchDistrictBox(
     query: String,
     focusRequester: FocusRequester,
     onQueryChange: (String) -> Unit,
