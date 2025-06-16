@@ -18,6 +18,7 @@ import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class WeatherDataSourceImpl(
     private val openWeatherApi: OpenWeatherApi,
@@ -87,8 +88,9 @@ class WeatherDataSourceImpl(
 
         return Weather(
             pageNumber = pageNumber,
+            timeZone = timeZone,
             dayWeather = DayWeather(
-                date = Calendar.getInstance(),
+                date = convertUnixToCalendar(current.dateTime, timeZone),
                 icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = current.temperature,
                 description = current.weather.firstOrNull()?.description.orEmpty(),
@@ -110,6 +112,13 @@ class WeatherDataSourceImpl(
             ),
             forecast = Forecast(hourlyList, dailyList)
         )
+    }
+
+    private fun convertUnixToCalendar(seconds: Long, timezoneId: String): Calendar {
+        val zoneId = ZoneId.of(timezoneId)
+        val instant = Instant.ofEpochSecond(seconds)
+        val zonedDateTime = instant.atZone(zoneId)
+        return GregorianCalendar.from(zonedDateTime)
     }
 
     private fun epochTimestampToLocalTime(epoch: Long): LocalTime {
