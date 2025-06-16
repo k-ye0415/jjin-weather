@@ -52,7 +52,7 @@ import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
-import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
+import com.jin.jjinweather.feature.weather.domain.usecase.GetEveryLocationAndWeatherUseCase
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
@@ -122,8 +122,7 @@ fun AppNavigator(
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
     val temperatureViewModel = TemperatureViewModel(
-        GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository),
-        GetDistrictWithWeatherUseCase(locationRepository, weatherRepository)
+        GetEveryLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
     val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
     val districtSearchViewModel = DistrictSearchViewModel(

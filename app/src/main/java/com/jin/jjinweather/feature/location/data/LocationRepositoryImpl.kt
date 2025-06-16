@@ -15,19 +15,19 @@ class LocationRepositoryImpl(
     private val geoPointDataSource: GeoPointDataSource,
     private val geoCodeDataSource: GeoCodeDataSource,
 ) : LocationRepository {
-    override suspend fun currentGeoPoint(pageNumber: Int): GeoPoint =
-        geoPointDataSource.currentGeoPoint(pageNumber)
+    override suspend fun currentGeoPoint(): GeoPoint =
+        geoPointDataSource.currentGeoPoint(DEFAULT_PAGE_NUM)
             .onSuccess { keepTrackLocationChanges(it) }
-            .map { GeoPoint(pageNumber, it.latitude, it.longitude) }
+            .map { GeoPoint(DEFAULT_PAGE_NUM, it.latitude, it.longitude) }
             .getOrElse {
-                val (pageNum, latitude, longitude) = queryLatestLocation(pageNumber)
-                    ?: return GeoPoint(pageNumber, DEFAULT_LAT, DEFAULT_LNG)
+                val (pageNum, latitude, longitude) = queryLatestLocation(DEFAULT_PAGE_NUM)
+                    ?: return GeoPoint(DEFAULT_PAGE_NUM, DEFAULT_LAT, DEFAULT_LNG)
                 return GeoPoint(pageNum, latitude, longitude)
             }
 
-    override suspend fun findCityNameAt(pageNumber: Int, location: GeoPoint): String =
+    override suspend fun findCityNameAt(location: GeoPoint): String =
         geoCodeDataSource.findCityNameAt(location.latitude, location.longitude)
-            .onSuccess { keepTrackCityNameChanges(pageNumber, it) }
+            .onSuccess { keepTrackCityNameChanges(DEFAULT_PAGE_NUM, it) }
             .map { it }
             .getOrElse { it.message.orEmpty() }
 
@@ -108,5 +108,6 @@ class LocationRepositoryImpl(
     private companion object {
         const val DEFAULT_LAT = 37.5
         const val DEFAULT_LNG = 126.9
+        const val DEFAULT_PAGE_NUM = 0
     }
 }
