@@ -1,5 +1,6 @@
 package com.jin.jjinweather.feature.district.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -77,11 +78,21 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
     val districtSearchListState by viewModel.districtSearchListState.collectAsState()
     val weatherList by viewModel.weatherListState.collectAsState()
 
     LaunchedEffect(keyword) {
         viewModel.searchDistrictAt(keyword)
+    }
+
+    BackHandler {
+        coroutineScope.launch {
+            when (scaffoldState.bottomSheetState.currentValue) {
+                SheetValue.Expanded -> scaffoldState.bottomSheetState.partialExpand()
+                else -> onNavigateToTemperature()
+            }
+        }
     }
 
     Scaffold(
