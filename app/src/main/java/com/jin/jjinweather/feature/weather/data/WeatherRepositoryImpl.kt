@@ -14,7 +14,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalTime
+import java.time.ZoneId
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class WeatherRepositoryImpl(
     private val weatherTrackingDataSource: WeatherTrackingDataSource,
@@ -57,6 +59,8 @@ class WeatherRepositoryImpl(
     private fun Weather.toEntityModel(): WeatherEntity {
         return WeatherEntity(
             pageNumber = pageNumber,
+            timeZone = timeZone,
+            dateTime = dayWeather.date.timeInMillis,
             iconCode = dayWeather.icon.name,
             currentTemperature = dayWeather.temperature.toDouble(),
             temperatureDescription = dayWeather.description,
@@ -78,8 +82,9 @@ class WeatherRepositoryImpl(
     private fun WeatherEntity.toDomainModel(): Weather {
         return Weather(
             pageNumber = pageNumber,
+            timeZone = timeZone,
             dayWeather = DayWeather(
-                date = Calendar.getInstance(),
+                date = convertUnixToCalendar(dateTime, timeZone),
                 icon = WeatherIcon.valueOf(iconCode),
                 temperature = currentTemperature,
                 description = temperatureDescription,
@@ -96,6 +101,13 @@ class WeatherRepositoryImpl(
             forecast = Forecast(hourly = hourlyWeatherList, daily = dailyWeatherList)
 
         )
+    }
+
+    private fun convertUnixToCalendar(seconds: Long, timezoneId: String): Calendar {
+        val zoneId = ZoneId.of(timezoneId)
+        val instant = Instant.ofEpochSecond(seconds)
+        val zonedDateTime = instant.atZone(zoneId)
+        return GregorianCalendar.from(zonedDateTime)
     }
 
     private companion object {
