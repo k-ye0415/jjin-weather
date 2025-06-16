@@ -18,6 +18,7 @@ import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
 import java.util.Calendar
+import java.util.GregorianCalendar
 
 class WeatherDataSourceImpl(
     private val openWeatherApi: OpenWeatherApi,
@@ -76,7 +77,10 @@ class WeatherDataSourceImpl(
                 date = Calendar.getInstance().apply { timeInMillis = daily.dt * 1000 },
                 icon = WeatherIcon.findByWeatherCode(daily.weather.firstOrNull()?.icon.orEmpty()),
                 temperatureRange = TemperatureRange(min = daily.temperature.min, max = daily.temperature.max),
-                sunCycle = SunCycle(epochTimestampToLocalTime(daily.sunrise), epochTimestampToLocalTime(daily.sunset)),
+                sunCycle = SunCycle(
+                    epochTimestampToLocalTime(daily.sunrise, timeZone),
+                    epochTimestampToLocalTime(daily.sunset, timeZone)
+                ),
                 feelsLikeTemperature = FeelsLikeTemperature(
                     daily.feelsLikeTemperatureRange.day,
                     daily.feelsLikeTemperatureRange.night
@@ -87,14 +91,15 @@ class WeatherDataSourceImpl(
 
         return Weather(
             pageNumber = pageNumber,
+            timeZone = timeZone,
             dayWeather = DayWeather(
-                date = Calendar.getInstance(),
+                date = convertUnixToCalendar(current.dateTime, timeZone),
                 icon = WeatherIcon.findByWeatherCode(current.weather.firstOrNull()?.icon.orEmpty()),
                 temperature = current.temperature,
                 description = current.weather.firstOrNull()?.description.orEmpty(),
                 sunCycle = SunCycle(
-                    epochTimestampToLocalTime(current.sunrise),
-                    epochTimestampToLocalTime(current.sunset)
+                    epochTimestampToLocalTime(current.sunrise, timeZone),
+                    epochTimestampToLocalTime(current.sunset, timeZone)
                 ),
                 moonPhase = MoonPhaseType.findByMoonPhase(daily.firstOrNull()?.moonPhase ?: DEFAULT_MOON_PHASE),
                 feelsLikeTemperature = current.feelsLikeTemperature,
@@ -112,9 +117,16 @@ class WeatherDataSourceImpl(
         )
     }
 
-    private fun epochTimestampToLocalTime(epoch: Long): LocalTime {
+    private fun convertUnixToCalendar(seconds: Long, timezoneId: String): Calendar {
+        val zoneId = ZoneId.of(timezoneId)
+        val instant = Instant.ofEpochSecond(seconds)
+        val zonedDateTime = instant.atZone(zoneId)
+        return GregorianCalendar.from(zonedDateTime)
+    }
+
+    private fun epochTimestampToLocalTime(epoch: Long, timezoneId: String): LocalTime {
         return Instant.ofEpochSecond(epoch)
-            .atZone(ZoneId.systemDefault())
+            .atZone(ZoneId.of(timezoneId))
             .toLocalTime()
     }
 

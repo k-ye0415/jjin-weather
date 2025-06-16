@@ -9,6 +9,7 @@ import java.util.Calendar
 
 data class Weather(
     val pageNumber: Int,
+    val timeZone: String,
     val dayWeather: DayWeather,
     val yesterdayWeather: TemperatureSnapshot,
     val forecast: Forecast

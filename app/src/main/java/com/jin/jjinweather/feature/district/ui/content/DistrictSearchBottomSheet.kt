@@ -60,6 +60,7 @@ import com.jin.jjinweather.ui.theme.SuccessBackgroundTopNightColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -189,17 +190,17 @@ private fun DistrictWithWeather(weatherList: List<CityWeather>) {
                 if (defaultWeather == null) {
                     CircularProgressIndicator()
                 } else {
-                    // FIXME 요청 시각 기준으로 background 지정할 수 있도록 수정 필요.
-                    val now = LocalTime.now()
-                    val isNight =
-                        now.isBefore(defaultWeather.weather.dayWeather.sunCycle.sunrise) || now.isAfter(defaultWeather.weather.dayWeather.sunCycle.sunset)
-                    val backgroundColor = if (isNight) SuccessBackgroundTopNightColor else SuccessBackgroundTopDayColor
+
                     DistrictItem(
                         isDefault = true,
                         cityName = defaultWeather.cityName,
                         weatherIconRes = defaultWeather.weather.dayWeather.icon.drawableRes,
                         temperature = defaultWeather.weather.dayWeather.temperature.toInt(),
-                        backgroundColor = backgroundColor
+                        backgroundColor = generateBackgroundColor(
+                            timeZone = defaultWeather.weather.timeZone,
+                            sunrise = defaultWeather.weather.dayWeather.sunCycle.sunrise,
+                            sunset = defaultWeather.weather.dayWeather.sunCycle.sunset
+                        )
                     )
                 }
             }
@@ -214,17 +215,16 @@ private fun DistrictWithWeather(weatherList: List<CityWeather>) {
             val anotherWeathers = weatherList.filterNot { it == defaultWeather }
             items(anotherWeathers.size) {
                 val item = anotherWeathers[it]
-                // FIXME 요청 시각 기준으로 background 지정할 수 있도록 수정 필요.
-                val now = LocalTime.now()
-                val isNight =
-                    now.isBefore(item.weather.dayWeather.sunCycle.sunrise) || now.isAfter(item.weather.dayWeather.sunCycle.sunset)
-                val backgroundColor = if (isNight) SuccessBackgroundTopNightColor else SuccessBackgroundTopDayColor
                 DistrictItem(
                     isDefault = false,
                     cityName = item.cityName,
                     weatherIconRes = item.weather.dayWeather.icon.drawableRes,
                     temperature = item.weather.dayWeather.temperature.toInt(),
-                    backgroundColor = backgroundColor,
+                    backgroundColor = generateBackgroundColor(
+                        timeZone = item.weather.timeZone,
+                        sunrise = item.weather.dayWeather.sunCycle.sunrise,
+                        sunset = item.weather.dayWeather.sunCycle.sunset
+                    ),
                 )
             }
 
@@ -376,5 +376,17 @@ private fun highlightText(source: String, keyword: String): AnnotatedString {
         if (lastIndex < source.length) {
             append(source.substring(lastIndex))
         }
+    }
+}
+
+@Composable
+private fun generateBackgroundColor(timeZone: String, sunrise: LocalTime, sunset: LocalTime): Color {
+    val zoneId = ZoneId.of(timeZone)
+    val now = LocalTime.now(zoneId)
+    val isNight = now.isBefore(sunrise) || now.isAfter(sunset)
+    return if (isNight) {
+        SuccessBackgroundTopNightColor
+    } else {
+        SuccessBackgroundTopDayColor
     }
 }
