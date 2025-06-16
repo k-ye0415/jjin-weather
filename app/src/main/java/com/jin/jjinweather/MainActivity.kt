@@ -26,7 +26,6 @@ import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUse
 import com.jin.jjinweather.feature.googleplacesimpl.data.PlacesDataSourceImpl
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
-import com.jin.jjinweather.feature.location.domain.GetDistrictWithWeatherUseCase
 import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
@@ -52,7 +51,7 @@ import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
-import com.jin.jjinweather.feature.weather.domain.usecase.GetEveryLocationAndWeatherUseCase
+import com.jin.jjinweather.feature.weather.domain.usecase.GetAllLocationAndWeatherUseCase
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
@@ -122,13 +121,13 @@ fun AppNavigator(
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
     val temperatureViewModel = TemperatureViewModel(
-        GetEveryLocationAndWeatherUseCase(locationRepository, weatherRepository)
+        GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
     val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
     val districtSearchViewModel = DistrictSearchViewModel(
         SearchDistrictUseCase(placesRepository),
         SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository),
-        GetDistrictWithWeatherUseCase(locationRepository, weatherRepository)
+        GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
 
     NavHost(navController, Screens.Onboarding.route) {

@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jin.jjinweather.feature.googleplaces.domain.model.District
 import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
-import com.jin.jjinweather.feature.location.domain.GetDistrictWithWeatherUseCase
 import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
+import com.jin.jjinweather.feature.weather.domain.usecase.GetAllLocationAndWeatherUseCase
 import com.jin.jjinweather.feature.weather.ui.state.DistrictState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
 class DistrictSearchViewModel(
     private val searchDistrictUseCase: SearchDistrictUseCase,
     private val saveDistrictAndRequestWeatherUseCase: SaveDistrictAndRequestWeatherUseCase,
-    getDistrictWithWeatherUseCase: GetDistrictWithWeatherUseCase,
+    getAllLocationAndWeatherUseCase: GetAllLocationAndWeatherUseCase,
 ) : ViewModel() {
-    val weatherListState: StateFlow<List<CityWeather>> = getDistrictWithWeatherUseCase()
+    val weatherListState: StateFlow<List<CityWeather>> = getAllLocationAndWeatherUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
