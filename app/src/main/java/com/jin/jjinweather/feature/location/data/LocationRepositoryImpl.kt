@@ -7,6 +7,8 @@ import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.model.CityNameEntity
 import com.jin.jjinweather.feature.location.data.model.GeoPointEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class LocationRepositoryImpl(
@@ -27,14 +29,14 @@ class LocationRepositoryImpl(
 
     override suspend fun findCityNameAt(location: GeoPoint): String =
         geoCodeDataSource.findCityNameAt(location.latitude, location.longitude)
-            .onSuccess { keepTrackCityNameChanges(DEFAULT_PAGE_NUM, it) }
+            .onSuccess { keepTrackCityNameChanges(City(DEFAULT_PAGE_NUM, it)) }
             .map { it }
             .getOrElse { it.message.orEmpty() }
 
-    override suspend fun insertCityName(pageNumber: Int, cityName: String) {
+    override suspend fun insertCityName(city: City) {
         try {
             withContext(Dispatchers.IO) {
-                keepTrackCityNameChanges(pageNumber, cityName)
+                keepTrackCityNameChanges(city)
             }
         } catch (e: Exception) {
             //
@@ -51,22 +53,26 @@ class LocationRepositoryImpl(
         }
     }
 
-    override suspend fun fetchGeoPoints(): List<GeoPoint> = try {
-        withContext(Dispatchers.IO) {
-            geoPointTrackingDataSource.allGeoPoints()
-                .map { GeoPoint(it.pageNumber, it.latitude, it.longitude) }
-        }
-    } catch (e: Exception) {
-        emptyList()
+    override fun fetchGeoPoints(): Flow<List<GeoPoint>> {
+        return geoPointTrackingDataSource.observeGeoPoints()
+            .map { entities ->
+                entities.map { entity ->
+                    GeoPoint(
+                        pageNumber = entity.pageNumber,
+                        latitude = entity.latitude,
+                        longitude = entity.longitude
+                    )
+                }
+            }
     }
 
-    override suspend fun fetchCityNames(): List<City> = try {
-        withContext(Dispatchers.IO) {
-            cityNameTrackingDataSource.allCityNames()
-                .map { City(it.pageNumber, it.cityName) }
-        }
-    } catch (e: Exception) {
-        emptyList()
+    override fun fetchCityNames(): Flow<List<City>> {
+        return cityNameTrackingDataSource.observeCityNames()
+            .map { entities ->
+                entities.map {
+                    City(it.pageNumber, it.cityName)
+                }
+            }
     }
 
     private suspend fun queryLatestLocation(pageNumber: Int): GeoPointEntity? =
@@ -93,11 +99,11 @@ class LocationRepositoryImpl(
         }
     }
 
-    private suspend fun keepTrackCityNameChanges(pageNumber: Int, cityName: String) {
+    private suspend fun keepTrackCityNameChanges(city: City) {
         try {
             withContext(Dispatchers.IO) {
                 cityNameTrackingDataSource.markAsLatestCityName(
-                    CityNameEntity(pageNumber, cityName)
+                    CityNameEntity(pageNumber = city.pageNumber, cityName = city.name)
                 )
             }
         } catch (_: SQLException) {

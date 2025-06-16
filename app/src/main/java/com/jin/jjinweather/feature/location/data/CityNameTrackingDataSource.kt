@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jin.jjinweather.feature.location.data.model.CityNameEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CityNameTrackingDataSource {
@@ -12,5 +13,5 @@ interface CityNameTrackingDataSource {
     suspend fun markAsLatestCityName(cityNameEntity: CityNameEntity)
 
     @Query("SELECT * FROM cityName")
-    suspend fun allCityNames(): List<CityNameEntity>
+    fun observeCityNames(): Flow<List<CityNameEntity>>
 }
