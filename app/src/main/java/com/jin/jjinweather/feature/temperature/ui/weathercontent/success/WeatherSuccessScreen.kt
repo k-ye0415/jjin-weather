@@ -20,6 +20,7 @@ import com.jin.jjinweather.ui.theme.SuccessBackgroundTopNightColor
 import com.jin.jjinweather.ui.theme.SuccessCardBackgroundDayColor
 import com.jin.jjinweather.ui.theme.SuccessCardBackgroundNightColor
 import java.time.LocalTime
+import java.time.ZoneId
 
 @Composable
 fun WeatherSuccessScreen(
@@ -35,9 +36,11 @@ fun WeatherSuccessScreen(
     ) -> Unit,
     onNavigateToDistrict: () -> Unit
 ) {
-    val now = LocalTime.now()
-    val isNight =
-        now.isBefore(weather.weather.dayWeather.sunCycle.sunrise) || now.isAfter(weather.weather.dayWeather.sunCycle.sunset)
+    val isNight = isNight(
+        timeZone = weather.weather.timeZone,
+        sunrise = weather.weather.dayWeather.sunCycle.sunrise,
+        sunset = weather.weather.dayWeather.sunCycle.sunset
+    )
     val backgroundGradientBrush = generateBackgroundColor(isNight)
     val cardBackgroundColor = generatedCardBackgroundColor(isNight)
 
@@ -109,6 +112,12 @@ fun WeatherSuccessScreen(
             }
         }
     }
+}
+
+private fun isNight(timeZone: String, sunrise: LocalTime, sunset: LocalTime): Boolean {
+    val zoneId = ZoneId.of(timeZone)
+    val now = LocalTime.now(zoneId)
+    return now.isBefore(sunrise) || now.isAfter(sunset)
 }
 
 private fun generateBackgroundColor(isNight: Boolean): Brush = Brush.verticalGradient(
