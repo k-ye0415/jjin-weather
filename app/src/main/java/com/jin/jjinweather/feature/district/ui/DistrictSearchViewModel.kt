@@ -7,7 +7,7 @@ import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUse
 import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 import com.jin.jjinweather.feature.weather.domain.usecase.GetAllLocationAndWeatherUseCase
-import com.jin.jjinweather.feature.weather.ui.state.DistrictState
+import com.jin.jjinweather.feature.weather.ui.state.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,19 +26,19 @@ class DistrictSearchViewModel(
             initialValue = emptyList()
         )
 
-    private val _districtSearchList = MutableStateFlow<DistrictState<List<District>>>(DistrictState.Idle)
-    val districtSearchListState: StateFlow<DistrictState<List<District>>> = _districtSearchList
+    private val _districtSearchList = MutableStateFlow<SearchState<List<District>>>(SearchState.Idle)
+    val districtSearchListState: StateFlow<SearchState<List<District>>> = _districtSearchList
 
     fun searchDistrictAt(keyword: String) {
         if (keyword.isBlank()) {
-            _districtSearchList.value = DistrictState.Idle
+            _districtSearchList.value = SearchState.Idle
             return
         }
         viewModelScope.launch {
-            _districtSearchList.value = DistrictState.Loading
+            _districtSearchList.value = SearchState.Loading
             _districtSearchList.value = searchDistrictUseCase(keyword).fold(
-                onSuccess = { DistrictState.Success(it) },
-                onFailure = { DistrictState.Error(it.message.orEmpty()) }
+                onSuccess = { SearchState.Success(it) },
+                onFailure = { SearchState.Error(it.message.orEmpty()) }
             )
         }
     }
