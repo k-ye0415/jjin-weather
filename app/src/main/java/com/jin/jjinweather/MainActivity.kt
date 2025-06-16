@@ -18,8 +18,15 @@ import androidx.navigation.navArgument
 import androidx.room.Room
 import com.google.gson.reflect.TypeToken
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
+import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
+import com.jin.jjinweather.feature.district.ui.DistrictSearchViewModel
+import com.jin.jjinweather.feature.googleplaces.data.PlacesRepositoryImpl
+import com.jin.jjinweather.feature.googleplaces.domain.PlacesRepository
+import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
+import com.jin.jjinweather.feature.googleplacesimpl.data.PlacesDataSourceImpl
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.LocationRepositoryImpl
+import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.navigation.Screens
@@ -27,13 +34,6 @@ import com.jin.jjinweather.feature.network.GooglePlacesApiClient
 import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
-import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
-import com.jin.jjinweather.feature.district.ui.DistrictSearchViewModel
-import com.jin.jjinweather.feature.googleplaces.data.PlacesRepositoryImpl
-import com.jin.jjinweather.feature.googleplaces.domain.PlacesRepository
-import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
-import com.jin.jjinweather.feature.googleplacesimpl.data.PlacesDataSourceImpl
-import com.jin.jjinweather.feature.location.domain.SaveDistrictAndRequestWeatherUseCase
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
@@ -51,7 +51,7 @@ import com.jin.jjinweather.feature.temperature.ui.TemperatureScreen
 import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
-import com.jin.jjinweather.feature.weather.domain.usecase.GetCurrentLocationWeatherUseCase
+import com.jin.jjinweather.feature.weather.domain.usecase.GetAllLocationAndWeatherUseCase
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
@@ -121,12 +121,13 @@ fun AppNavigator(
 
     val onboardingViewModel = OnboardingViewModel(PreferencesRepositoryImpl(context))
     val temperatureViewModel = TemperatureViewModel(
-        GetCurrentLocationWeatherUseCase(locationRepository, weatherRepository)
+        GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
     val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
     val districtSearchViewModel = DistrictSearchViewModel(
         SearchDistrictUseCase(placesRepository),
-        SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository)
+        SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository),
+        GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
 
     NavHost(navController, Screens.Onboarding.route) {

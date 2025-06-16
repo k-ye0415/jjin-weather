@@ -1,11 +1,14 @@
 package com.jin.jjinweather.feature.location.data
 
 import android.database.SQLException
+import com.jin.jjinweather.feature.location.City
 import com.jin.jjinweather.feature.location.GeoPoint
 import com.jin.jjinweather.feature.location.LocationRepository
 import com.jin.jjinweather.feature.location.data.model.CityNameEntity
 import com.jin.jjinweather.feature.location.data.model.GeoPointEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class LocationRepositoryImpl(
@@ -14,26 +17,26 @@ class LocationRepositoryImpl(
     private val geoPointDataSource: GeoPointDataSource,
     private val geoCodeDataSource: GeoCodeDataSource,
 ) : LocationRepository {
-    override suspend fun currentGeoPoint(pageNumber: Int): GeoPoint =
-        geoPointDataSource.currentGeoPoint(pageNumber)
+    override suspend fun currentGeoPoint(): GeoPoint =
+        geoPointDataSource.currentGeoPoint(DEFAULT_PAGE_NUM)
             .onSuccess { keepTrackLocationChanges(it) }
-            .map { GeoPoint(pageNumber, it.latitude, it.longitude) }
+            .map { GeoPoint(DEFAULT_PAGE_NUM, it.latitude, it.longitude) }
             .getOrElse {
-                val (pageNum, latitude, longitude) = queryLatestLocation(pageNumber)
-                    ?: return GeoPoint(pageNumber, DEFAULT_LAT, DEFAULT_LNG)
+                val (pageNum, latitude, longitude) = queryLatestLocation(DEFAULT_PAGE_NUM)
+                    ?: return GeoPoint(DEFAULT_PAGE_NUM, DEFAULT_LAT, DEFAULT_LNG)
                 return GeoPoint(pageNum, latitude, longitude)
             }
 
-    override suspend fun findCityNameAt(pageNumber: Int, location: GeoPoint): String =
+    override suspend fun findCityNameAt(location: GeoPoint): String =
         geoCodeDataSource.findCityNameAt(location.latitude, location.longitude)
-            .onSuccess { keepTrackCityNameChanges(pageNumber, it) }
+            .onSuccess { keepTrackCityNameChanges(City(DEFAULT_PAGE_NUM, it)) }
             .map { it }
             .getOrElse { it.message.orEmpty() }
 
-    override suspend fun insertCityName(pageNumber: Int, cityName: String) {
+    override suspend fun insertCityName(city: City) {
         try {
             withContext(Dispatchers.IO) {
-                keepTrackCityNameChanges(pageNumber, cityName)
+                keepTrackCityNameChanges(city)
             }
         } catch (e: Exception) {
             //
@@ -48,6 +51,28 @@ class LocationRepositoryImpl(
         } catch (e: Exception) {
             //
         }
+    }
+
+    override fun fetchGeoPoints(): Flow<List<GeoPoint>> {
+        return geoPointTrackingDataSource.observeGeoPoints()
+            .map { entities ->
+                entities.map { entity ->
+                    GeoPoint(
+                        pageNumber = entity.pageNumber,
+                        latitude = entity.latitude,
+                        longitude = entity.longitude
+                    )
+                }
+            }
+    }
+
+    override fun fetchCityNames(): Flow<List<City>> {
+        return cityNameTrackingDataSource.observeCityNames()
+            .map { entities ->
+                entities.map {
+                    City(it.pageNumber, it.cityName)
+                }
+            }
     }
 
     private suspend fun queryLatestLocation(pageNumber: Int): GeoPointEntity? =
@@ -74,11 +99,11 @@ class LocationRepositoryImpl(
         }
     }
 
-    private suspend fun keepTrackCityNameChanges(pageNumber: Int, cityName: String) {
+    private suspend fun keepTrackCityNameChanges(city: City) {
         try {
             withContext(Dispatchers.IO) {
                 cityNameTrackingDataSource.markAsLatestCityName(
-                    CityNameEntity(pageNumber, cityName)
+                    CityNameEntity(pageNumber = city.pageNumber, cityName = city.name)
                 )
             }
         } catch (_: SQLException) {
@@ -89,5 +114,6 @@ class LocationRepositoryImpl(
     private companion object {
         const val DEFAULT_LAT = 37.5
         const val DEFAULT_LNG = 126.9
+        const val DEFAULT_PAGE_NUM = 0
     }
 }

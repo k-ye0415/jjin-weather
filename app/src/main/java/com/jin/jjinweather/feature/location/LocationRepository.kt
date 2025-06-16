@@ -1,8 +1,12 @@
 package com.jin.jjinweather.feature.location
 
+import kotlinx.coroutines.flow.Flow
+
 interface LocationRepository {
-    suspend fun currentGeoPoint(pageNumber: Int): GeoPoint
-    suspend fun findCityNameAt(pageNumber: Int, location: GeoPoint): String
+    suspend fun currentGeoPoint(): GeoPoint
+    suspend fun findCityNameAt(location: GeoPoint): String
     suspend fun insertGeoPoint(geoPoint: GeoPoint)
-    suspend fun insertCityName(pageNumber: Int, cityName: String)
+    suspend fun insertCityName(city: City)
+    fun fetchGeoPoints(): Flow<List<GeoPoint>>
+    fun fetchCityNames(): Flow<List<City>>
 }
