@@ -55,8 +55,11 @@ import com.jin.jjinweather.feature.weather.domain.model.CityWeather
 import com.jin.jjinweather.feature.weather.ui.state.SearchState
 import com.jin.jjinweather.ui.theme.PointColor
 import com.jin.jjinweather.ui.theme.SearchBoxBackgroundColor
+import com.jin.jjinweather.ui.theme.SuccessBackgroundTopDayColor
+import com.jin.jjinweather.ui.theme.SuccessBackgroundTopNightColor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -186,11 +189,17 @@ private fun DistrictWithWeather(weatherList: List<CityWeather>) {
                 if (defaultWeather == null) {
                     CircularProgressIndicator()
                 } else {
+                    // FIXME 요청 시각 기준으로 background 지정할 수 있도록 수정 필요.
+                    val now = LocalTime.now()
+                    val isNight =
+                        now.isBefore(defaultWeather.weather.dayWeather.sunCycle.sunrise) || now.isAfter(defaultWeather.weather.dayWeather.sunCycle.sunset)
+                    val backgroundColor = if (isNight) SuccessBackgroundTopNightColor else SuccessBackgroundTopDayColor
                     DistrictItem(
                         isDefault = true,
                         cityName = defaultWeather.cityName,
                         weatherIconRes = defaultWeather.weather.dayWeather.icon.drawableRes,
-                        temperature = defaultWeather.weather.dayWeather.temperature.toInt()
+                        temperature = defaultWeather.weather.dayWeather.temperature.toInt(),
+                        backgroundColor = backgroundColor
                     )
                 }
             }
@@ -205,11 +214,17 @@ private fun DistrictWithWeather(weatherList: List<CityWeather>) {
             val anotherWeathers = weatherList.filterNot { it == defaultWeather }
             items(anotherWeathers.size) {
                 val item = anotherWeathers[it]
+                // FIXME 요청 시각 기준으로 background 지정할 수 있도록 수정 필요.
+                val now = LocalTime.now()
+                val isNight =
+                    now.isBefore(item.weather.dayWeather.sunCycle.sunrise) || now.isAfter(item.weather.dayWeather.sunCycle.sunset)
+                val backgroundColor = if (isNight) SuccessBackgroundTopNightColor else SuccessBackgroundTopDayColor
                 DistrictItem(
                     isDefault = false,
                     cityName = item.cityName,
                     weatherIconRes = item.weather.dayWeather.icon.drawableRes,
-                    temperature = item.weather.dayWeather.temperature.toInt()
+                    temperature = item.weather.dayWeather.temperature.toInt(),
+                    backgroundColor = backgroundColor,
                 )
             }
 
@@ -218,13 +233,19 @@ private fun DistrictWithWeather(weatherList: List<CityWeather>) {
 }
 
 @Composable
-private fun DistrictItem(isDefault: Boolean, cityName: String, weatherIconRes: Int, temperature: Int) {
+private fun DistrictItem(
+    isDefault: Boolean,
+    cityName: String,
+    weatherIconRes: Int,
+    temperature: Int,
+    backgroundColor: Color
+) {
     Row(
         modifier = Modifier
             .padding(horizontal = 10.dp, vertical = 10.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(PointColor)
+            .background(backgroundColor)
             .padding(
                 start = 12.dp, end = 12.dp,
                 top = 12.dp, bottom = 12.dp
@@ -272,7 +293,7 @@ private fun DistrictItem(isDefault: Boolean, cityName: String, weatherIconRes: I
             modifier = Modifier.size(24.dp)
         )
         Text(
-            text = "$temperature",
+            text = stringResource(R.string.success_temperature, temperature),
             color = Color.White,
             fontSize = 16.sp,
             modifier = Modifier.padding(start = 4.dp)
