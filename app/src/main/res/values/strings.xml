@@ -109,4 +109,5 @@
     <string name="district_added_location">추가한 위치</string>
     <string name="district_search_icon_desc">검색 아이콘</string>
     <string name="district_search_hint">위치 검색 및 추가</string>
+    <string name="district_search_clear_icon_desc">입력 글자 지우기 아이콘</string>
 </resources>
