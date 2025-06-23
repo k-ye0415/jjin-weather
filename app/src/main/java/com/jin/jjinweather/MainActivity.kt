@@ -16,10 +16,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.google.gson.reflect.TypeToken
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
 import com.jin.jjinweather.feature.district.ui.DistrictSearchViewModel
+import com.jin.jjinweather.feature.fileimpl.data.FileDataSourceImpl
+import com.jin.jjinweather.feature.firebaseimpl.data.FirebaseDataSourceImpl
 import com.jin.jjinweather.feature.googleplaces.data.PlacesRepositoryImpl
 import com.jin.jjinweather.feature.googleplaces.domain.PlacesRepository
 import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
@@ -76,6 +81,8 @@ class MainActivity : ComponentActivity() {
         val googlePlacesApi = GooglePlacesApiClient.createService()
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
+        val storage = Firebase.storage
+        val firestore = Firebase.firestore("weather")
 
         enableEdgeToEdge()
         setContent {
@@ -98,7 +105,9 @@ class MainActivity : ComponentActivity() {
                         ),
                         dalleDataSource = DalleDataSourceImpl(
                             chatGPTApi = chatGptApi
-                        )
+                        ),
+                        fileDataSource = FileDataSourceImpl(this),
+                        firebaseDataSource = FirebaseDataSourceImpl(storage, firestore),
                     ),
                     placesRepository = PlacesRepositoryImpl(
                         placesDataSource = PlacesDataSourceImpl(googlePlacesApi)

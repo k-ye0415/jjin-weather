@@ -37,7 +37,7 @@ fun OutfitScreen(
         )
 
         else -> OutfitRecommendScreen(
-            null,
+            emptyList(),
             cityName,
             summary,
             forecast,
