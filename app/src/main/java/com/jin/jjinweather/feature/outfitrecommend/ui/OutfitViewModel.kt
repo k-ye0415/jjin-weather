@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class OutfitViewModel(private val getOutfitUseCase: GetOutfitUseCase) : ViewModel() {
-    private val _outfitImageUrl = MutableStateFlow<UiState<String>>(UiState.Loading)
-    val outfitImageUrl: StateFlow<UiState<String>> = _outfitImageUrl
+    private val _outfitImageUrl = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
+    val outfitImageUrl: StateFlow<UiState<List<String>>> = _outfitImageUrl
 
     fun loadOutfitImageForTemperature(temperature: Int) {
         viewModelScope.launch {
