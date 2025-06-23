@@ -9,19 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
-import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
-import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
-import com.jin.jjinweather.ui.theme.JJinWeatherTheme
-import java.time.Instant
 import java.time.ZoneId
 
 @Composable
 fun OutfitRecommendScreen(
-    imageUrl: String?,
+    imageUrls: List<String>,
     cityName: String,
     summary: String,
     forecast: HourlyForecast,
@@ -36,8 +31,8 @@ fun OutfitRecommendScreen(
         ) {
             OutfitHeader(onNavigateToTemperature)
             CityNameAndWeatherSummary(cityName, summary)
-            if (imageUrl != null) {
-                OutfitSuccess(imageUrl)
+            if (imageUrls.isNotEmpty()) {
+                OutfitSuccess(imageUrls)
             } else {
                 OutfitError()
             }

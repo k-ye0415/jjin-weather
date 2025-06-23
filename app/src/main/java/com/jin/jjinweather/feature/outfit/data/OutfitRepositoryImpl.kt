@@ -1,136 +1,39 @@
 package com.jin.jjinweather.feature.outfit.data
 
-import android.content.Context
-import android.net.Uri
-import android.util.Log
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.jin.jjinweather.feature.file.FileDataSource
+import com.jin.jjinweather.feature.firebase.FirebaseDataSource
 import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.File
-import java.util.UUID
 
 class OutfitRepositoryImpl(
-    context: Context,
     private val openAiDataSource: OpenAiDataSource,
-    private val dalleDataSource: DalleDataSource
+    private val dalleDataSource: DalleDataSource,
+    private val fileDataSource: FileDataSource,
+    private val firebaseDataSource: FirebaseDataSource,
 ) : OutfitRepository {
 
-    private val context = context.applicationContext
-
-    override suspend fun generateOutfitImageUrl(temperature: Int): Result<String> {
-        val imageUrls = fetchImagesByTemperature(24)
-        return if (imageUrls.isEmpty()) {
-            openAiDataSource.generateImagePrompt(temperature).fold(
-                onSuccess = {
-//                val imageUrl = dalleDataSource.requestOutfitImageGeneration(it)
-//                val file = downloadImageUrlToFile(imageUrl.getOrNull().orEmpty())
-                    val file = File(context.cacheDir, "0add5a9b-6090-47b1-a209-e0991ed1b348.png")
-                    val downloadUrl = uploadStorage(file)
-//                val downloadUrl = "https://firebasestorage.googleapis.com/v0/b/jjin-weather.firebasestorage.app/o/images%2F0add5a9b-6090-47b1-a209-e0991ed1b348.png?alt=media&token=9e811776-ef30-4b5f-a501-4b734f761c94"
-                    uploadFireStore(temperature, downloadUrl)
-//                imageUrl
-                    Result.success("https://picsum.photos/1792/1024?random=1") // test
-                },
+    override suspend fun fetchImagesByTemperature(temperature: Int): Result<List<String>> {
+        val imageUrls = firebaseDataSource.fetchImagesByTemperature(temperature)
+        return if (imageUrls.size < 2) {
+            generateImageUrl(temperature).fold(
+                onSuccess = { Result.success(listOf(it)) },
                 onFailure = { Result.failure(it) }
             )
         } else {
-            Result.success(imageUrls.firstOrNull().orEmpty())
+            Result.success(imageUrls.take(2))
         }
     }
 
-    private suspend fun downloadImageUrlToFile(imageUrl: String): File =
-        withContext(Dispatchers.IO) {
-            val client = OkHttpClient()
-            val request = Request.Builder()
-                .url(imageUrl)
-                .build()
-
-            val response = try {
-                client.newCall(request).execute()
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to download image: $e")
-                null
-            }
-
-            val inputStream = try {
-                response?.body?.byteStream()
-            } catch (e: Exception) {
-                Log.e(TAG, "Empty body")
-                null
-            }
-
-            val contentType = response?.header("Content-Type")
-            val fileExtension = when (contentType) {
-                "image/png" -> "png"
-                "image/jpeg" -> "jpg"
-                else -> "jpg" // default fallback
-            }
-
-            val fileName = "${UUID.randomUUID()}.$fileExtension"
-            val file = File(context.cacheDir, fileName)
-
-            file.outputStream().use { output ->
-                inputStream?.copyTo(output)
-            }
-            return@withContext file
-        }
-
-    private suspend fun uploadStorage(file: File): String =
-        withContext(Dispatchers.IO) {
-            val storage = Firebase.storage
-            val fileName = file.name
-            val imageRef = storage.reference.child("images/$fileName")
-
-            imageRef.putFile(Uri.fromFile(file)).await()
-
-            return@withContext imageRef.downloadUrl.await().toString()
-        }
-
-
-    private suspend fun uploadFireStore(temperature: Int, imageUrl: String) {
-        withContext(Dispatchers.IO) {
-            // FIXME DI
-            val firestore = Firebase.firestore("weather")
-            val key = "$temperature"
-            val data = mapOf(key to FieldValue.arrayUnion(imageUrl))
-
-            val docRef = firestore.collection("outfit").document("images")
-            docRef.set(data, SetOptions.merge())
-
-//            file.delete()
-        }
-    }
-
-    private suspend fun fetchImagesByTemperature(temperature: Int): List<String> {
-        return withContext(Dispatchers.IO) {
-            // FIXME DI
-            val firestore = Firebase.firestore("weather")
-            val docRef = firestore.collection("outfit").document("images")
-
-            val snapshot = docRef.get().await()
-            if (snapshot.exists()) {
-                val key = temperature.toString()
-
-                // 해당 temperature 필드가 존재하는지 확인
-                val imageUrls = snapshot.get(key) as? List<String>
-
-                imageUrls ?: emptyList()
-            } else {
-                emptyList()
-            }
-        }
-    }
-
-
-    private companion object {
-        val TAG = "OutfitRepository"
+    private suspend fun generateImageUrl(temperature: Int): Result<String> {
+        return openAiDataSource.generateImagePrompt(temperature).fold(
+            onSuccess = {
+                val imageUrl = dalleDataSource.requestOutfitImageGeneration(it)
+                val file = fileDataSource.downloadImageUrlToFile(imageUrl.getOrNull().orEmpty())
+                val downloadUrl = firebaseDataSource.uploadAndFetchDownloadUrl(file)
+                firebaseDataSource.uploadFireStore(temperature, downloadUrl)
+                file.delete()
+                Result.success(downloadUrl)
+            },
+            onFailure = { Result.failure(it) }
+        )
     }
 }
