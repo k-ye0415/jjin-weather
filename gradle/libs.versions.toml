@@ -21,6 +21,8 @@ composeFoundation = "1.5.3"
 materialIcons = "1.6.2"
 googlePlaces = "3.5.0"
 secretsPlugin = "2.0.1"
+googleServices = "4.4.2"
+firebaseBom = "33.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +53,8 @@ androidx-datastore = { module = "androidx.datastore:datastore-preferences", vers
 compose-foundation-pager = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation" }
 androidx-compose-material = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIcons" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "googlePlaces" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-storage = { module = "com.google.firebase:firebase-storage" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -58,3 +62,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsPlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
