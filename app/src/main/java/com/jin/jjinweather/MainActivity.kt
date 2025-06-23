@@ -93,6 +93,7 @@ class MainActivity : ComponentActivity() {
                         WeatherDataSourceImpl(openWeatherApi, BuildConfig.OPEN_WEATHER_API_KEY),
                     ),
                     outfitRepository = OutfitRepositoryImpl(
+                        context = this,
                         openAiDataSource = OpenAiDataSourceImpl(
                             chatGPTApi = chatGptApi
                         ),
