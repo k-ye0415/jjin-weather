@@ -55,6 +55,7 @@ androidx-compose-material = { module = "androidx.compose.material:material-icons
 places = { module = "com.google.android.libraries.places:places", version.ref = "googlePlaces" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
