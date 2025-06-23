@@ -26,19 +26,24 @@ class OutfitRepositoryImpl(
     private val context = context.applicationContext
 
     override suspend fun generateOutfitImageUrl(temperature: Int): Result<String> {
-        return openAiDataSource.generateImagePrompt(temperature).fold(
-            onSuccess = {
+        val imageUrls = fetchImagesByTemperature(24)
+        return if (imageUrls.isEmpty()) {
+            openAiDataSource.generateImagePrompt(temperature).fold(
+                onSuccess = {
 //                val imageUrl = dalleDataSource.requestOutfitImageGeneration(it)
 //                val file = downloadImageUrlToFile(imageUrl.getOrNull().orEmpty())
-                val file = File(context.cacheDir, "0add5a9b-6090-47b1-a209-e0991ed1b348.png")
-                val downloadUrl = uploadStorage(file)
+                    val file = File(context.cacheDir, "0add5a9b-6090-47b1-a209-e0991ed1b348.png")
+                    val downloadUrl = uploadStorage(file)
 //                val downloadUrl = "https://firebasestorage.googleapis.com/v0/b/jjin-weather.firebasestorage.app/o/images%2F0add5a9b-6090-47b1-a209-e0991ed1b348.png?alt=media&token=9e811776-ef30-4b5f-a501-4b734f761c94"
-                uploadFireStore(temperature, downloadUrl)
+                    uploadFireStore(temperature, downloadUrl)
 //                imageUrl
-                Result.success("https://picsum.photos/1792/1024?random=1") // test
-            },
-            onFailure = { Result.failure(it) }
-        )
+                    Result.success("https://picsum.photos/1792/1024?random=1") // test
+                },
+                onFailure = { Result.failure(it) }
+            )
+        } else {
+            Result.success(imageUrls.firstOrNull().orEmpty())
+        }
     }
 
     private suspend fun downloadImageUrlToFile(imageUrl: String): File =
@@ -101,6 +106,26 @@ class OutfitRepositoryImpl(
             docRef.set(data, SetOptions.merge())
 
 //            file.delete()
+        }
+    }
+
+    private suspend fun fetchImagesByTemperature(temperature: Int): List<String> {
+        return withContext(Dispatchers.IO) {
+            // FIXME DI
+            val firestore = Firebase.firestore("weather")
+            val docRef = firestore.collection("outfit").document("images")
+
+            val snapshot = docRef.get().await()
+            if (snapshot.exists()) {
+                val key = temperature.toString()
+
+                // 해당 temperature 필드가 존재하는지 확인
+                val imageUrls = snapshot.get(key) as? List<String>
+
+                imageUrls ?: emptyList()
+            } else {
+                emptyList()
+            }
         }
     }
 
