@@ -1,25 +1,24 @@
 package com.jin.jjinweather.feature.network
 
+import android.content.Context
 import android.util.Log
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.translate.Translate
 import com.google.cloud.translate.TranslateOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 
 object TranslateApiClient {
     @Volatile
     private var translateService: Translate? = null
 
-    fun initialize() {
+    fun initialize(context: Context) {
         if (translateService == null) {
             synchronized(this) {
                 if (translateService == null) {
                     translateService = try {
-                        val path = System.getProperty("GOOGLE_TRANSLATE_KEY_PATH") ?: return
                         TranslateOptions.newBuilder()
-                            .setCredentials(GoogleCredentials.fromStream(File(path).inputStream()))
+                            .setCredentials(GoogleCredentials.fromStream(context.assets.open("jjin-weather-e503bd34a192.json")))
                             .build()
                             .service
                     } catch (e: Exception) {
