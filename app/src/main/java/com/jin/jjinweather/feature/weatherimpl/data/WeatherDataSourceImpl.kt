@@ -1,6 +1,7 @@
 package com.jin.jjinweather.feature.weatherimpl.data
 
 import android.util.Log
+import com.jin.jjinweather.feature.network.TranslateApiClient
 import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
 import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
@@ -64,7 +65,7 @@ class WeatherDataSourceImpl(
         }
     }
 
-    private fun WeatherDTO.toWeather(pageNumber: Int, yesterdayTemp: Double?): Weather {
+    private suspend fun WeatherDTO.toWeather(pageNumber: Int, yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
             TemperatureSnapshot(
                 timeStamp = Instant.ofEpochSecond(hourly.dt),
@@ -85,9 +86,11 @@ class WeatherDataSourceImpl(
                     daily.feelsLikeTemperatureRange.day,
                     daily.feelsLikeTemperatureRange.night
                 ),
-                summary = daily.summary
+                summary = TranslateApiClient.translateText(daily.summary)
             )
         }
+
+        Log.i(TAG, "YEJIN ${dailyList.firstOrNull()?.summary}")
 
         return Weather(
             pageNumber = pageNumber,
