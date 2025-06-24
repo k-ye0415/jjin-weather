@@ -39,6 +39,7 @@ import com.jin.jjinweather.feature.network.GooglePlacesApiClient
 import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
+import com.jin.jjinweather.feature.network.TranslateApiClient
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
@@ -79,6 +80,8 @@ class MainActivity : ComponentActivity() {
         val openWeatherApi = OpenWeatherApiClient.createService()
         val chatGptApi = OpenAiApiClient.createService(BuildConfig.CHAT_GPT_API_KEY)
         val googlePlacesApi = GooglePlacesApiClient.createService()
+
+        TranslateApiClient.initialize()
 
         val db = Room.databaseBuilder(this, AppDatabase::class.java, "weather_db").build()
         val storage = Firebase.storage
