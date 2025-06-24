@@ -5,6 +5,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.jin.jjinweather.feature.outfitrecommend.ui.recommendcontent.OutfitRecommendScreen
+import com.jin.jjinweather.feature.temperature.ui.weathercontent.WeatherErrorScreen
 import com.jin.jjinweather.feature.weather.ui.state.UiState
 
 @Composable
@@ -34,8 +35,6 @@ fun OutfitScreen(
             )
         }
 
-        else -> {
-            // FIXME
-        }
+        is UiState.Error -> WeatherErrorScreen(state.message)
     }
 }
