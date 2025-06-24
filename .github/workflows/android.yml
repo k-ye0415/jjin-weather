@@ -32,5 +32,9 @@ jobs:
       run: |
         echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
 
+    - name: Decode jjin-weather-e503bd34a192.json
+      run: |
+        echo "${{ secrets.GOOGLE_TRANSLATE_JSON_BASE64 }}" | base64 --decode > app/src/main/assets/jjin-weather-e503bd34a192.json
+
     - name: Build with Gradle
       run: ./gradlew build
