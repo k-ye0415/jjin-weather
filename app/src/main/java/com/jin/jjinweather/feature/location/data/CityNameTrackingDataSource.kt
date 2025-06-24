@@ -14,4 +14,7 @@ interface CityNameTrackingDataSource {
 
     @Query("SELECT * FROM cityName")
     fun observeCityNames(): Flow<List<CityNameEntity>>
+
+    @Query("SELECT * FROM cityName WHERE pageNumber = :pageNumber")
+    suspend fun queryCityName(pageNumber: Int): CityNameEntity?
 }

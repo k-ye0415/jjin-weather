@@ -1,11 +1,16 @@
 package com.jin.jjinweather.feature.outfitrecommend.ui.recommendcontent
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -16,9 +21,10 @@ import java.time.ZoneId
 
 @Composable
 fun OutfitRecommendScreen(
-    imageUrls: List<String>,
+    imageUrls: List<String>?,
     cityName: String,
     summary: String,
+    timeZoneId: String,
     forecast: HourlyForecast,
     feelsLikeTemperature: Int,
     onNavigateToTemperature: () -> Unit
@@ -31,10 +37,19 @@ fun OutfitRecommendScreen(
         ) {
             OutfitHeader(onNavigateToTemperature)
             CityNameAndWeatherSummary(cityName, summary)
-            if (imageUrls.isNotEmpty()) {
-                OutfitSuccess(imageUrls)
-            } else {
+            if (imageUrls == null) {
                 OutfitError()
+            } else if (imageUrls.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                OutfitSuccess(imageUrls)
             }
             Text(
                 text = stringResource(R.string.outfit_hourly_forecast_graph),
@@ -44,10 +59,10 @@ fun OutfitRecommendScreen(
                     .padding(top = 10.dp)
             )
             HourlyForecastGraph(
-                forecast.map { it.temperature.toInt() },
-                forecast.map { it.timeStamp.atZone(ZoneId.systemDefault()).hour },
-                feelsLikeTemperature,
-                Modifier
+                temperatureList = forecast.map { it.temperature.toInt() },
+                hourlyList = forecast.map { it.timeStamp.atZone(ZoneId.of(timeZoneId)).hour },
+                feelsLikeTemperature = feelsLikeTemperature,
+                modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .padding(bottom = 10.dp)
             )

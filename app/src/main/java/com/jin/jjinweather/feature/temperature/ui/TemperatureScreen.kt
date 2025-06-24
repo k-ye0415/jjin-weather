@@ -15,13 +15,7 @@ import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 @Composable
 fun TemperatureScreen(
     viewModel: TemperatureViewModel,
-    onNavigateToOutfit: (
-        temperature: Int,
-        cityName: String,
-        summary: String,
-        forecast: HourlyForecast,
-        feelsLikeTemperature: Int,
-    ) -> Unit,
+    onNavigateToOutfit: (pageNumber: Int) -> Unit,
     onNavigateToDistrict: () -> Unit
 ) {
     val weatherListState by viewModel.weatherListState.collectAsState()

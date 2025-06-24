@@ -75,6 +75,15 @@ class LocationRepositoryImpl(
             }
     }
 
+    override suspend fun findCityNameByPageNumber(pageNumber: Int): String = try {
+        withContext(Dispatchers.IO) {
+            val entity = cityNameTrackingDataSource.queryCityName(pageNumber)
+            entity?.cityName ?: ""
+        }
+    } catch (_: SQLException) {
+        ""
+    }
+
     private suspend fun queryLatestLocation(pageNumber: Int): GeoPointEntity? =
         try {
             withContext(Dispatchers.IO) {

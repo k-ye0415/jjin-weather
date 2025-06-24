@@ -32,6 +32,10 @@ class WeatherRepositoryImpl(
                 return Result.success(weather.toDomainModel())
             }
 
+    override suspend fun findWeatherByPageNumber(pageNumber: Int): Weather? {
+        val entity = queryLatestWeather(pageNumber)
+        return entity?.toDomainModel()
+    }
 
     private suspend fun queryLatestWeather(pageNumber: Int): WeatherEntity? {
         return try {

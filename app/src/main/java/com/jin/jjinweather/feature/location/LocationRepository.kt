@@ -9,4 +9,5 @@ interface LocationRepository {
     suspend fun insertCityName(city: City)
     fun fetchGeoPoints(): Flow<List<GeoPoint>>
     fun fetchCityNames(): Flow<List<City>>
+    suspend fun findCityNameByPageNumber(pageNumber: Int): String
 }
