@@ -13,30 +13,29 @@ fun OutfitScreen(
     pageNumber: Int,
     onNavigateToTemperature: () -> Unit
 ) {
-    val outfitImageUrl by viewModel.outfitImageUrl.collectAsState()
+    val outfitState by viewModel.outfitState.collectAsState()
 
-//    LaunchedEffect(Unit) {
-//        viewModel.loadOutfitImageForTemperature(temperature)
-//    }
-//
-//    when (val state = outfitImageUrl) {
-//        is UiState.Loading -> OutfitLoadingScreen()
-//        is UiState.Success -> OutfitRecommendScreen(
-//            state.data,
-//            cityName,
-//            summary,
-//            forecast,
-//            feelsLikeTemperature,
-//            onNavigateToTemperature
-//        )
-//
-//        else -> OutfitRecommendScreen(
-//            emptyList(),
-//            cityName,
-//            summary,
-//            forecast,
-//            feelsLikeTemperature,
-//            onNavigateToTemperature
-//        )
-//    }
+    LaunchedEffect(pageNumber) {
+        viewModel.loadOutfitByPageNumber(pageNumber)
+    }
+
+    when (val state = outfitState) {
+        is UiState.Loading -> OutfitLoadingScreen()
+        is UiState.Success -> {
+            val cityWeather = state.data.cityWeather
+            val outfitImageUrls = state.data.imageUrls
+            OutfitRecommendScreen(
+                imageUrls = outfitImageUrls,
+                cityName = cityWeather.cityName,
+                summary = cityWeather.weather.forecast.daily.firstOrNull()?.summary.orEmpty(),
+                forecast = cityWeather.weather.forecast.hourly,
+                feelsLikeTemperature = cityWeather.weather.yesterdayWeather.temperature.toInt(),
+                onNavigateToTemperature = onNavigateToTemperature
+            )
+        }
+
+        else -> {
+            // FIXME
+        }
+    }
 }

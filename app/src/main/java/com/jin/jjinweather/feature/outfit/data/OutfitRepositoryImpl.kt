@@ -36,4 +36,8 @@ class OutfitRepositoryImpl(
             onFailure = { Result.failure(it) }
         )
     }
+
+    private companion object {
+        val TAG = "OutfitRepository"
+    }
 }

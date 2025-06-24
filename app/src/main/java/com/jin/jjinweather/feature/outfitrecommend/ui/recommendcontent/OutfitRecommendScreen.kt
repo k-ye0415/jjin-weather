@@ -3,6 +3,7 @@ package com.jin.jjinweather.feature.outfitrecommend.ui.recommendcontent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +17,7 @@ import java.time.ZoneId
 
 @Composable
 fun OutfitRecommendScreen(
-    imageUrls: List<String>,
+    imageUrls: List<String>?,
     cityName: String,
     summary: String,
     forecast: HourlyForecast,
@@ -31,10 +32,13 @@ fun OutfitRecommendScreen(
         ) {
             OutfitHeader(onNavigateToTemperature)
             CityNameAndWeatherSummary(cityName, summary)
-            if (imageUrls.isNotEmpty()) {
-                OutfitSuccess(imageUrls)
-            } else {
+            if (imageUrls == null) {
                 OutfitError()
+            } else if (imageUrls.isEmpty()) {
+                // loading
+                CircularProgressIndicator()
+            } else {
+                OutfitSuccess(imageUrls)
             }
             Text(
                 text = stringResource(R.string.outfit_hourly_forecast_graph),

@@ -63,9 +63,7 @@ fun WeatherSuccessScreen(
                 YesterdayWeatherOutfit(
                     backgroundColor = cardBackgroundColor,
                     yesterdayTemperature = weather.weather.yesterdayWeather.temperature.toInt(),
-                    onNavigateToOutfit = {
-                        onNavigateToOutfit(weather.pageNumber)
-                    }
+                    onNavigateToOutfit = { onNavigateToOutfit(weather.pageNumber) }
                 )
             }
             item {

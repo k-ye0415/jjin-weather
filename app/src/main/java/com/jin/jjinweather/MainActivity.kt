@@ -6,9 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -19,7 +19,6 @@ import androidx.room.Room
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import com.google.gson.reflect.TypeToken
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
 import com.jin.jjinweather.feature.district.ui.DistrictSearchViewModel
@@ -36,17 +35,12 @@ import com.jin.jjinweather.feature.locationimpl.data.GeoCodeDataSourceImpl
 import com.jin.jjinweather.feature.locationimpl.data.GeoPointDataSourceImpl
 import com.jin.jjinweather.feature.navigation.Screens
 import com.jin.jjinweather.feature.network.GooglePlacesApiClient
-import com.jin.jjinweather.feature.network.NetworkProvider
 import com.jin.jjinweather.feature.network.OpenAiApiClient
 import com.jin.jjinweather.feature.network.OpenWeatherApiClient
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
-import com.jin.jjinweather.feature.outfit.domain.GetOutfitUseCase
-import com.jin.jjinweather.feature.outfit.domain.HourlyForecastGraph
-import com.jin.jjinweather.feature.outfit.domain.OutfitArguments
 import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
-import com.jin.jjinweather.feature.outfit.domain.toHourlyForecast
 import com.jin.jjinweather.feature.outfitImpl.DalleDataSourceImpl
 import com.jin.jjinweather.feature.outfitImpl.OpenAiDataSourceImpl
 import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitScreen
@@ -56,6 +50,7 @@ import com.jin.jjinweather.feature.temperature.ui.TemperatureViewModel
 import com.jin.jjinweather.feature.weather.data.WeatherRepositoryImpl
 import com.jin.jjinweather.feature.weather.domain.repository.WeatherRepository
 import com.jin.jjinweather.feature.weather.domain.usecase.GetAllLocationAndWeatherUseCase
+import com.jin.jjinweather.feature.weather.domain.usecase.GetOutfitRecommendUseCase
 import com.jin.jjinweather.feature.weatherimpl.data.WeatherDataSourceImpl
 import com.jin.jjinweather.ui.theme.JJinWeatherTheme
 import kotlinx.coroutines.delay
@@ -131,7 +126,6 @@ fun AppNavigator(
     val temperatureViewModel = TemperatureViewModel(
         GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
-    val outfitViewModel = OutfitViewModel(GetOutfitUseCase(outfitRepository))
     val districtSearchViewModel = DistrictSearchViewModel(
         SearchDistrictUseCase(placesRepository),
         SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository),
@@ -168,6 +162,11 @@ fun AppNavigator(
             arguments = listOf(navArgument(Screens.PAGE_NUMBER) { type = NavType.IntType })
         ) { backStackEntry ->
             val pageNumber = backStackEntry.arguments?.getInt(Screens.PAGE_NUMBER) ?: 0
+            val outfitViewModel = remember {
+                OutfitViewModel(
+                    GetOutfitRecommendUseCase(locationRepository, weatherRepository, outfitRepository)
+                )
+            }
             OutfitScreen(
                 viewModel = outfitViewModel,
                 pageNumber = pageNumber,

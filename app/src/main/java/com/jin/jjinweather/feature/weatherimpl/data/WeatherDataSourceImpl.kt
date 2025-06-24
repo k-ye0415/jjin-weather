@@ -90,8 +90,6 @@ class WeatherDataSourceImpl(
             )
         }
 
-        Log.i(TAG, "YEJIN ${dailyList.firstOrNull()?.summary}")
-
         return Weather(
             pageNumber = pageNumber,
             timeZone = timeZone,
