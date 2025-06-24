@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jin.jjinweather.feature.weather.domain.model.CityWeather
-import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.ui.theme.SuccessBackgroundBottomDayColor
 import com.jin.jjinweather.ui.theme.SuccessBackgroundBottomNightColor
 import com.jin.jjinweather.ui.theme.SuccessBackgroundTopDayColor
@@ -27,13 +26,7 @@ fun WeatherSuccessScreen(
     weather: CityWeather,
     pageCount: Int,
     currentPage: Int,
-    onNavigateToOutfit: (
-        temperature: Int,
-        cityName: String,
-        summary: String,
-        forecast: HourlyForecast,
-        feelsLikeTemperature: Int,
-    ) -> Unit,
+    onNavigateToOutfit: (pageNumber: Int) -> Unit,
     onNavigateToDistrict: () -> Unit
 ) {
     val isNight = isNight(
@@ -71,13 +64,7 @@ fun WeatherSuccessScreen(
                     backgroundColor = cardBackgroundColor,
                     yesterdayTemperature = weather.weather.yesterdayWeather.temperature.toInt(),
                     onNavigateToOutfit = {
-                        onNavigateToOutfit(
-                            weather.weather.dayWeather.temperature.toInt(),
-                            weather.cityName,
-                            weather.weather.forecast.daily.firstOrNull()?.summary.orEmpty(),
-                            weather.weather.forecast.hourly,
-                            weather.weather.dayWeather.feelsLikeTemperature.toInt()
-                        )
+                        onNavigateToOutfit(weather.pageNumber)
                     }
                 )
             }

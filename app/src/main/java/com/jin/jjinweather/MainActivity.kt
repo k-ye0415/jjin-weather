@@ -47,7 +47,6 @@ import com.jin.jjinweather.feature.outfit.domain.HourlyForecastGraph
 import com.jin.jjinweather.feature.outfit.domain.OutfitArguments
 import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
 import com.jin.jjinweather.feature.outfit.domain.toHourlyForecast
-import com.jin.jjinweather.feature.outfit.domain.toHourlyForecastGraph
 import com.jin.jjinweather.feature.outfitImpl.DalleDataSourceImpl
 import com.jin.jjinweather.feature.outfitImpl.OpenAiDataSourceImpl
 import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitScreen
@@ -155,11 +154,8 @@ fun AppNavigator(
         composable(Screens.Temperature.route) {
             TemperatureScreen(
                 viewModel = temperatureViewModel,
-                onNavigateToOutfit = { temperature, cityName, summary, hourlyForecast, feelsLikeTemperature ->
-                    val forecastJson = NetworkProvider.gson.toJson(hourlyForecast.map { it.toHourlyForecastGraph() })
-                    val route = Screens.Outfit.createRoute(
-                        temperature, cityName, summary, forecastJson, feelsLikeTemperature
-                    )
+                onNavigateToOutfit = { pageNumber ->
+                    val route = Screens.Outfit.createRoute(pageNumber)
                     navController.navigate(route)
                 },
                 onNavigateToDistrict = {
@@ -169,26 +165,14 @@ fun AppNavigator(
         }
         composable(
             route = Screens.Outfit.route,
-            arguments = listOf(
-                navArgument(Screens.TEMPERATURE) { type = NavType.IntType },
-                navArgument(Screens.CITY_NAME) { type = NavType.StringType },
-                navArgument(Screens.WEATHER_SUMMARY) { type = NavType.StringType },
-                navArgument(Screens.HOURLY_FORECAST) { type = NavType.StringType },
-                navArgument(Screens.FEELS_LIKE_TEMPERATURE) { type = NavType.IntType },
-            )
+            arguments = listOf(navArgument(Screens.PAGE_NUMBER) { type = NavType.IntType })
         ) { backStackEntry ->
-            // FIXME : key 값으로 DB 조회하는 방향으로 수정 예정
-            val args = backStackEntry.parseOutfitArguments()
+            val pageNumber = backStackEntry.arguments?.getInt(Screens.PAGE_NUMBER) ?: 0
             OutfitScreen(
                 viewModel = outfitViewModel,
-                temperature = args.temperature,
-                cityName = args.cityName,
-                summary = args.weatherSummary,
-                forecast = args.hourlyForecast,
-                feelsLikeTemperature = args.feelsLikeTemperature
-            ) {
-                navController.navigate(Screens.Temperature.route)
-            }
+                pageNumber = pageNumber,
+                onNavigateToTemperature = { navController.navigate(Screens.Temperature.route) }
+            )
         }
         composable(Screens.DistrictSearch.route) {
             DistrictSearchScreen(districtSearchViewModel) {
@@ -208,19 +192,4 @@ fun NavController.navigateClearingBackStack(
             this.inclusive = inclusive
         }
     }
-}
-
-fun NavBackStackEntry.parseOutfitArguments(): OutfitArguments {
-    val args = arguments ?: return OutfitArguments(0, "", "", listOf(), 0)
-    val temp = args.getInt(Screens.TEMPERATURE)
-    val city = args.getString(Screens.CITY_NAME).orEmpty()
-    val summary = args.getString(Screens.WEATHER_SUMMARY).orEmpty()
-    val forecastJson = args.getString(Screens.HOURLY_FORECAST).orEmpty()
-    val feelsLikeTemperature = args.getInt(Screens.FEELS_LIKE_TEMPERATURE)
-
-    val listType = object : TypeToken<List<HourlyForecastGraph>>() {}.type
-    val parsed = NetworkProvider.gson.fromJson<List<HourlyForecastGraph>>(forecastJson, listType)
-    val forecast = parsed.map { it.toHourlyForecast() }
-
-    return OutfitArguments(temp, city, summary, forecast, feelsLikeTemperature)
 }
