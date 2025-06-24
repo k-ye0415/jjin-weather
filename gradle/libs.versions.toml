@@ -23,7 +23,8 @@ googlePlaces = "3.5.0"
 secretsPlugin = "2.0.1"
 googleServices = "4.4.2"
 firebaseBom = "33.1.0"
-googleTranslate = "2.60.0"
+googleBom = "26.1.4"
+#googleTranslate = "2.60.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -57,7 +58,8 @@ places = { module = "com.google.android.libraries.places:places", version.ref = 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
-translate = { module = "com.google.cloud:google-cloud-translate", version.ref = "googleTranslate" }
+google-bom = { module = "com.google.cloud:libraries-bom", version.ref = "googleBom" }
+google-translate = { module = "com.google.cloud:google-cloud-translate" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
