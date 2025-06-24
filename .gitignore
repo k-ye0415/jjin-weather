@@ -17,3 +17,6 @@ local.properties
 
 # Firebase
 app/google-services.json
+
+# Google
+app/src/main/assets/jjin-weather-e503bd34a192.json
