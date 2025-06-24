@@ -29,6 +29,7 @@ fun OutfitScreen(
                 imageUrls = outfitImageUrls,
                 cityName = cityWeather.cityName,
                 summary = cityWeather.weather.forecast.daily.firstOrNull()?.summary.orEmpty(),
+                timeZoneId = cityWeather.weather.timeZone,
                 forecast = cityWeather.weather.forecast.hourly,
                 feelsLikeTemperature = cityWeather.weather.yesterdayWeather.temperature.toInt(),
                 onNavigateToTemperature = onNavigateToTemperature

@@ -24,6 +24,7 @@ fun OutfitRecommendScreen(
     imageUrls: List<String>?,
     cityName: String,
     summary: String,
+    timeZoneId: String,
     forecast: HourlyForecast,
     feelsLikeTemperature: Int,
     onNavigateToTemperature: () -> Unit
@@ -58,10 +59,10 @@ fun OutfitRecommendScreen(
                     .padding(top = 10.dp)
             )
             HourlyForecastGraph(
-                forecast.map { it.temperature.toInt() },
-                forecast.map { it.timeStamp.atZone(ZoneId.systemDefault()).hour },
-                feelsLikeTemperature,
-                Modifier
+                temperatureList = forecast.map { it.temperature.toInt() },
+                hourlyList = forecast.map { it.timeStamp.atZone(ZoneId.of(timeZoneId)).hour },
+                feelsLikeTemperature = feelsLikeTemperature,
+                modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .padding(bottom = 10.dp)
             )

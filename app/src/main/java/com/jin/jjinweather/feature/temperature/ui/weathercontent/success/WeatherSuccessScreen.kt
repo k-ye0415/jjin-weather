@@ -70,6 +70,7 @@ fun WeatherSuccessScreen(
                 HourlyForecast(
                     modifier = Modifier.padding(bottom = 10.dp),
                     backgroundColor = cardBackgroundColor,
+                    timeZoneId = weather.weather.timeZone,
                     hourlyWeatherList = weather.weather.forecast.hourly
                 )
             }

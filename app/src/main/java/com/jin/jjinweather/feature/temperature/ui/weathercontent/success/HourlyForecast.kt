@@ -35,14 +35,16 @@ import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.temperature.ui.ForecastTime
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
-import com.jin.jjinweather.ui.theme.*
+import com.jin.jjinweather.ui.theme.DefaultTemperatureColor
+import com.jin.jjinweather.ui.theme.TemperatureColors
+import com.jin.jjinweather.ui.theme.TextColor40
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 @Composable
-fun HourlyForecast(modifier: Modifier, backgroundColor: Color, hourlyWeatherList: HourlyForecast) {
+fun HourlyForecast(modifier: Modifier, backgroundColor: Color, timeZoneId: String, hourlyWeatherList: HourlyForecast) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
@@ -62,7 +64,7 @@ fun HourlyForecast(modifier: Modifier, backgroundColor: Color, hourlyWeatherList
                         modifier = Modifier.width(56.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        HourlyItem(hourlyWeatherList[index])
+                        HourlyItem(timeZoneId, hourlyWeatherList[index])
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -108,10 +110,10 @@ private fun HourlyHeader() {
 }
 
 @Composable
-private fun HourlyItem(item: TemperatureSnapshot) {
-    val amPmLabel = formatAmPmLabelAt(item.timeStamp)
+private fun HourlyItem(timeZoneId: String, item: TemperatureSnapshot) {
+    val amPmLabel = formatAmPmLabelAt(timeZoneId, item.timeStamp)
     val textAlpha = if (amPmLabel.isNotEmpty()) 1f else 0f
-    val timeOrDayLabel = formatDayOrHourLabelAt(item.timeStamp)
+    val timeOrDayLabel = formatDayOrHourLabelAt(timeZoneId, item.timeStamp)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -166,8 +168,8 @@ private fun ForecastTimeText(timeOrDayLabel: ForecastTime) {
 }
 
 @Composable
-private fun formatAmPmLabelAt(timeStamp: Instant): String {
-    val hour = timeStamp.atZone(ZoneId.systemDefault()).hour
+private fun formatAmPmLabelAt(timeZoneId: String, timeStamp: Instant): String {
+    val hour = timeStamp.atZone(ZoneId.of(timeZoneId)).hour
     return when (hour) {
         0, 6 -> stringResource(R.string.success_hourly_forecast_am)
         12, 18 -> stringResource(R.string.success_hourly_forecast_pm)
@@ -176,9 +178,9 @@ private fun formatAmPmLabelAt(timeStamp: Instant): String {
 }
 
 @Composable
-private fun formatDayOrHourLabelAt(timeStamp: Instant): ForecastTime {
+private fun formatDayOrHourLabelAt(timeZoneId: String, timeStamp: Instant): ForecastTime {
     val now = LocalDate.now()
-    val date = timeStamp.atZone(ZoneId.systemDefault())
+    val date = timeStamp.atZone(ZoneId.of(timeZoneId))
     val dayDiff = ChronoUnit.DAYS.between(now, date).toInt()
     val hour24 = date.hour
     val minute = date.minute
