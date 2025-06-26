@@ -126,12 +126,6 @@ fun AppNavigator(
     val temperatureViewModel = TemperatureViewModel(
         GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
     )
-    val districtSearchViewModel = DistrictSearchViewModel(
-        SearchDistrictUseCase(placesRepository),
-        SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository),
-        GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
-    )
-
     NavHost(navController, Screens.Onboarding.route) {
         composable(Screens.Onboarding.route) {
             OnboardingScreen(
@@ -174,6 +168,13 @@ fun AppNavigator(
             )
         }
         composable(Screens.DistrictSearch.route) {
+            val districtSearchViewModel = remember {
+                DistrictSearchViewModel(
+                    SearchDistrictUseCase(placesRepository),
+                    SaveDistrictAndRequestWeatherUseCase(locationRepository, weatherRepository),
+                    GetAllLocationAndWeatherUseCase(locationRepository, weatherRepository)
+                )
+            }
             DistrictSearchScreen(districtSearchViewModel) {
                 navController.navigate(Screens.Temperature.route)
             }

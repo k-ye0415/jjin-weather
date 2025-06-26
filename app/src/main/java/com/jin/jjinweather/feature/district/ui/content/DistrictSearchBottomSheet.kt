@@ -123,45 +123,49 @@ fun DistrictSearchBottomSheet(
                     },
                     onQueryClear = onQueryClear
                 )
-                when (districtSearchListState) {
-                    is SearchState.Idle -> Unit
-                    is SearchState.Loading -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 40.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    is SearchState.Success -> {
-                        val districtSearchList = districtSearchListState.data
-                        LazyColumn(contentPadding = PaddingValues(vertical = 4.dp)) {
-                            items(districtSearchList.size) { index ->
-                                Text(
-                                    text = highlightText(districtSearchList[index].address, keyword),
-                                    modifier = Modifier
-                                        .padding(vertical = 4.dp)
-                                        .fillMaxWidth()
-                                        .clickable {
-                                            onSelectedDistrict(districtSearchList[index])
-                                            onBottomSheetDismissRequest()
-                                        }
-                                )
+                if (keyword.isBlank()) {
+                    Unit
+                } else {
+                    when (districtSearchListState) {
+                        is SearchState.Idle -> Unit
+                        is SearchState.Loading -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 40.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
                             }
                         }
-                    }
 
-                    is SearchState.Error -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 40.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator()
+                        is SearchState.Success -> {
+                            val districtSearchList = districtSearchListState.data
+                            LazyColumn(contentPadding = PaddingValues(vertical = 4.dp)) {
+                                items(districtSearchList.size) { index ->
+                                    Text(
+                                        text = highlightText(districtSearchList[index].address, keyword),
+                                        modifier = Modifier
+                                            .padding(vertical = 4.dp)
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                onSelectedDistrict(districtSearchList[index])
+                                                onBottomSheetDismissRequest()
+                                            }
+                                    )
+                                }
+                            }
+                        }
+
+                        is SearchState.Error -> {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 40.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }
