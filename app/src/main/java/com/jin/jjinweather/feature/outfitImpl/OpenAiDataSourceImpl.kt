@@ -9,9 +9,13 @@ class OpenAiDataSourceImpl(
     private val chatGPTApi: ChatGptApi
 ) : OpenAiDataSource {
 
-    override suspend fun generateOutfitImgTypes(temperature: Int, feelsLikeTemperature: Int): Result<String> {
-        // FIXME 위치, 날씨
-        val requestPrompt = "Daejeon, ${temperature}°C, feels like ${feelsLikeTemperature}°C, cloudy"
+    override suspend fun generateOutfitImgTypes(
+        cityName: String,
+        temperature: Int,
+        feelsLikeTemperature: Int,
+        weather: String
+    ): Result<String> {
+        val requestPrompt = "${cityName}, ${temperature}°C, feels like ${feelsLikeTemperature}°C, $weather"
         val openAiRequest = OpenAiRequest(
             model = MODEL,
             messages = listOf(
