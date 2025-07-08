@@ -27,9 +27,9 @@ import coil.compose.AsyncImage
 import com.jin.jjinweather.R
 
 @Composable
-fun OutfitSuccess(imageUrls: List<String>) {
+fun OutfitSuccess(outfitTypes: List<String>) {
     var imageIndex by remember { mutableStateOf(0) }
-    val imageResLit = imageUrls.map { findImageResId(it.trim()) }
+    val clothesImgRes = outfitTypes.map { findImageResId(it.trim()) }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,17 +37,17 @@ fun OutfitSuccess(imageUrls: List<String>) {
             .padding(horizontal = 20.dp),
     ) {
         AsyncImage(
-            model = imageResLit[imageIndex],
+            model = clothesImgRes[imageIndex],
             contentDescription = stringResource(R.string.outfit_success_img_desc),
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(100.dp)
         )
-        if (imageResLit.size >= 2) {
+        if (clothesImgRes.size >= 2) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .clickable { imageIndex = (imageIndex + 1) % imageResLit.size }
+                    .clickable { imageIndex = (imageIndex + 1) % clothesImgRes.size }
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.LightGray)
                     .size(32.dp)

@@ -21,7 +21,7 @@ class GetOutfitRecommendUseCase(
         val cityWeather = CityWeather(pageNumber, cityName, weather)
         val temperature = weather.dayWeather.temperature.toInt()
         val feelsLikeTemperature = weather.dayWeather.feelsLikeTemperature.toInt()
-        return outfitRepository.fetchImagesByTemperature(temperature, feelsLikeTemperature).fold(
+        return outfitRepository.fetchOutfitImgTypeByTemperature(temperature, feelsLikeTemperature).fold(
             onSuccess = { Result.success(Outfit(cityWeather, it)) },
             onFailure = { Result.failure(it) }
         )

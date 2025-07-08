@@ -22,8 +22,6 @@ import com.google.firebase.storage.ktx.storage
 import com.jin.jjinweather.feature.datastore.data.PreferencesRepositoryImpl
 import com.jin.jjinweather.feature.district.ui.DistrictSearchScreen
 import com.jin.jjinweather.feature.district.ui.DistrictSearchViewModel
-import com.jin.jjinweather.feature.fileimpl.data.FileDataSourceImpl
-import com.jin.jjinweather.feature.firebaseimpl.data.FirebaseDataSourceImpl
 import com.jin.jjinweather.feature.googleplaces.data.PlacesRepositoryImpl
 import com.jin.jjinweather.feature.googleplaces.domain.PlacesRepository
 import com.jin.jjinweather.feature.googleplaces.domain.usecase.SearchDistrictUseCase
@@ -41,7 +39,6 @@ import com.jin.jjinweather.feature.onboarding.ui.OnboardingScreen
 import com.jin.jjinweather.feature.onboarding.ui.OnboardingViewModel
 import com.jin.jjinweather.feature.outfit.data.OutfitRepositoryImpl
 import com.jin.jjinweather.feature.outfit.domain.OutfitRepository
-import com.jin.jjinweather.feature.outfitImpl.DalleDataSourceImpl
 import com.jin.jjinweather.feature.outfitImpl.OpenAiDataSourceImpl
 import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitScreen
 import com.jin.jjinweather.feature.outfitrecommend.ui.OutfitViewModel
@@ -96,12 +93,7 @@ class MainActivity : ComponentActivity() {
                     outfitRepository = OutfitRepositoryImpl(
                         openAiDataSource = OpenAiDataSourceImpl(
                             chatGPTApi = chatGptApi
-                        ),
-                        dalleDataSource = DalleDataSourceImpl(
-                            chatGPTApi = chatGptApi
-                        ),
-                        fileDataSource = FileDataSourceImpl(this),
-                        firebaseDataSource = FirebaseDataSourceImpl(storage, firestore),
+                        )
                     ),
                     placesRepository = PlacesRepositoryImpl(
                         placesDataSource = PlacesDataSourceImpl(googlePlacesApi)

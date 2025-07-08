@@ -9,8 +9,9 @@ class OpenAiDataSourceImpl(
     private val chatGPTApi: ChatGptApi
 ) : OpenAiDataSource {
 
-    override suspend fun generateImagePrompt(temperature: Int, feelsLikeTemperature: Int): Result<String> {
-        val requestPrompt = buildClothingImagePrompt(temperature, feelsLikeTemperature)
+    override suspend fun generateOutfitImgTypes(temperature: Int, feelsLikeTemperature: Int): Result<String> {
+        // FIXME 위치, 날씨
+        val requestPrompt = "Daejeon, ${temperature}°C, feels like ${feelsLikeTemperature}°C, cloudy"
         val openAiRequest = OpenAiRequest(
             model = MODEL,
             messages = listOf(
@@ -22,16 +23,13 @@ class OpenAiDataSourceImpl(
             )
         )
         val openAiResponse = chatGPTApi.queryOpenAiPrompt(openAiRequest)
-        val prompt = openAiResponse.choices.firstOrNull()?.message?.content
-        return if (prompt.isNullOrEmpty()) {
+        val response = openAiResponse.choices.firstOrNull()?.message?.content
+        return if (response.isNullOrEmpty()) {
             Result.failure(Exception())
         } else {
-            Result.success(prompt)
+            Result.success(response)
         }
     }
-
-    private fun buildClothingImagePrompt(temperature: Int, feelsLikeTemperature: Int): String =
-        "Daejeon, ${temperature}°C, feels like ${feelsLikeTemperature}°C, cloudy"
 
     private companion object {
         const val MODEL = "gpt-4o"
