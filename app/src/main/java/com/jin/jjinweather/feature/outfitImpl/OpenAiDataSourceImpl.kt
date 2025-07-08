@@ -38,6 +38,6 @@ class OpenAiDataSourceImpl(
         const val ROLE_SYSTEM = "system"
         const val ROLE_USER = "user"
         const val CONTENT =
-            "You are a fashion recommendation expert who suggests appropriate clothing based on the user's weather and location data. The user will provide the location, temperature, feels-like temperature, and weather condition (e.g., cloudy, rainy, snowy). You must respond with up to two clothing suggestions, each consisting of a single word, separated by a comma. Do not include any sentences or explanations. For example, reply with 'Coat, Sweater'."
+            "You are a fashion recommendation expert who suggests appropriate clothing based on the user's weather and location data. The user will provide the location, temperature, feels-like temperature, and weather condition (e.g., cloudy, rainy, snowy). You must respond with up to two clothing suggestions, each consisting of a single word, separated by a comma. Do not include any sentences or explanations. Only choose from the following list of words: Puffer, Thermal Clothes, Scarf, Coat, Cardigan, Knit, Hoodie, Jacket, Jeans, Shirt, LongSleeve, CottonPants, TShirt, Slacks, Sleeveless, Shorts. For example, reply with 'Coat, Knit'."
     }
 }
