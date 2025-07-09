@@ -9,13 +9,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
@@ -26,7 +23,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTemperature: () -> Unit) {
-    var keyword by remember { mutableStateOf("") }
+    val keyword by viewModel.keyword.collectAsState()
     val scaffoldState = rememberBottomSheetScaffoldState()
     val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
@@ -34,10 +31,6 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
 
     val districtSearchListState by viewModel.districtSearchListState.collectAsState()
     val weatherList by viewModel.weatherListState.collectAsState()
-
-    LaunchedEffect(keyword) {
-        viewModel.searchDistrictAt(keyword)
-    }
 
     BackHandler {
         coroutineScope.launch {
@@ -63,18 +56,16 @@ fun DistrictSearchScreen(viewModel: DistrictSearchViewModel, onNavigateToTempera
                 focusRequester = focusRequester,
                 focusManager = focusManager,
                 coroutineScope = coroutineScope,
-                onDistrictQueryChanged = { keyword = it },
-                onSelectedDistrict = {
-                    viewModel.saveDistrict(weatherList.size, it)
-                },
+                onDistrictQueryChanged = { viewModel.updateKeyword(it) },
+                onSelectedDistrict = { viewModel.saveDistrict(pageNumber = weatherList.size, district = it) },
                 onBottomSheetDismissRequest = {
-                    keyword = ""
+                    viewModel.updateKeyword("")
                     focusManager.clearFocus()
                     coroutineScope.launch {
                         scaffoldState.bottomSheetState.partialExpand()
                     }
                 },
-                onQueryClear = { keyword = "" }
+                onQueryClear = { viewModel.updateKeyword("") }
             )
         }
     }

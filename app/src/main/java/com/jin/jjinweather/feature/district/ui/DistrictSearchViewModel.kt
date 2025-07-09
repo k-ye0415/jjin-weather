@@ -11,6 +11,10 @@ import com.jin.jjinweather.feature.weather.ui.state.SearchState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -29,7 +33,27 @@ class DistrictSearchViewModel(
     private val _districtSearchList = MutableStateFlow<SearchState<List<District>>>(SearchState.Idle)
     val districtSearchListState: StateFlow<SearchState<List<District>>> = _districtSearchList
 
-    fun searchDistrictAt(keyword: String) {
+    private val _keyword = MutableStateFlow("")
+    val keyword: StateFlow<String> = _keyword
+
+    init {
+        viewModelScope.launch {
+            keyword
+                .debounce(300)
+                .distinctUntilChanged()
+                .filter { it.isNotBlank() }
+                .collectLatest { query -> searchDistrictAt(query) }
+        }
+    }
+
+    fun updateKeyword(newKeyword: String) {
+        _keyword.value = newKeyword
+        if (newKeyword.isBlank()) {
+            _districtSearchList.value = SearchState.Idle
+        }
+    }
+
+    private fun searchDistrictAt(keyword: String) {
         if (keyword.isBlank()) {
             _districtSearchList.value = SearchState.Idle
             return
