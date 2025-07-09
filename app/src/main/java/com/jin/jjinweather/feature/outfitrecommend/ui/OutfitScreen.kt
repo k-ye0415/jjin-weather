@@ -24,9 +24,9 @@ fun OutfitScreen(
         is UiState.Loading -> OutfitLoadingScreen()
         is UiState.Success -> {
             val cityWeather = state.data.cityWeather
-            val outfitImageUrls = state.data.imageUrls
+            val outfitTypes = state.data.outfitImgTypes
             OutfitRecommendScreen(
-                imageUrls = outfitImageUrls,
+                outfitTypes = outfitTypes,
                 cityName = cityWeather.cityName,
                 summary = cityWeather.weather.forecast.daily.firstOrNull()?.summary.orEmpty(),
                 timeZoneId = cityWeather.weather.timeZone,

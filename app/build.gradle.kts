@@ -117,10 +117,6 @@ dependencies {
 
     implementation(libs.places)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.storage)
-    implementation(libs.firebase.firestore)
-
     implementation(platform(libs.google.bom))
     implementation(libs.google.translate) {
         exclude(group = "com.google.api.grpc", module = "proto-google-common-protos")

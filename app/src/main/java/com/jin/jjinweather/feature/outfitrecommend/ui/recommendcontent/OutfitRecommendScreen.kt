@@ -21,7 +21,7 @@ import java.time.ZoneId
 
 @Composable
 fun OutfitRecommendScreen(
-    imageUrls: List<String>?,
+    outfitTypes: List<String>?,
     cityName: String,
     summary: String,
     timeZoneId: String,
@@ -37,9 +37,9 @@ fun OutfitRecommendScreen(
         ) {
             OutfitHeader(onNavigateToTemperature)
             CityNameAndWeatherSummary(cityName, summary)
-            if (imageUrls == null) {
+            if (outfitTypes == null) {
                 OutfitError()
-            } else if (imageUrls.isEmpty()) {
+            } else if (outfitTypes.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -49,7 +49,7 @@ fun OutfitRecommendScreen(
                     CircularProgressIndicator()
                 }
             } else {
-                OutfitSuccess(imageUrls)
+                OutfitSuccess(outfitTypes)
             }
             Text(
                 text = stringResource(R.string.outfit_hourly_forecast_graph),

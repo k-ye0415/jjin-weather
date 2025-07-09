@@ -1,5 +1,10 @@
 package com.jin.jjinweather.feature.outfit.data
 
 interface OpenAiDataSource {
-    suspend fun generateImagePrompt(temperature: Int): Result<String>
+    suspend fun generateOutfitImgTypes(
+        cityName: String,
+        temperature: Int,
+        feelsLikeTemperature: Int,
+        weather: String
+    ): Result<String>
 }

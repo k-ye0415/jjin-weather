@@ -19,7 +19,15 @@ class GetOutfitRecommendUseCase(
         if (weather == null) return Result.failure(Exception("Weather is null"))
 
         val cityWeather = CityWeather(pageNumber, cityName, weather)
-        return outfitRepository.fetchImagesByTemperature(weather.dayWeather.temperature.toInt()).fold(
+        val temperature = weather.dayWeather.temperature.toInt()
+        val feelsLikeTemperature = weather.dayWeather.feelsLikeTemperature.toInt()
+        val weatherDesc = weather.dayWeather.description
+        return outfitRepository.fetchOutfitImgTypeByTemperature(
+            cityName,
+            temperature,
+            feelsLikeTemperature,
+            weatherDesc
+        ).fold(
             onSuccess = { Result.success(Outfit(cityWeather, it)) },
             onFailure = { Result.failure(it) }
         )

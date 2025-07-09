@@ -27,9 +27,9 @@ import coil.compose.AsyncImage
 import com.jin.jjinweather.R
 
 @Composable
-fun OutfitSuccess(imageUrls: List<String>) {
+fun OutfitSuccess(outfitTypes: List<String>) {
     var imageIndex by remember { mutableStateOf(0) }
-
+    val clothesImgRes = outfitTypes.map { findImageResId(it.trim()) }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,15 +37,17 @@ fun OutfitSuccess(imageUrls: List<String>) {
             .padding(horizontal = 20.dp),
     ) {
         AsyncImage(
-            model = imageUrls[imageIndex],
+            model = clothesImgRes[imageIndex],
             contentDescription = stringResource(R.string.outfit_success_img_desc),
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(100.dp)
         )
-        if (imageUrls.size >= 2) {
+        if (clothesImgRes.size >= 2) {
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .clickable { imageIndex = (imageIndex + 1) % imageUrls.size }
+                    .clickable { imageIndex = (imageIndex + 1) % clothesImgRes.size }
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.LightGray)
                     .size(32.dp)
@@ -60,4 +62,24 @@ fun OutfitSuccess(imageUrls: List<String>) {
             }
         }
     }
+}
+
+private fun findImageResId(name: String): Int = when (name) {
+    "Puffer" -> R.drawable.img_puffer
+    "Thermal Clothes" -> R.drawable.img_thermal_clothes
+    "Scarf" -> R.drawable.img_scarf
+    "Coat" -> R.drawable.img_trench_coat
+    "Cardigan" -> R.drawable.img_cardigan
+    "Knit" -> R.drawable.img_sweater
+    "Hoodie" -> R.drawable.img_hoodie
+    "Jacket" -> R.drawable.img_jacket
+    "Jeans" -> R.drawable.img_jeans
+    "Shirt" -> R.drawable.img_shirt
+    "LongSleeve" -> R.drawable.img_long_sleeve
+    "CottonPants" -> R.drawable.img_cotton_pants
+    "TShirt" -> R.drawable.img_tshirt
+    "Slacks" -> R.drawable.img_slacks
+    "Sleeveless" -> R.drawable.img_sleeveless
+    "Shorts" -> R.drawable.img_shorts
+    else -> R.drawable.img_jeans
 }

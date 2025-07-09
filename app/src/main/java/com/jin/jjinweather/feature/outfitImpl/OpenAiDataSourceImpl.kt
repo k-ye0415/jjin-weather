@@ -9,8 +9,13 @@ class OpenAiDataSourceImpl(
     private val chatGPTApi: ChatGptApi
 ) : OpenAiDataSource {
 
-    override suspend fun generateImagePrompt(temperature: Int): Result<String> {
-        val requestPrompt = buildClothingImagePrompt(temperature)
+    override suspend fun generateOutfitImgTypes(
+        cityName: String,
+        temperature: Int,
+        feelsLikeTemperature: Int,
+        weather: String
+    ): Result<String> {
+        val requestPrompt = "${cityName}, ${temperature}°C, feels like ${feelsLikeTemperature}°C, $weather"
         val openAiRequest = OpenAiRequest(
             model = MODEL,
             messages = listOf(
@@ -22,25 +27,19 @@ class OpenAiDataSourceImpl(
             )
         )
         val openAiResponse = chatGPTApi.queryOpenAiPrompt(openAiRequest)
-        val prompt = openAiResponse.choices.firstOrNull()?.message?.content
-        return if (prompt.isNullOrEmpty()) {
+        val response = openAiResponse.choices.firstOrNull()?.message?.content
+        return if (response.isNullOrEmpty()) {
             Result.failure(Exception())
         } else {
-            Result.success(prompt)
+            Result.success(response)
         }
     }
-
-    private fun buildClothingImagePrompt(temperature: Int): String = """
-I need an English object description for a very simple clothing icon.
-Draw a picture so that the top of the clothes and the bottom of the clothes are kept side by side without overlapping.
-The icon should simply represent the top and bottom of the clothing suitable for ${temperature}°C weather.
-The English object description must have a condition that the background color must be 0xFFFFFFFFFF, contain a very simple style, and not allow letters related to temperature.
-""".trimIndent()
 
     private companion object {
         const val MODEL = "gpt-4o"
         const val ROLE_SYSTEM = "system"
         const val ROLE_USER = "user"
-        const val CONTENT = "You're a stylist who describes outfits for icon generation."
+        const val CONTENT =
+            "You are a fashion recommendation expert who suggests appropriate clothing based on the user's weather and location data. The user will provide the location, temperature, feels-like temperature, and weather condition (e.g., cloudy, rainy, snowy). You must respond with up to two clothing suggestions, each consisting of a single word, separated by a comma. Do not include any sentences or explanations. Only choose from the following list of words: Puffer, Thermal Clothes, Scarf, Coat, Cardigan, Knit, Hoodie, Jacket, Jeans, Shirt, LongSleeve, CottonPants, TShirt, Slacks, Sleeveless, Shorts. For example, reply with 'Coat, Knit'."
     }
 }
