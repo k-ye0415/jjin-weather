@@ -35,6 +35,7 @@ import com.jin.jjinweather.R
 import com.jin.jjinweather.feature.temperature.ui.ForecastTime
 import com.jin.jjinweather.feature.weather.domain.model.HourlyForecast
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshotWithRain
 import com.jin.jjinweather.ui.theme.DefaultTemperatureColor
 import com.jin.jjinweather.ui.theme.TemperatureColors
 import com.jin.jjinweather.ui.theme.TextColor40
@@ -110,7 +111,7 @@ private fun HourlyHeader() {
 }
 
 @Composable
-private fun HourlyItem(timeZoneId: String, item: TemperatureSnapshot) {
+private fun HourlyItem(timeZoneId: String, item: TemperatureSnapshotWithRain) {
     val amPmLabel = formatAmPmLabelAt(timeZoneId, item.timeStamp)
     val textAlpha = if (amPmLabel.isNotEmpty()) 1f else 0f
     val timeOrDayLabel = formatDayOrHourLabelAt(timeZoneId, item.timeStamp)

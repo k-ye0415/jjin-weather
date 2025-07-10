@@ -67,6 +67,7 @@ class WeatherRepositoryImpl(
             dateTime = dayWeather.date.timeInMillis,
             iconCode = dayWeather.icon.name,
             currentTemperature = dayWeather.temperature.toDouble(),
+            currentRain = dayWeather.rain.toDouble(),
             temperatureDescription = dayWeather.description,
             yesterdayTemperature = yesterdayWeather.temperature.toDouble(),
             minTemperature = dayWeather.temperatureRange.min.toDouble(),
@@ -95,7 +96,8 @@ class WeatherRepositoryImpl(
                 sunCycle = SunCycle(LocalTime.ofSecondOfDay(sunrise), LocalTime.ofSecondOfDay(sunset)),
                 feelsLikeTemperature = feelsLikeTemperature,
                 moonPhase = moonPhase,
-                temperatureRange = TemperatureRange(min = minTemperature, max = maxTemperature)
+                temperatureRange = TemperatureRange(min = minTemperature, max = maxTemperature),
+                rain = currentRain
             ),
             yesterdayWeather = TemperatureSnapshot(
                 timeStamp = Instant.now(),
