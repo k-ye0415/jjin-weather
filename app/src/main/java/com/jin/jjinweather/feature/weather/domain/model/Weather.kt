@@ -23,7 +23,8 @@ data class DayWeather(
     val sunCycle: SunCycle,
     val feelsLikeTemperature: Number,
     val moonPhase: MoonPhaseType,
-    val temperatureRange: TemperatureRange
+    val temperatureRange: TemperatureRange,
+    val rain: Number
 )
 
 data class SunCycle(
@@ -37,12 +38,20 @@ data class TemperatureSnapshot(
     val temperature: Number,
 )
 
+data class TemperatureSnapshotWithRain(
+    val timeStamp: Instant,
+    val icon: WeatherIcon,
+    val temperature: Number,
+    val rainProbability: Double,
+    val precipitation: Double
+)
+
 data class Forecast(
     val hourly: HourlyForecast,
     val daily: List<DailyForecast>
 )
 
-typealias HourlyForecast = List<TemperatureSnapshot>
+typealias HourlyForecast = List<TemperatureSnapshotWithRain>
 
 data class DailyForecast(
     val date: Calendar,
@@ -50,7 +59,9 @@ data class DailyForecast(
     val temperatureRange: TemperatureRange,
     val sunCycle: SunCycle,
     val feelsLikeTemperature: FeelsLikeTemperature,
-    val summary: String
+    val summary: String,
+    val rainProbability: Double,
+    val precipitation: Double
 )
 
 data class TemperatureRange(

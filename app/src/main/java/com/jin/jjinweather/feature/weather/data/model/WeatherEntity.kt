@@ -29,6 +29,7 @@ data class WeatherEntity(
     val dateTime: Long,
     val iconCode: String,
     val currentTemperature: Double,
+    val currentRain: Double,
     val temperatureDescription: String,
     val yesterdayTemperature: Double,
     val minTemperature: Double,

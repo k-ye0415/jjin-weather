@@ -4,7 +4,7 @@ import android.util.Log
 import com.jin.jjinweather.feature.network.TranslateApiClient
 import com.jin.jjinweather.feature.weather.data.OpenWeatherApi
 import com.jin.jjinweather.feature.weather.data.WeatherDataSource
-import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDTO
+import com.jin.jjinweather.feature.weather.data.model.dto.WeatherDto
 import com.jin.jjinweather.feature.weather.domain.model.DailyForecast
 import com.jin.jjinweather.feature.weather.domain.model.DayWeather
 import com.jin.jjinweather.feature.weather.domain.model.FeelsLikeTemperature
@@ -13,6 +13,7 @@ import com.jin.jjinweather.feature.weather.domain.model.MoonPhaseType
 import com.jin.jjinweather.feature.weather.domain.model.SunCycle
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureRange
 import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshot
+import com.jin.jjinweather.feature.weather.domain.model.TemperatureSnapshotWithRain
 import com.jin.jjinweather.feature.weather.domain.model.Weather
 import com.jin.jjinweather.feature.weather.domain.model.WeatherIcon
 import java.time.Instant
@@ -37,7 +38,6 @@ class WeatherDataSourceImpl(
                 apiKey = apiKey
             )
             val yesterdayResponse = requestYesterdayWeatherAt(latitude, longitude)
-
             val weather = response.toWeather(pageNumber, yesterdayResponse)
             Result.success(weather)
         } catch (e: Exception) {
@@ -65,12 +65,14 @@ class WeatherDataSourceImpl(
         }
     }
 
-    private suspend fun WeatherDTO.toWeather(pageNumber: Int, yesterdayTemp: Double?): Weather {
+    private suspend fun WeatherDto.toWeather(pageNumber: Int, yesterdayTemp: Double?): Weather {
         val hourlyList = hourly.map { hourly ->
-            TemperatureSnapshot(
+            TemperatureSnapshotWithRain(
                 timeStamp = Instant.ofEpochSecond(hourly.dt),
                 icon = WeatherIcon.findByWeatherCode(hourly.weather.firstOrNull()?.icon.orEmpty()),
-                temperature = hourly.temperature
+                temperature = hourly.temperature,
+                rainProbability = hourly.rainProbability,
+                precipitation = hourly.precipitation?.precipitation ?: 0.0,
             )
         }
         val dailyList = daily.map { daily ->
@@ -86,7 +88,9 @@ class WeatherDataSourceImpl(
                     daily.feelsLikeTemperatureRange.day,
                     daily.feelsLikeTemperatureRange.night
                 ),
-                summary = TranslateApiClient.translateText(daily.summary)
+                summary = TranslateApiClient.translateText(daily.summary),
+                rainProbability = daily.rainProbability,
+                precipitation = daily.precipitation ?: 0.0,
             )
         }
 
@@ -108,6 +112,7 @@ class WeatherDataSourceImpl(
                     min = daily.firstOrNull()?.temperature?.min ?: DEFAULT_MIN_TEMPERATURE,
                     max = daily.firstOrNull()?.temperature?.max ?: DEFAULT_MAX_TEMPERATURE
                 ),
+                rain = current.precipitation?.precipitation ?: 0.0
             ),
             yesterdayWeather = TemperatureSnapshot( // FIXME : need Yesterday timeStamp, icon
                 timeStamp = Instant.now(),

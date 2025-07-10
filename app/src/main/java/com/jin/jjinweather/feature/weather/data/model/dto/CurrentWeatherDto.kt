@@ -8,5 +8,6 @@ data class CurrentWeatherDto(
     @SerializedName("sunrise") val sunrise: Long,
     @SerializedName("sunset") val sunset: Long,
     @SerializedName("feels_like") val feelsLikeTemperature: Double,
-    @SerializedName("weather") val weather: List<WeatherConditionDto>
+    @SerializedName("weather") val weather: List<WeatherConditionDto>,
+    @SerializedName("rain") val precipitation: RainDto?
 )
